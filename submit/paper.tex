@@ -13,21 +13,30 @@
 \begin{document}
 
 \jtitle{研究ミーティング}
+%\jsubtitle{}
+\etitle{Research Meeting}
+%\esubtitle{}
 \authorlist{
-  \authorentry{山近 駿}{}{}
+  \authorentry[shun@kwansei.ac.jp]{山近 駿}{Shun YAMACHIKA}{KG}
 }
+\affiliate[KG]{関西学院大学 工学部 情報工学課程 \\
+  〒669--1337 兵庫県三田市学園 2-1}{
+  Department of Informatics, School of Science and Technology, Kwansei
+  Gakuin University \\
+  2--1 Gakuen, Sanda, Hyogo 669--1337, Japan}
+
 
 \maketitle
 
 
 \section{LinkSeLFiEについて}
-\label{sec:org2ac77e7}
+\label{sec:org1496e87}
 \subsection{P（Point：結論・要点）}
-\label{sec:org0fe1955}
+\label{sec:org9765c44}
 LinkSeLFiEの実験設定はアルゴリズムの効率性を示せていない
 
 \subsection{R（Reason：理由）}
-\label{sec:orge193be7}
+\label{sec:org0389ae0}
 LinkSeLFiE の提案する実験設定は、均等配分戦略（VanillaNB）のような単純
 なベースライン手法と比較して、資源消費の削減や性能向上と
 いう点で優位性を示せていないから。
@@ -60,7 +69,7 @@ LinkSeLFiEは、そのベースラインである均等配分手法（VanillaNB�
 戦略が過剰な資源配分を要求しているという前提が崩れているため、
 アルゴリズムの効率性を示せていない。
 \subsection{E（Example：具体例）}
-\label{sec:org2563098}
+\label{sec:orgfcc698c}
 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推
 定するアルゴリズムを設計するというLinkSeLFiEの目的が均等配分戦略で実現
 できていることをシュミレーションによって示す。
@@ -213,7 +222,7 @@ LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1\% 未満であり、�
 
 
 \subsection{P（Point：結論の繰り返し）}
-\label{sec:org9f92c81}
+\label{sec:org168fbc5}
 結果としてVanilla 20NBはLinkSeLFiEよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
 だけならばVanilla 4NBでもある程度判別可能であるということが分かった。これ
@@ -223,7 +232,7 @@ LinkSeLFiEが均等配分手法を上回ることができていないことを�
 
 
 \subsection{補足}
-\label{sec:org4e3b0e9}
+\label{sec:orgb8d3414}
 LinkSeLFiEの目的
 \begin{itemize}
 \item 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する

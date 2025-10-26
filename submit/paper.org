@@ -30,9 +30,18 @@
 
 #+BEGIN_EXPORT latex
 \jtitle{研究ミーティング}
+%\jsubtitle{}
+\etitle{Research Meeting}
+%\esubtitle{}
 \authorlist{
-  \authorentry{山近 駿}{}{}
+  \authorentry[shun@lsnl.jp]{山近 駿}{Shun YAMACHIKA}{KG}
 }
+\affiliate[KG]{関西学院大学 工学部 情報工学課程 \\
+  〒669--1337 兵庫県三田市学園 2-1}{
+  Department of Informatics, School of Science and Technology, Kwansei
+  Gakuin University \\
+  2--1 Gakuen, Sanda, Hyogo 669--1337, Japan}
+
 
 \maketitle
 #+END_EXPORT
