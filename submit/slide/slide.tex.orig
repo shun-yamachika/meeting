@@ -1,0 +1,167 @@
+% Created 2020-08-28 Fri 01:16
+\documentclass[compress,dvipdfmx,11pt]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage{listings}
+\title[IA 研究会 @ 富山大]{\bf タイトル}
+\author[]{XXX XXX, 大崎 博之}
+\institute{関西学院大学 理工学部 情報科学科}
+\date{2016 年 4 月 1 日}
+\setlength{\parskip}{1.5ex}
+\renewcommand{\textbf}{\alert}
+\usetheme{Ohsaki}
+\begin{document}
+
+\maketitle
+\begin{frame}{発表の内容}
+\tableofcontents
+\end{frame}
+
+\newcommand{\pivec}{\mathbf \pi}
+\newcommand{\xvec}{\mathbf x}
+\newcommand{\yvec}{\mathbf y}
+\newcommand{\zvec}{\mathbf z}
+\newcommand{\Emat}{\mathbf E}
+\newcommand{\Imat}{\mathbf I}
+
+\bf
+
+\section{はじめに}
+\label{sec:orgbfabddd}
+
+\begin{frame}[label={sec:org06a7243}]{研究の背景}
+\begin{itemize}
+\item あれが大事
+\begin{itemize}
+\item これも大事
+\item そこでそれが必要
+\end{itemize}
+\item ところでこれは?
+\begin{itemize}
+\item あれも必要
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org2fe0c84}]{研究の目的}
+\begin{enumerate}
+\item あれをする
+\item それをする
+\item それもする
+\end{enumerate}
+\begin{align}
+T = \frac{MSS \, \sqrt{1.5}}{R \, \sqrt{p}}
+\end{align}
+\end{frame}
+
+\section{解析モデル}
+\label{sec:orgff1c309}
+
+\begin{frame}[label={sec:orge0da02d}]{解析モデル}
+\begin{center}
+\begin{center}
+\includegraphics[width=\columnwidth]{./figure/dummy.eps}
+\end{center}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:orgc2e39ed}]{解析における仮定}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item \(T\): スループット
+\begin{itemize}
+\item あれを含む
+\end{itemize}
+\item \(R\): ラウンドトリップ時間
+\begin{itemize}
+\item 時間がたっても変化しない
+\end{itemize}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{itemize}
+\item \(T\): スループット
+\begin{itemize}
+\item あれを含む
+\end{itemize}
+\item \(R\): ラウンドトリップ時間
+\begin{itemize}
+\item 時間がたっても変化しない
+\end{itemize}
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{解析}
+\label{sec:orgf6ee91a}
+
+\begin{frame}[label={sec:org6fa428c}]{キャッシュヒット率の導出}
+\begin{align}
+T = \frac{MSS \, \sqrt{1.5}}{R \, \sqrt{p}}
+\end{align}
+\end{frame}
+
+\begin{frame}[label={sec:org74ea372}]{メッセージ配送遅延の導出}
+\begin{align}
+T = \frac{MSS \, \sqrt{1.5}}{R \, \sqrt{p}}
+\end{align}
+\end{frame}
+
+\section{数値例}
+\label{sec:org5d41942}
+
+\begin{frame}[label={sec:orgafb1ddc}]{数値例: バッファサイズとスループットの関係}
+\begin{center}
+\begin{center}
+\includegraphics[width=.7\columnwidth]{./figure/dummy.eps}
+\end{center}
+\end{center}
+
+\begin{center}
+\(T\) = 12 [Mbit/s], \(B\) = 1,000 [byte], \(L\) = 1 [packet]
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org7aabdec}]{数値例: バッファサイズとスループットの関係}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+\begin{center}
+\includegraphics[width=\columnwidth,height=.7\textheight]{./figure/dummy.eps}
+\end{center}
+\end{center}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{center}
+\begin{center}
+\includegraphics[width=\columnwidth,height=.7\textheight]{./figure/dummy.eps}
+\end{center}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{まとめ}
+\label{sec:org28fa4e1}
+
+\begin{frame}[label={sec:org99e32f6}]{まとめ}
+\begin{itemize}
+\item あれをした
+\item これをした
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org9ef289c}]{今後の課題}
+\begin{itemize}
+\item あれをしたい
+\item これをしたい
+\end{itemize}
+\end{frame}
+\end{document}

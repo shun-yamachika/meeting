@@ -1,0 +1,46 @@
+# -*- Org -*-
+# 
+# 
+# Copyright (c) 2016-2018, Hiroyuki Ohsaki.
+# All rights reserved.
+# 
+# $Id: slide.org,v 1.1 2020/08/27 16:16:47 ohsaki Exp $
+# 
+
+# \title、\author の生成はorg-beamer-template にハードコーディングされているので、
+# org-beamer-template をオーバーライドする必要がある。詳しくは dot.emacs を参照。
+
+# Org mode version 9.1.9 (release_9.1.9-65-g5e4542) で動作することを確認
+
+#+title: dummy
+
+#+startup: beamer
+#+latex_class: beamer
+#+latex_class_options: [compress,dvipdfmx,11pt]
+#+options: toc:t
+#+options: h:2
+#+beamer_theme: Ohsaki
+#+latex_header: \title[2025年 大崎研究室ゼミ]{\bf はじめてのスライド作り}
+#+latex_header: \author[]{山近 駿}
+#+latex_header: \institute{関西学院大学 工学部 情報工学課程}
+#+latex_header: \date{2016 年 5 月 28 日}
+#+latex_header: \setlength{\parskip}{1.5ex}
+#+latex_header: \renewcommand{\textbf}{\alert}
+
+\newcommand{\pivec}{\mathbf \pi}
+\newcommand{\xvec}{\mathbf x}
+\newcommand{\yvec}{\mathbf y}
+\newcommand{\zvec}{\mathbf z}
+\newcommand{\Emat}{\mathbf E}
+\newcommand{\Imat}{\mathbf I}
+
+\bf
+* 感想
+** 今日の授業の感想
+- pdfファイルを作る際はlatexでファイルを作ってそれを *変換* することで作成
+  できるということが分かった。また、スライドもpdfの一種なので同じよう
+  にして作成ができるということが分かった。
+
+
+
+

@@ -1,0 +1,44 @@
+# -*- mode: org; coding: utf-8 -*-
+#
+# 電子情報通信学会 学生ポスターセッション org-mode テンプレート
+#
+# このファイルを編集して、C-c C-e l l で poster.tex にエクスポートできます
+# エクスポート後、以下のコマンドでPDFを生成します：
+#   platex poster.tex
+#   platex poster.tex
+#   dvipdfmx poster.dvi
+#
+
+#+LATEX_CLASS: ieicejsp
+#+LATEX_CLASS_OPTIONS: [twocolumn,a4paper,dvipdfmx]
+#+LATEX_COMPILER: platex
+#+LATEX_HEADER: \usepackage{cite}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usepackage[dvipdfmx]{hyperref}
+
+#+OPTIONS: toc:nil author:nil date:nil title:nil tex:t timestamp:nil
+
+#+BEGIN_EXPORT latex
+\title{研究タイトル}
+\author{山近 駿}
+\affliate{所属大学・学部}
+
+\maketitle
+#+END_EXPORT
+
+* はじめに
+ここに本文を記述します。
+
+* まとめ
+結論を記述します。
+
+#+BEGIN_EXPORT latex
+\begin{thebibliography}{99}
+\bibitem{ref1} 著者名, ``論文タイトル,'' 雑誌名, vol.~XX, no.~X, pp.~XXX--XXX, 20XX.
+\end{thebibliography}
+#+END_EXPORT
+
+# mode: org
+# End:
