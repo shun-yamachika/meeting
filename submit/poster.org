@@ -1,14 +1,4 @@
 # -*- mode: org; coding: utf-8 -*-
-#
-# 電子情報通信学会 学生ポスターセッション org-mode テンプレート
-#
-# このファイルを編集して、C-c C-e l l で poster.tex にエクスポートできます
-# エクスポート後、以下のコマンドでPDFを生成します：
-#   platex poster.tex
-#   platex poster.tex
-#   dvipdfmx poster.dvi
-#
-
 #+LATEX_CLASS: ieicejsp
 #+LATEX_CLASS_OPTIONS: [twocolumn,a4paper,dvipdfmx]
 #+LATEX_COMPILER: platex
@@ -24,58 +14,58 @@
 #+BEGIN_EXPORT latex
 \title{研究タイトル}
 \author{山近 駿}
-\affliate{所属大学・学部}
+\affliate{関西学院大学工学部情報工学課程}
 \maketitle
 #+END_EXPORT
 
 
-** Linkselfieについて
+** LinkSeLFiEについて
 *** P（Point：結論・要点）
-LinkSelfieの実験設定はアルゴリズムの効率性を示せていない
+LinkSeLFiEの実験設定はアルゴリズムの効率性を示せていない
 
 *** R（Reason：理由）
-Linkselfie の提案する実験設定は、均等配分戦略（VanillaNB）のような単純
+LinkSeLFiE の提案する実験設定は、均等配分戦略（VanillaNB）のような単純
 なベースライン手法と比較して、資源消費の削減や性能向上と
 いう点で優位性を示せていないから。
 
-Linkselfieは、そのベースラインである均等配分手法（VanillaNB）に、特に
+LinkSeLFiEは、そのベースラインである均等配分手法（VanillaNB）に、特に
 理由なく過剰な試行回数 T=200（各リンクに2,000バウンス）を設定し、その
 上でより少ない資源で同等以上の性能を目指すという形で優位性を示そうとし
 ている。しかしT を大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla
-4NB つまり各リンクに200バウンス、40バウンス）をLinkselfieと同じ実験設
+4NB つまり各リンクに200バウンス、40バウンス）をLinkSeLFiEと同じ実験設
 定下で実験すると結果が得られた。
 
-- 最適リンクの判別率: Vanilla 4NB、Vanilla 20NBはLinkselfieと同程度の
+- 最適リンクの判別率: Vanilla 4NB、Vanilla 20NBはLinkSeLFiEと同程度の
   最適リンク判別率を達成。
 
-- 量子資源消費: Vanilla 20NB、Vanilla 4NBは、Linkselfieと比較して
+- 量子資源消費: Vanilla 20NB、Vanilla 4NBは、LinkSeLFiEと比較して
   劇的に少ない総バウンス数（量子資源）でアルゴリズムが終了している。
 
-- 忠実度推定精度: Vanilla 20NBがLinkselfieと同等の高い忠実度推定精度
+- 忠実度推定精度: Vanilla 20NBがLinkSeLFiEと同等の高い忠実度推定精度
   （相対誤差 1% 未満）を実現できている。
 
-つまり、Linkselfieが解決しようとした「最小限の量子資源で、最も高忠実度
-なリンクを特定し、その忠実度を正確に推定する」という目的は、Linkselfie
+つまり、LinkSeLFiEが解決しようとした「最小限の量子資源で、最も高忠実度
+なリンクを特定し、その忠実度を正確に推定する」という目的は、LinkSeLFiE
 よりもはるかに少ない資源と単純な戦略（Vanilla 20NB）によって、十分達成
 可能である。
 
-このことから、Linkselfieの実験設定ではLinkselfieのアルゴリズムが、資源
+このことから、LinkSeLFiEの実験設定ではLinkSeLFiEのアルゴリズムが、資源
 効率と性能の点で均等配分戦略を上回ることができていない、または均等配分
 戦略が過剰な資源配分を要求しているという前提が崩れているため、
 アルゴリズムの効率性を示せていない。
 *** E（Example：具体例）
 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推
-定するアルゴリズムを設計するというlinkselfieの目的が均等配分戦略で実現
+定するアルゴリズムを設計するというLinkSeLFiEの目的が均等配分戦略で実現
 できていることをシュミレーションによって示す。
 
 VanillaNB は、各リンクを同じ回数だけベンチマークする単純な手法であり、
-linkselfieではその繰り返し回数Tが200に設定されていた。
+LinkSeLFiEではその繰り返し回数Tが200に設定されていた。
 
 繰り返し回数の少ない均等配分戦略アルゴリズムの有効性を評価するために、
-今回の実験ではT=4とT=20のVanilla 4NB、Vanilla 20NBを実装し、linkselfie
+今回の実験ではT=4とT=20のVanilla 4NB、Vanilla 20NBを実装し、LinkSeLFiE
 とこれらの均等配分戦略を比較する。
 
-実験設定や各パラメータ設定はlinkselfieと同じ実験設定で行なった。
+実験設定や各パラメータ設定はLinkSeLFiEと同じ実験設定で行なった。
 
 - 実験の設定
 我々は 2 つのノード（ソース S とデスティネーション D）から成る単純なネッ
@@ -99,14 +89,12 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_AmplitudeDamping.eps}
-\caption{\tiny plot\_cost\_vs\_path\_num\_AmplitudeDamping.eps}
-\end{minipage}
+\caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_BitFlip.eps}
-\caption{\tiny plot\_cost\_vs\_path\_num\_BitFlip.eps}
-\end{minipage}
+\caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
 \begin{figure}[h]
@@ -114,14 +102,12 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Dephase.eps}
-\caption{\tiny plot\_cost\_vs\_path\_num\_Dephase.eps}
-\end{minipage}
+\caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Depolar.eps}
-\caption{\tiny plot\_cost\_vs\_path\_num\_Depolar.eps}
-\end{minipage}
+\caption{\small Depolarizing}\end{minipage}
 \end{figure}
 #+END_EXPORT
 図1,2,3,4 cost vs path_num
@@ -133,9 +119,9 @@ Bit-Flip Noise（ビット反転ノイズ）
 後、各リンク選択アルゴリズムをネットワークに適用し、さまざまな L の値
 に対してアルゴリズムが終了する際の量子リソース消費量を測定する。ここで、
 量子リソース消費量の指標として総バウンス数を使用し、結果は 10 回の試行
-の平均をとった。Vanilla 4NB、Vanilla 20NBがlinkselfieよりも少ない資源
+の平均をとった。Vanilla 4NB、Vanilla 20NBがLinkSeLFiEよりも少ない資源
 で配分できていることがわかる。バウンス数はL = 7のときにVanilla 20NB
-でlinkselfieの半分以下、Vanilla 4NBは1/10ほどである。
+でLinkSeLFiEの半分以下、Vanilla 4NBは1/10ほどである。
 
 
 #+BEGIN_EXPORT latex
@@ -144,14 +130,12 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_AmplitudeDamping.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_AmplitudeDamping.eps}
-\end{minipage}
+\caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_BitFlip.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_BitFlip.eps}
-\end{minipage}
+\caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
 \begin{figure}[h]
@@ -159,14 +143,12 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Dephase.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_Dephase.eps}
-\end{minipage}
+\caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Depolar.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_Depolar.eps}
-\end{minipage}
+\caption{\small Depolarizing}\end{minipage}
 \end{figure}
 #+END_EXPORT
 図5,6,7,8 accuracy vs path_num
@@ -178,7 +160,7 @@ Bit-Flip Noise（ビット反転ノイズ）
 リンク選択アルゴリズムをネットワークに適用し、さまざまな L の値に対し
 てアルゴリズムの最適リンク判別率を測定する。ここで最適リンク判別率とは
 アルゴリズムが真の最良パスを正しく選択できた確率のことである。結果は
-10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBではlinkselfieと同
+10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBではLinkSeLFiEと同
 等の判別率があることがわかる。
 #+BEGIN_EXPORT latex
 \begin{figure}[h]
@@ -186,14 +168,12 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_AmplitudeDamping.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_AmplitudeDamping.eps}
-\end{minipage}
+\caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_BitFlip.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_BitFlip.eps}
-\end{minipage}
+\caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
 \begin{figure}[h]
@@ -201,22 +181,20 @@ Bit-Flip Noise（ビット反転ノイズ）
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Dephase.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_Dephase.eps}
-\end{minipage}
+\caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
 \includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Depolar.eps}
-\caption{\tiny plot\_accuracy\_vs\_path\_num\_Depolar.eps}
-\end{minipage}
+\caption{\small Depolarizing}\end{minipage}
 \end{figure}
 
 #+END_EXPORT
 図9,10,11,12
 Fidelity Estimation Accuracy
 次に、各アルゴリズムの忠実度推定精度を評価する。
-各リンクの平均忠実度はそれぞれ μ1 = 0.95 および μi = 0.85（i = 2, 3, …, L）と設定する。
-各リンク i の忠実度 fᵢ は、平均 μᵢ、分散 1/4 のガウス分布からサンプリングされる。
+各リンクの平均忠実度はそれぞれ $\mu_1$ = 0.95 および $\mu_i$ = 0.85（i = 2, 3, …, L）と設定する。
+各リンク i の忠実度 $f_i$ は、平均 $\mu_i$、分散 1/4 のガウス分布からサンプリングされる。
 その後、各アルゴリズムをこのネットワークに適用し、
 各アルゴリズムが選択した最適リンクの推定忠実度を得る。
 アルゴリズムが出力した推定忠実度を、真の忠実度と比較することで、
@@ -224,25 +202,25 @@ Fidelity Estimation Accuracy
 リンク数 L を 2 から 20 まで変化させ、
 各設定について 10 回の試行を行い、その平均値を結果として出力する。
 
-linkselfieの論文では"LINKSELFIE の相対誤差は 1% 未満であり、他のアルゴ
+LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1% 未満であり、他のアルゴ
 リズムと比較して有意な差は見られない。"と言及されていた。そうなのであ
-れば、Vanilla 20NBの相対誤差も1% 未満であり、linkselfieと比較して有意
+れば、Vanilla 20NBの相対誤差も1% 未満であり、LinkSeLFiEと比較して有意
 な差は見られないと言える。
 
 
 
 
 *** P（Point：結論の繰り返し）
-結果としてVanilla 20NBはlinkselfieよりもはるかに少ないリソースで最適リ
+結果としてVanilla 20NBはLinkSeLFiEよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
 だけならばVanilla 4NBでもある程度判別可能であるということが分かった。これ
 は量子資源、最適リンクの特定、最適リンクの推定精度という観点で
-linkselfieが均等配分手法を上回ることができていないことを示している。ゆ
-えにLinkSelfieの実験設定は、アルゴリズムの効率性を示せていない
+LinkSeLFiEが均等配分手法を上回ることができていないことを示している。ゆ
+えにLinkSeLFiEの実験設定は、アルゴリズムの効率性を示せていない
 
 
 *** 補足
-linkselfieの目的
+LinkSeLFiEの目的
 - 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
 
 "The main objective of this work is to efficiently estimate the fidelity of established entangled links."
@@ -253,12 +231,12 @@ resources as possible."
 
 
 
-As expected, LINKSELFIE can not only identify the optimal link but
+As expected, LinkSeLFiE can not only identify the optimal link but
 also evaluate its fidelity accurately. The relative error of
-LINKSELFIE is less than 1%, which has no significant difference
+LinkSeLFiE is less than 1%, which has no significant difference
 compared with other algorithms.
 
-誤差(relative error)1%未満で他の手法と同程度としており、linkselfie
+誤差(relative error)1%未満で他の手法と同程度としており、LinkSeLFiE
 レベルの誤差(0.003)の必要性は書かれていない。
 
 
@@ -290,26 +268,26 @@ b_m = A p^{2m},
 \]
 ここで，
 
-- $A$：測定および状態準備エラーの影響を表す定数，
--  $p$：量子チャネルの脱分極パラメータ（depolarizing parameter）
+- A：測定および状態準備エラーの影響を表す定数，
+- p：量子チャネルの脱分極パラメータ（depolarizing parameter）
 
 
-このとき，$p$ の推定値 $\hat{p}$ から，
+このとき，pの推定値 $\hat{p}$ から，
 リンクの平均忠実度（average fidelity）は次式で求められる：
 \[
 \hat{F} = \frac{1 + \hat{p}}{2}.
 \]
 
-linkselfieの論文でNBは量子ネットワーク内のリンク品質を評価するための基
+LinkSeLFiEの論文でNBは量子ネットワーク内のリンク品質を評価するための基
 本的手続きとして説明されており、全ての手法(VanillaNB, SuccElimNB,
-LINKSELFIE）でこの NB をサブルーチンとして呼び出して動作する。
+LinkSeLFiE）でこの NB をサブルーチンとして呼び出して動作する。
 
 Network benchmarking (NB) is a fundamental procedure to evaluate the link quality in a quantum network.
 
 - VanillaNB
 VanillaNB benchmarks each link equally with the same number of repetitions (T = 200).
-- Linkselfie
-LINKSELFIE leverages network benchmarking (NB) as a subroutine to measure the fidelity of selected links.
+- LinkSeLFiE
+LinkSeLFiE leverages network benchmarking (NB) as a subroutine to measure the fidelity of selected links.
 
 
 # mode: org

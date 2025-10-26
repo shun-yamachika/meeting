@@ -22,13 +22,13 @@
 
 
 \section{Linkselfieについて}
-\label{sec:orgd87e512}
+\label{sec:orgaaf59af}
 \subsection{P（Point：結論・要点）}
-\label{sec:org54ca052}
+\label{sec:org469e492}
 LinkSelfieの実験設定はアルゴリズムの効率性を示せていない
 
 \subsection{R（Reason：理由）}
-\label{sec:orge7a03bd}
+\label{sec:orge4837b6}
 Linkselfie の提案する実験設定は、均等配分戦略（VanillaNB）のような単純
 なベースライン手法と比較して、資源消費の削減や性能向上と
 いう点で優位性を示せていないから。
@@ -61,7 +61,7 @@ Linkselfieは、そのベースラインである均等配分手法（VanillaNB�
 戦略が過剰な資源配分を要求しているという前提が崩れているため、
 アルゴリズムの効率性を示せていない。
 \subsection{E（Example：具体例）}
-\label{sec:org22b2afd}
+\label{sec:org33b985b}
 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推
 定するアルゴリズムを設計するというlinkselfieの目的が均等配分戦略で実現
 できていることをシュミレーションによって示す。
@@ -93,7 +93,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 
 
 
-\#+BEGIN\_EXPORT latex
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
@@ -123,7 +122,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 \caption{\tiny plot\_cost\_vs\_path\_num\_Depolar.eps}
 \end{minipage}
 \end{figure}
-
 図1,2,3,4 cost vs path\_num
 
 まず、これらのリンク選択アルゴリズムにおける量子リソース消費を評価する。
@@ -136,7 +134,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 の平均をとった。Vanilla 4NB、Vanilla 20NBがlinkselfieよりも少ない資源
 で配分できていることがわかる。バウンス数はL = 7のときにVanilla 20NB
 でlinkselfieの半分以下、Vanilla 4NBは1/10ほどである。
-
 
 
 \begin{figure}[h]
@@ -168,7 +165,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 \caption{\tiny plot\_accuracy\_vs\_path\_num\_Depolar.eps}
 \end{minipage}
 \end{figure}
-
 図5,6,7,8 accuracy vs path\_num
 
 次に、リンク選択アルゴリズムにおける最適リンク判別率を評価する。忠実度
@@ -180,7 +176,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 アルゴリズムが真の最良パスを正しく選択できた確率のことである。結果は
 10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBではlinkselfieと同
 等の判別率があることがわかる。
-
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
@@ -212,7 +207,6 @@ Bit-Flip Noise（ビット反転ノイズ）
 \end{figure}
 図9,10,11,12
 Fidelity Estimation Accuracy
-
 次に、各アルゴリズムの忠実度推定精度を評価する。
 各リンクの平均忠実度はそれぞれ μ1 = 0.95 および μi = 0.85（i = 2, 3, …, L）と設定する。
 各リンク i の忠実度 fᵢ は、平均 μᵢ、分散 1/4 のガウス分布からサンプリングされる。
@@ -232,7 +226,7 @@ linkselfieの論文では"LINKSELFIE の相対誤差は 1\% 未満であり、�
 
 
 \subsection{P（Point：結論の繰り返し）}
-\label{sec:orge74bb24}
+\label{sec:orge37f4b6}
 結果としてVanilla 20NBはlinkselfieよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
 だけならばVanilla 4NBでもある程度判別可能であるということが分かった。これ
@@ -242,7 +236,7 @@ linkselfieが均等配分手法を上回ることができていないことを�
 
 
 \subsection{補足}
-\label{sec:orgf421cde}
+\label{sec:org46703a0}
 linkselfieの目的
 \begin{itemize}
 \item 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
@@ -325,5 +319,4 @@ VanillaNB benchmarks each link equally with the same number of repetitions (T = 
 \item Linkselfie
 \end{itemize}
 LINKSELFIE leverages network benchmarking (NB) as a subroutine to measure the fidelity of selected links.
-\#+END\_EXPORT
 \end{document}
