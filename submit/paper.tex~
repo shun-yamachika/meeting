@@ -17,7 +17,7 @@
 \etitle{Research Meeting}
 %\esubtitle{}
 \authorlist{
-  \authorentry[shun@kwansei.ac.jp]{山近 駿}{Shun YAMACHIKA}{KG}
+  \authorentry[shun@lsnl.jp]{山近 駿}{Shun YAMACHIKA}{KG}
 }
 \affiliate[KG]{関西学院大学 工学部 情報工学課程 \\
   〒669--1337 兵庫県三田市学園 2-1}{
@@ -25,43 +25,28 @@
   Gakuin University \\
   2--1 Gakuen, Sanda, Hyogo 669--1337, Japan}
 
-\begin{abstract}
-  (アブストラクト)
-\end{abstract}
-
-\begin{jkeyword}
-  XXX、XXX、XXX
-\end{jkeyword}
-
-\begin{eabstract}
-  (英語アブストラクト)
-\end{eabstract}
-
-\begin{ekeyword}
-  XXX, XXX, XXX
-\end{ekeyword}
 
 \maketitle
 
 
-\section{LinkSeLFiEについて}
-\label{sec:org897bdee}
+\section{LinkSeLFiEの実験設定について}
+\label{sec:org1ad5ffe}
 \subsection{P（Point：結論・要点）}
-\label{sec:org5352d55}
-LinkSeLFiEの実験設定はアルゴリズムの効率性を示せていない
+\label{sec:orgd6dbf52}
+LinkSeLFiEの論文では、均等配分戦略（VanillaNB）は各リンクに過剰な資源
+配分を要求するという前提で議論されているが、 各リンクごとの資源配分を
+大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla 4NB）がLinkSeLFiEと
+同等の性能を劇的に少ない資源で達成しているので、LinkSeLFiEはアルゴリズ
+ムの資源効率性における優位性を示せていない。
 
 \subsection{R（Reason：理由）}
-\label{sec:org5560b72}
-LinkSeLFiE の提案する実験設定は、均等配分戦略（VanillaNB）のような単純
-なベースライン手法と比較して、資源消費の削減や性能向上と
-いう点で優位性を示せていないから。
-
-LinkSeLFiEは、そのベースラインである均等配分手法（VanillaNB）に、特に
-理由なく過剰な試行回数 T=200（各リンクに2,000バウンス）を設定し、その
-上でより少ない資源で同等以上の性能を目指すという形で優位性を示そうとし
-ている。しかしT を大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla
-4NB つまり各リンクに200バウンス、40バウンス）をLinkSeLFiEと同じ実験設
-定下で実験すると結果が得られた。
+\label{sec:orga01c42e}
+LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に、特に理由
+なく過剰な試行回数 T=200（各リンクに2,000バウンス）を設定し、その上で
+より少ない資源で同等以上の性能を目指すという形で優位性を示そうとしてい
+る。しかしT を大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla 4NB つ
+まり各リンクに200バウンス、40バウンス）をLinkSeLFiEと同じ実験設定下で
+実験すると以下の結果が得られた。
 
 \begin{itemize}
 \item 最適リンクの判別率: Vanilla 4NB、Vanilla 20NBはLinkSeLFiEと同程度の
@@ -76,18 +61,18 @@ LinkSeLFiEは、そのベースラインである均等配分手法（VanillaNB�
 
 つまり、LinkSeLFiEが解決しようとした「最小限の量子資源で、最も高忠実度
 なリンクを特定し、その忠実度を正確に推定する」という目的は、LinkSeLFiE
-よりもはるかに少ない資源と単純な戦略（Vanilla 20NB）によって、十分達成
-可能である。
+よりも少ない資源と単純な戦略（Vanilla 20NB）によって、十分達成可能である。
 
-このことから、LinkSeLFiEの実験設定ではLinkSeLFiEのアルゴリズムが、資源
-効率と性能の点で均等配分戦略を上回ることができていない、または均等配分
-戦略が過剰な資源配分を要求しているという前提が崩れているため、
-アルゴリズムの効率性を示せていない。
+この結果より、均等配分戦略はLinkSeLFiEが前提としていたような過剰な資源
+配分を必要としないことを明らかにしている。したがって、LinkSeLFiEが単純
+なベースライン手法を資源効率性で上回るという優位性は示せていないと考え
+る。
 \subsection{E（Example：具体例）}
-\label{sec:orga7e0c6f}
-最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推
-定するアルゴリズムを設計するというLinkSeLFiEの目的が均等配分戦略で実現
-できていることをシュミレーションによって示す。
+\label{sec:orgf584665}
+LinkSeLFiEが目指す「最小限の量子資源で、最も高
+忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
+LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって
+も十分に達成可能であることをシミュレーションによって示す。
 
 VanillaNB は、各リンクを同じ回数だけベンチマークする単純な手法であり、
 LinkSeLFiEではその繰り返し回数Tが200に設定されていた。
@@ -188,9 +173,9 @@ Bit-Flip Noise（ビット反転ノイズ）
 忠実度 1, 1 − Δ, 1 − 2Δ, …, 1 − (L − 1)Δ を持つものとする。その後、各
 リンク選択アルゴリズムをネットワークに適用し、さまざまな L の値に対し
 てアルゴリズムの最適リンク判別率を測定する。ここで最適リンク判別率とは
-アルゴリズムが真の最良パスを正しく選択できた確率のことである。結果は
-10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBではLinkSeLFiEと同
-等の判別率があることがわかる。
+アルゴリズムが真の忠実度が最大のパスを正しく選択できた確率のことである。
+結果は10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBでは
+LinkSeLFiEと同等の判別率があることがわかる。
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
@@ -229,26 +214,27 @@ Fidelity Estimation Accuracy
 各設定について 10 回の試行を行い、その平均値を結果として出力する。
 
 LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1\% 未満であり、他のアルゴ
-リズムと比較して有意な差は見られない。"と言及されていた。そうなのであ
-れば、Vanilla 20NBの相対誤差も1\% 未満であり、LinkSeLFiEと比較して有意
-な差は見られないと言える。
+リズムと比較して有意な差は見られない。"と言及されていた。するとVanilla
+20NBの相対誤差も1\% 未満であり、LinkSeLFiEと比較して有意な差は見られな
+いと言える。
 
 
 
 
 \subsection{P（Point：結論の繰り返し）}
-\label{sec:org871f7ab}
+\label{sec:orgfcd5c6f}
 結果としてVanilla 20NBはLinkSeLFiEよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
-だけならばVanilla 4NBでもある程度判別可能であるということが分かった。これ
-は量子資源、最適リンクの特定、最適リンクの推定精度という観点で
+だけならばVanilla 4NBでもある程度判別可能であるということが分かった。
+これは量子資源、最適リンクの特定、最適リンクの推定精度という観点で
 LinkSeLFiEが均等配分手法を上回ることができていないことを示している。ゆ
-えにLinkSeLFiEの実験設定は、アルゴリズムの効率性を示せていない
+えにLinkSeLFiEはアルゴリズムの資源効率性における優位性を示せていない。
 
 
-\subsection{補足}
-\label{sec:org0a7b1be}
-LinkSeLFiEの目的
+\section{補足}
+\label{sec:org1cc8116}
+\subsection{LinkSeLFiEの目的}
+\label{sec:org3025722}
 \begin{itemize}
 \item 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
 \end{itemize}
@@ -259,8 +245,13 @@ LinkSeLFiEの目的
 link set and get its fidelity estimate while consuming as few quantum
 resources as possible."
 
+"Our algorithm deliberately considers the property of the network
+benchmarking, with the objective of identifying the optimal
+high-fidelity link from a link set with high confidence and consuming
+as few resources as possible."
 
-
+\subsection{相対誤差について言及している箇所}
+\label{sec:org9627fcf}
 As expected, LinkSeLFiE can not only identify the optimal link but
 also evaluate its fidelity accurately. The relative error of
 LinkSeLFiE is less than 1\%, which has no significant difference
@@ -270,18 +261,31 @@ compared with other algorithms.
 レベルの誤差(0.003)の必要性は書かれていない。
 
 
-\begin{itemize}
-\item この文章が間違っている
-\end{itemize}
+\subsection{実験で実証した内容}
+\label{sec:org8073119}
 Moreover, we perform extensive simulations under
 various scenarios to corroborate that L INK S EL F I E outperforms
 other existing methods in terms of both identifying the optimal
 link and reducing quantum resource consumption.
 
+最適リンクの特定と量子資源消費の削減という両方の観点で、既存の他の手法
+を上回ることを実証していると言っている
 
-\begin{itemize}
-\item ネットワークベンチマーキング(NB)について
-\end{itemize}
+\subsection{VanillaNBの繰り返し回数Tについて言及している箇所}
+\label{sec:orgdaf212f}
+“We compare our algorithm with two baselines, (1) the vanilla network
+benchmarking algorithm (VanillaNB) and (2) the successive elimination
+algorithm [27] (SuccElimNB).  VanillaNB uniformly benchmarks all the
+quantum links for each bounce number with a fixed number of
+repetitions T, which we set to T = 200 in our experiments.  SuccElimNB
+invokes the network benchmarking subroutine with repetition times T =
+4 …”
+
+
+
+
+\subsection{ネットワークベンチマーキング(NB)について}
+\label{sec:orgfc00c34}
 NBは、量子ネットワークのパフォーマンスを測定するための基礎的な手法であ
 る。特に、ネットワークのリンク品質を評価するために、量子状態の「バウン
 ス」実験を繰り返すプロトコルが利用される。ネットワークベンチマーキング
@@ -322,12 +326,15 @@ LinkSeLFiE）でこの NB をサブルーチンとして呼び出して動作す
 
 Network benchmarking (NB) is a fundamental procedure to evaluate the link quality in a quantum network.
 
+
+\subsection{リンク数が大幅に増えるとVanilla 4NB,Vanilla 20NBはLinkSeLFiEよりも総バウンス数が増えるのか}
+\label{sec:orgf3f5fcc}
 \begin{itemize}
-\item VanillaNB
+\item Vanilla20NB Yes
+\item Vanilla4NB No
 \end{itemize}
-VanillaNB benchmarks each link equally with the same number of repetitions (T = 200).
-\begin{itemize}
-\item LinkSeLFiE
-\end{itemize}
-LinkSeLFiE leverages network benchmarking (NB) as a subroutine to measure the fidelity of selected links.
+
+LinkSeLFiEは有望なリンクとそうでないリンクを判別するために最初に均等配
+分を行なう。その際に4NBを全リンクに渡しているのでVanilla4NBよりも少な
+い総バウンスになることはない。
 \end{document}
