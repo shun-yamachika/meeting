@@ -1,33 +1,21 @@
-# -*- mode: org; coding: utf-8 -*-
-#
-# IEEE Conference Paper org-mode テンプレート
-#
-# このファイルを編集して、C-c C-e l l で paper.tex にエクスポートできます
-# エクスポート後、以下のコマンドでPDFを生成します：
-#   pdflatex paper.tex
-#   bibtex paper
-#   pdflatex paper.tex
-#   pdflatex paper.tex
-#
+% Intended LaTeX compiler: lualatex
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage{epstopdf}
+\epstopdfsetup{outdir=./}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{luatexja}
+\usepackage{luatexja-fontspec}
+\begin{document}
 
-#+LATEX_CLASS: IEEEtran
-#+LATEX_CLASS_OPTIONS: [conference]
-#+LATEX_COMPILER: platex
-#+BIND: org-latex-pdf-process ("platex -interaction=nonstopmode -output-directory=%o %f" "pbibtex %b" "platex -interaction=nonstopmode -output-directory=%o %f" "platex -interaction=nonstopmode -output-directory=%o %f" "dvipdfmx %b.dvi")
-#+LATEX_HEADER: \IEEEoverridecommandlockouts
-#+LATEX_HEADER: \usepackage{cite}
-#+LATEX_HEADER: \usepackage{amsmath,amssymb,amsfonts}
-#+LATEX_HEADER: \usepackage{algorithmic}
-#+LATEX_HEADER: \usepackage{graphicx}
-#+LATEX_HEADER: \DeclareGraphicsExtensions{.eps,.pdf,.png}
-#+LATEX_HEADER: \usepackage{textcomp}
-#+LATEX_HEADER: \usepackage{xcolor}
-#+LATEX_HEADER: \usepackage{url}
-#+LATEX_HEADER: \usepackage{hyperref}
-
-#+OPTIONS: toc:nil author:nil date:nil title:nil tex:t timestamp:nil
-
-#+BEGIN_EXPORT latex
 \title{Research Meeting}
 
 \author{\IEEEauthorblockN{Shun Yamachika}
@@ -37,18 +25,20 @@ Sanda, Hyogo, Japan \\
 shun@lsnl.jp}}
 
 \maketitle
-#+END_EXPORT
 
 
-** LinkSeLFiEの実験設定について
-*** P（Point：結論・要点）
+\section{LinkSeLFiEの実験設定について}
+\label{sec:org7b3397c}
+\subsection{P（Point：結論・要点）}
+\label{sec:org65de2db}
 LinkSeLFiEの論文では、均等配分戦略（VanillaNB）は各リンクに過剰な資源
 配分を要求するという前提で議論されているが、 各リンクごとの資源配分を
 大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla 4NB）がLinkSeLFiEと
 同等の性能を劇的に少ない資源で達成しているので、LinkSeLFiEはアルゴリズ
 ムの資源効率性における優位性を示せていない。
 
-*** R（Reason：理由）
+\subsection{R（Reason：理由）}
+\label{sec:org38f213c}
 LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に、特に理由
 なく過剰な試行回数 T=200（各リンクに2,000バウンス）を設定し、その上で
 より少ない資源で同等以上の性能を目指すという形で優位性を示そうとしてい
@@ -56,14 +46,16 @@ LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に�
 まり各リンクに200バウンス、40バウンス）をLinkSeLFiEと同じ実験設定下で
 実験すると以下の結果が得られた。
 
-- 最適リンクの判別率: Vanilla 4NB、Vanilla 20NBはLinkSeLFiEと同程度の
-  最適リンク判別率を達成。
+\begin{itemize}
+\item 最適リンクの判別率: Vanilla 4NB、Vanilla 20NBはLinkSeLFiEと同程度の
+最適リンク判別率を達成。
 
-- 量子資源消費: Vanilla 20NB、Vanilla 4NBは、LinkSeLFiEと比較して
-  劇的に少ない総バウンス数（量子資源）でアルゴリズムが終了している。
+\item 量子資源消費: Vanilla 20NB、Vanilla 4NBは、LinkSeLFiEと比較して
+劇的に少ない総バウンス数（量子資源）でアルゴリズムが終了している。
 
-- 忠実度推定精度: Vanilla 20NBがLinkSeLFiEと同等の高い忠実度推定精度
-  （相対誤差 1% 未満）を実現できている。
+\item 忠実度推定精度: Vanilla 20NBがLinkSeLFiEと同等の高い忠実度推定精度
+（相対誤差 1\% 未満）を実現できている。
+\end{itemize}
 
 つまり、LinkSeLFiEが解決しようとした「最小限の量子資源で、最も高忠実度
 なリンクを特定し、その忠実度を正確に推定する」という目的は、LinkSeLFiE
@@ -73,7 +65,8 @@ LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に�
 配分を必要としないことを明らかにしている。したがって、LinkSeLFiEが単純
 なベースライン手法を資源効率性で上回るという優位性は示せていないと考え
 る。
-*** E（Example：具体例）
+\subsection{E（Example：具体例）}
+\label{sec:org49d9aee}
 LinkSeLFiEが目指す「最小限の量子資源で、最も高
 忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
 LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって
@@ -88,7 +81,9 @@ LinkSeLFiEではその繰り返し回数Tが200に設定されていた。
 
 実験設定や各パラメータ設定はLinkSeLFiEと同じ実験設定で行なった。
 
-- 実験の設定
+\begin{itemize}
+\item 実験の設定
+\end{itemize}
 我々は 2 つのノード（ソース S とデスティネーション D）から成る単純なネッ
 トワークを構築し、その間に L 本のエンタングルメントリンクを配置する。
 各リンクは4種類の標準的な量子ノイズモデルに従う
@@ -104,17 +99,16 @@ Bit-Flip Noise（ビット反転ノイズ）
 
 
 
-#+BEGIN_EXPORT latex
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_AmplitudeDamping.eps}
+\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_AmplitudeDamping}
 \caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_BitFlip.eps}
+\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_BitFlip}
 \caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
@@ -122,16 +116,15 @@ Bit-Flip Noise（ビット反転ノイズ）
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Dephase.eps}
+\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Dephase}
 \caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Depolar.eps}
+\includegraphics[width=\textwidth]{figure/plot_cost_vs_path_num_Depolar}
 \caption{\small Depolarizing}\end{minipage}
 \end{figure}
-#+END_EXPORT
-図1,2,3,4 cost vs path_num
+図1,2,3,4 cost vs path\_num
 
 まず、これらのリンク選択アルゴリズムにおける量子リソース消費を評価する。
 忠実度ギャップ Δ = 0.05 を固定し、複数の量子エンタングルメントリンクで
@@ -145,17 +138,16 @@ Bit-Flip Noise（ビット反転ノイズ）
 でLinkSeLFiEの半分以下、Vanilla 4NBは1/10ほどである。
 
 
-#+BEGIN_EXPORT latex
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_AmplitudeDamping.eps}
+\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_AmplitudeDamping}
 \caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_BitFlip.eps}
+\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_BitFlip}
 \caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
@@ -163,16 +155,15 @@ Bit-Flip Noise（ビット反転ノイズ）
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Dephase.eps}
+\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Dephase}
 \caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Depolar.eps}
+\includegraphics[width=\textwidth]{figure/plot_accuracy_vs_path_num_Depolar}
 \caption{\small Depolarizing}\end{minipage}
 \end{figure}
-#+END_EXPORT
-図5,6,7,8 accuracy vs path_num
+図5,6,7,8 accuracy vs path\_num
 
 次に、リンク選択アルゴリズムにおける最適リンク判別率を評価する。忠実度
 ギャップ Δ = 0.05 を固定し、複数の量子エンタングルメントリンクで接続さ
@@ -183,17 +174,16 @@ Bit-Flip Noise（ビット反転ノイズ）
 アルゴリズムが真の忠実度が最大のリンクを正しく選択できた確率のことである。
 結果は10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBでは
 LinkSeLFiEと同等の判別率があることがわかる。
-#+BEGIN_EXPORT latex
 \begin{figure}[h]
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_AmplitudeDamping.eps}
+\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_AmplitudeDamping}
 \caption{\small Amplitude Damping}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_BitFlip.eps}
+\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_BitFlip}
 \caption{\small Bit-Flip}\end{minipage}
 \end{figure}
 
@@ -201,21 +191,19 @@ LinkSeLFiEと同等の判別率があることがわかる。
 \centering
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Dephase.eps}
+\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Dephase}
 \caption{\small Dephasing}\end{minipage}
 \hfill
 \begin{minipage}[b]{0.45\columnwidth}
 \centering
-\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Depolar.eps}
+\includegraphics[width=\textwidth]{figure/plot_error_vs_path_num_Depolar}
 \caption{\small Depolarizing}\end{minipage}
 \end{figure}
-
-#+END_EXPORT
 図9,10,11,12
 Fidelity Estimation Accuracy
 次に、各アルゴリズムの忠実度推定精度を評価する。
-各リンクの平均忠実度はそれぞれ $\mu_1$ = 0.95 および $\mu_i$ = 0.85（i = 2, 3, …, L）と設定する。
-各リンク i の忠実度 $f_i$ は、平均 $\mu_i$、分散 1/4 のガウス分布からサンプリングされる。
+各リンクの平均忠実度はそれぞれ \(\mu_1\) = 0.95 および \(\mu_i\) = 0.85（i = 2, 3, …, L）と設定する。
+各リンク i の忠実度 \(f_i\) は、平均 \(\mu_i\)、分散 1/4 のガウス分布からサンプリングされる。
 その後、各アルゴリズムをこのネットワークに適用し、
 各アルゴリズムが選択した最適リンクの推定忠実度を得る。
 アルゴリズムが出力した推定忠実度を、真の忠実度と比較することで、
@@ -223,15 +211,16 @@ Fidelity Estimation Accuracy
 リンク数 L を 2 から 20 まで変化させ、
 各設定について 10 回の試行を行い、その平均値を結果として出力する。
 
-LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1% 未満であり、他のアルゴ
+LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1\% 未満であり、他のアルゴ
 リズムと比較して有意な差は見られない。"と言及されていた。Vanilla 20NB
-の相対誤差も1% 未満であり、LinkSeLFiEと比較して有意な差は見られないと
+の相対誤差も1\% 未満であり、LinkSeLFiEと比較して有意な差は見られないと
 言える。
 
 
 
 
-*** P（Point：結論の繰り返し）
+\subsection{P（Point：結論の繰り返し）}
+\label{sec:org7604d3a}
 結果としてVanilla 20NBはLinkSeLFiEよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
 だけならばVanilla 4NBでもある程度判別可能であるということが分かった。
@@ -240,9 +229,13 @@ LinkSeLFiEが均等配分手法を上回ることができていないことを�
 えにLinkSeLFiEはアルゴリズムの資源効率性における優位性を示せていない。
 
 
-** 補足
-*** LinkSeLFiEの目的
-- 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
+\section{補足}
+\label{sec:orga88f849}
+\subsection{LinkSeLFiEの目的}
+\label{sec:org2669e1e}
+\begin{itemize}
+\item 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
+\end{itemize}
 
 "The main objective of this work is to efficiently estimate the fidelity of established entangled links."
 
@@ -255,17 +248,19 @@ benchmarking, with the objective of identifying the optimal
 high-fidelity link from a link set with high confidence and consuming
 as few resources as possible."
 
-*** 相対誤差について言及している箇所
+\subsection{相対誤差について言及している箇所}
+\label{sec:orgd953f15}
 As expected, LinkSeLFiE can not only identify the optimal link but
 also evaluate its fidelity accurately. The relative error of
-LinkSeLFiE is less than 1%, which has no significant difference
+LinkSeLFiE is less than 1\%, which has no significant difference
 compared with other algorithms.
 
-誤差(relative error)1%未満で他の手法と同程度としており、LinkSeLFiE
+誤差(relative error)1\%未満で他の手法と同程度としており、LinkSeLFiE
 レベルの誤差(0.003)の必要性は書かれていない。
 
 
-*** 実験で実証した内容
+\subsection{実験で実証した内容}
+\label{sec:orgcb31af0}
 Moreover, we perform extensive simulations under
 various scenarios to corroborate that L INK S EL F I E outperforms
 other existing methods in terms of both identifying the optimal
@@ -274,7 +269,8 @@ link and reducing quantum resource consumption.
 最適リンクの特定と量子資源消費の削減という両方の観点で、既存の他の手法
 を上回ることを実証していると言っている
 
-*** VanillaNBの繰り返し回数Tについて言及している箇所
+\subsection{VanillaNBの繰り返し回数Tについて言及している箇所}
+\label{sec:orgf5c7b3e}
 “We compare our algorithm with two baselines, (1) the vanilla network
 benchmarking algorithm (VanillaNB) and (2) the successive elimination
 algorithm [27] (SuccElimNB).  VanillaNB uniformly benchmarks all the
@@ -286,7 +282,8 @@ invokes the network benchmarking subroutine with repetition times T =
 
 
 
-*** ネットワークベンチマーキング(NB)について
+\subsection{ネットワークベンチマーキング(NB)について}
+\label{sec:org1f1aa88}
 NBは、量子ネットワークのパフォーマンスを測定するための基礎的な手法であ
 る。特に、ネットワークのリンク品質を評価するために、量子状態の「バウン
 ス」実験を繰り返すプロトコルが利用される。ネットワークベンチマーキング
@@ -295,11 +292,13 @@ S から受信ノード D に何度も往復（bounce）させることにより
 「生存確率（survival probability）」を測定する。
 
 実際、1 つのベンチマーク実験は、次のパラメータによって特徴づけられる：
-- M：バウンス回数の集合（例：{1, 2, 3, 4}）
-- T：各バウンス回数に対する繰り返し回数（repetition times）
+\begin{itemize}
+\item M：バウンス回数の集合（例：\{1, 2, 3, 4\}）
+\item T：各バウンス回数に対する繰り返し回数（repetition times）
+\end{itemize}
 ベンチマークの過程で、各 m∈M に対して T 回の測定を行い、対応する生存確
 率 bm を記録する。
-これらの観測値 {b_m} は、理論的に次のような指数減衰モデルに従う：
+これらの観測値 \{b\_m\} は、理論的に次のような指数減衰モデルに従う：
 
 
 \[
@@ -307,11 +306,13 @@ b_m = A p^{2m},
 \]
 ここで，
 
-- A：測定および状態準備エラーの影響を表す定数，
-- p：量子チャネルの脱分極パラメータ（depolarizing parameter）
+\begin{itemize}
+\item A：測定および状態準備エラーの影響を表す定数，
+\item p：量子チャネルの脱分極パラメータ（depolarizing parameter）
+\end{itemize}
 
 
-このとき，pの推定値 $\hat{p}$ から，
+このとき，pの推定値 \(\hat{p}\) から，
 リンクの平均忠実度（average fidelity）は次式で求められる：
 \[
 \hat{F} = \frac{1 + \hat{p}}{2}.
@@ -324,15 +325,19 @@ LinkSeLFiE）でこの NB をサブルーチンとして呼び出して動作す
 Network benchmarking (NB) is a fundamental procedure to evaluate the link quality in a quantum network.
 
 
-*** リンク数が大幅に増えるとVanilla 4NB,Vanilla 20NBはLinkSeLFiEよりも総バウンス数が増えるのか
-- Vanilla20NB Yes
-- Vanilla4NB No
+\subsection{リンク数が大幅に増えるとVanilla 4NB,Vanilla 20NBはLinkSeLFiEよりも総バウンス数が増えるのか}
+\label{sec:org8ed6f1c}
+\begin{itemize}
+\item Vanilla20NB Yes
+\item Vanilla4NB No
+\end{itemize}
 
 LinkSeLFiEは有望なリンクとそうでないリンクを判別するために最初に均等配
 分を行なう。その際に4NBを全リンクに渡しているのでVanilla4NBよりも少な
 い総バウンスになることはない。
 
-** なぜこの話をするのか
+\section{なぜこの話をするのか}
+\label{sec:orgc41b275}
 ストーリー案に直結しているから。
 ストーリー案の骨格
 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
@@ -345,27 +350,27 @@ LinkSeLFiEは有望なリンクとそうでないリンクを判別するため�
 なおさら均等配分で良い。
 
 
-** 今後の方針
+\section{今後の方針}
+\label{sec:orgc96bd57}
 ストーリー案を修正するのか？
 どのように？
-- 均等配分ではうまくいかない状況(バウンスをたくさん使ってしまう状況)を考えなければいけない
-  - 測定精度が求められる状況  
-- マルチホップにすると測定精度が要求される
-  - A - B - C - Dという経路でA - D間の測定誤差を1%以内にするにはA - B
-    間、B - C間、C - D間での測定誤差は1%よりも少なくしないといけない。
-  - 忠実度は通信の成功率に依存しているのでA - D間で通信が成功するには、
-    A-B,B-C,C-D間全てで通信が成功しなければいけない。
-  - QBGPという手法が既にある
-    - QBGPでは通信が確立された後のエンドツーエンドの量子通信が背景。つ
-      まり宛先が複数ありそれぞれに通信需要があるという拡張は自然ではな
-      いかもしれない
-
-
-
-
-
-
-
-
-# mode: org
-# End:
+\begin{itemize}
+\item 均等配分ではうまくいかない状況(バウンスをたくさん使ってしまう状況)を考えなければいけない
+\begin{itemize}
+\item 測定精度が求められる状況
+\end{itemize}
+\item マルチホップにすると測定精度が要求される
+\begin{itemize}
+\item A - B - C - Dという経路でA - D間の測定誤差を1\%以内にするにはA - B
+間、B - C間、C - D間での測定誤差は1\%よりも少なくしないといけない。
+\item 忠実度は通信の成功率に依存しているのでA - D間で通信が成功するには、
+A-B,B-C,C-D間全てで通信が成功しなければいけない。
+\item QBGPという手法が既にある
+\begin{itemize}
+\item QBGPでは通信が確立された後のエンドツーエンドの量子通信が背景。つ
+まり宛先が複数ありそれぞれに通信需要があるという拡張は自然ではな
+いかもしれない
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{document}
