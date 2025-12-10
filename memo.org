@@ -1,0 +1,438 @@
+# -*- mode: org; coding: utf-8; org-export-backends: (latex) -*-
+#
+# IEEE Conference Paper org-mode テンプレート
+#
+# このファイルを編集して、C-c C-e l l で memo.tex にエクスポートできます
+# エクスポート後、以下のコマンドでPDFを生成します：
+#   platex memo.tex
+#   pbibtex memo
+#   platex memo.tex
+#   platex memo.tex
+#   dvipdfmx memo.dvi
+#
+
+#+LATEX_CLASS: IEEEtran
+#+LATEX_CLASS_OPTIONS: [conference]
+#+LATEX_COMPILER: platex
+#+BEAMER_THEME:
+#+BIND: org-latex-pdf-process ("platex -interaction=nonstopmode -output-directory=%o %f" "pbibtex %b" "platex -interaction=nonstopmode -output-directory=%o %f" "platex -interaction=nonstopmode -output-directory=%o %f" "dvipdfmx %b.dvi")
+#+LATEX_HEADER: \IEEEoverridecommandlockouts
+#+LATEX_HEADER: \usepackage{cite}
+#+LATEX_HEADER: \usepackage{amsmath,amssymb,amsfonts}
+#+LATEX_HEADER: \usepackage{algorithmic}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \DeclareGraphicsExtensions{.eps,.pdf,.png}
+#+LATEX_HEADER: \usepackage{textcomp}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usepackage{hyperref}
+
+#+TITLE:
+#+OPTIONS: toc:nil author:nil date:nil tex:t timestamp:nil
+
+#+BEGIN_EXPORT latex
+\title{Research Meeting}
+
+\author{\IEEEauthorblockN{Shun Yamachika}
+\IEEEauthorblockA{\textit{Department of Informatics, School of Science and Technology} \\
+\textit{Kwansei Gakuin University}\\
+Sanda, Hyogo, Japan \\
+shun@lsnl.jp}}
+
+\maketitle
+#+END_EXPORT
+
+
+
+
+* 今週話したいこと
+- ストーリー案トピックセンテンス
+- 評価方法(効率的な資源配分をどう示すか)
+  
+
+** 同数の bounce を使用した時の estimated error を比較する
+サンプルサイズ5倍に増やして実験中。
+結果はまだ取れていない。
+
+** ストーリー案トピックセンテンス
+title バウンス長ごとの非均一測定回数配分を許容するネットワークベンチマーキング拡張に関する一提案
+
+*** 背景1: 量子ネットワークでは、効率的な忠実度推定をするプロトコルが考案されている
+- 量子ネットワークでは、リンクを測定し、忠実度の高いリンクを判別する際
+  に、すべてのリンクに一様に測定を行うことはリソースの浪費となるため、
+  有望なリンクに効率的にリソースを集中させる、リンク選択アルゴリズム、
+  経路選択プロトコルが考案されている。
+
+
+*** 背景2: 既存プロトコルは、NBを採用している
+- LinkSeLFiEやQBGP等の既存プロトコルは、ネットワークトポロジーの知識な
+  しにリンクの平均忠実度を推定できるという特長から、Network
+  Benchmarking（NB）をサブルーチンとして採用している。
+
+
+*** 背景3: NBは複数のバウンス長に対して均一な測定回数で忠実度を推定する
+- NBは、あらかじめ定めた複数のバウンス長 m ∈ M それぞれに対して同一の
+  測定回数を割り当て、得られた生存確率を指数モデルにフィッティングする
+  ことでリンクの忠実度を推定する手法である。
+
+*** 背景4: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する
+- NBにおいて、情報利得を最大化する最適なバウンス長が定義でき、これを選
+  択することで同一コストに対する不確実性の削減量を最大化できる。
+
+*** 動機: NBは均一配分の制約により効率的にリソース配分することができない
+- しかし、NBは全てのバウンス長に対して均一な測定回数を割り当てることを
+  前提としており、情報利得の高いバウンス長に測定回数を集中させるような
+  効率的なリソース配分ができない。
+
+
+*** 目的: NBを非均一配分可能なように拡張する
+- 本研究の目的は、NBを非均一配分可能なように拡張し、シミュレーションに
+  より効率的な資源配分が可能になることを示す。
+
+*** 手法
+検討中。
+現在は重みつき最小二乗法で実装中
+
+*** 研究の問い
+- 非均一測定回数配分を許容することでリソース(総バウンス数)はどの程度削
+  減できるのか？
+- どのような配分戦略（例：情報利得に基づく配分）が最も効率的か？
+
+
+*** 主要な貢献
+- バウンス長ごとに異なる測定回数を許容するNBの拡張手法の提案
+- シミュレーションによる提案手法のリソース削減効果の定量的評価
+
+
+** 評価方法(効率的な資源配分をどう示すか)
+- 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるかで比較する
+(総バウンス数 = sum m∈M mのバウンス値 x サンプル数)
+
+
+*** originalのNBの実験設定と結果
+- バウンス数の範囲: 2〜20 (19点)
+m∈M = [2,3,4,...18,19,20]
+でそれぞれのmに対して40回のサンプル数を割りあてている。
+originalのNBの総バウンス数は 8,360回  \\
+
+結果 \\
+Network link fidelity = 0.899 ± 0.004 \\
+相対不確かさ: 0.004/0.899 ≈ 0.44% \\
+
+
+*** どのように比較する予定か
+- 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるか
+= どれだけ情報利得を獲得できたか
+
+
+
+
+
+** 同数の bounce を使用した時の estimated error を比較する
+
+#+BEGIN_EXPORT latex
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_AmplitudeDamping.eps}
+\caption{Amplitude Damping - Significance Visualization}
+\label{fig:sig_amplitude}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_BitFlip.eps}
+\caption{Bit-Flip - Significance Visualization}
+\label{fig:sig_bitflip}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_Dephase.eps}
+\caption{Dephasing - Significance Visualization}
+\label{fig:sig_dephase}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_Depolar.eps}
+\caption{Depolarizing - Significance Visualization}
+\label{fig:sig_depolar}
+\end{figure}
+
+
+
+#+END_EXPORT
+
+手法によってcostごとに存在するサンプル数が違うため、等分散性を仮定しな
+いウェルチ検定(Welch's t-test)によって統計検定を行なった。
+pathの本数は4本。刻み幅は500。サンプルサイズが十分にある部分だけplotしている。
+今回の実験結果では以下のような有意差があった。
+
+
+ 1. Dephase (cost=1000): LinkSelFiE vs Vanilla NB
+    - p値: 0.0106
+    - 平均差: 0.00323 
+    - t統計量: 2.67
+ 2. Depolar (cost=1500): LinkSelFiE vs Succ. Elim. NB
+    - p値: 0.0329
+    - 平均差: 0.00035 
+    - t統計量: 2.19
+
+linkselfieが統計的に有意に優れている箇所は検出されなかった。
+pathの本数が4本では無い場合、サンプル数をさらに増やし、刻み幅をより小
+さくしたロバストな検証を追加で行なう予定。
+
+
+** 今回の検証で分かったこと
+linkselfieの実験設定では、
+1リンクあたり40バウンス投資すると、
+高確率で忠実度が最も高いリンクを発見することが可能。
+
+同数バウンス時の推定誤差において、linkselfieが統計的に優れている点は現時点では無い。
+(今後追加検証をする予定)
+
+** この結果から分かること
+linkselfieの実験設定で、
+最適リンク判別をするだけならば、
+1リンクあたり40バウンス投資する、
+素朴な均等配分アルゴリズムで十分。
+(最適リンク判別をするだけならば、linkselfieのような高級なアルゴリズムを使う必要がない)
+
+
+** ここから考えたこと
+1リンクあたり40バウンス投資する、
+素朴な均等配分アルゴリズムよりも少ないバウンスで、
+最適リンク判別をするにはどうすればいいのか。
+
+
+** 考えた結果
+忠実度推定のためにサブルーチンとしてアルゴリズム内部で使用されている
+ネットワークベンチマーキング（NB）プロトコルを改善することで解決できる
+のではないか
+
+** 詳しい説明
+linkselfieでは1回のNBで10バウンス使用する設定。つまり10バウンス単位で
+の測定をしている。
+
+手法1(現状) \\
+#+LATEX: \noindent
+link1 4NB(40バウンス) → O \\
+link2 4NB(40バウンス) → X \\
+link3 4NB(40バウンス) → X \\
+link4 4NB(40バウンス) → X
+
+これである程度判別可能。
+工夫すると以下のようにできるかもしれない
+
+手法2 \\
+#+LATEX: \noindent
+link1 2NB → +1NB → 1NB → O \\
+link2 2NB → +1NB → 1NB → X \\
+link3 2NB → +1NB → X \\
+link4 2NB →  X
+
+これでもいいが、
+4NBを振りわけるだけでは面白くない。
+新規性がない。
+そこで以下のような方式を考えた
+
+手法3 \\
+#+LATEX: \noindent
+link1 2NB → +0.5NB → +0.5NB → 0.3NB → O \\
+link2 2NB → +0.5NB → +0.5NB → 0.3NB → X \\
+link3 2NB → +0.5NB → +0.5NB → X \\
+link4 2NB → +0.5NB → X
+
+1NBあたりに使用するバウンス数をフェーズごとに変更できるようにするため
+に、非均一測定回数配分を許容するネットワークベンチマーキング拡張が必要。
+特筆すべき点として、柔軟に資源配分できるだけはなく、1バウンスから得ら
+れる情報量を増やすことが可能になることが挙げられる。
+手法2 \\
+link3 2NB → +1NB → X  合計30バウンス
+
+手法3 \\
+link3 2NB → +0.5NB → +0.5NB → X  合計30バウンス
+
+この例だとlink3に対して使われた総バウンスは
+手法2と3で同じである。
+普通に考えると手法2と3のlink3に対する忠実度の推定精度は同等であるはず。
+しかし、提案手法が実現できると1バウンスから得られる情報量を増やすこと
+が可能になるため、手法3の推定精度が手法2の推定精度を上回るというような
+ことが起こると考えている。
+
+1NBから得られる情報量を増やすことが可能になっている点に新規性がある。NBの回
+数だけでなく、情報利得に基づいた適切なバウンス長m∈Mも同時に制御するこ
+とで大幅なコスト削減ができる可能性がある
+
+
+
+** ストーリー案トピックセンテンス
+*** 背景1: 量子ネットワークでは、オンライン学習による忠実度推定が必要である
+量子ネットワークでは、
+ノイズにより品質が未知である多数の量子リンクの中から、
+忠実度の高いリンクを高精度で判定する際に
+すべて一様に測定を行うことはリソースの浪費となるため、
+測定から得られるフィードバックに基づき、逐次的意思決定を行うことで、
+効率的に有望なリンクにリソースを集中させる、
+オンライン学習に基づくリンク品質推定が必要である。
+
+
+*** 背景2: オンライン推定を行う既存プロトコルは、NBを採用している
+LinkSeLFiEやQBGP等の既存プロトコルは、
+SPAMエラーとリンク品質を指数モデルへのフィッティングにより分離推定でき、
+トポロジーの知識を必要としない、
+Network Benchmarking (NB) をサブルーチンとして採用している。
+
+
+*** 背景3: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する
+NBには、
+バウンス長 m に対して2m個のエンタングルメントペアを消費することから、
+1エンタングルメントあたりのFisher情報量として定義される情報利得 I(pi, m) = 16Ai²mp^(4m-2)i を最大化する、
+最適なバウンス長 mi* = arg max{m∈M} I(pi, m) が存在し、
+これを選択することで同一コストに対する不確実性の削減量を最大化できる。
+
+*** 背景4: NBの均一配分するという制約がリンク選択、経路選択アルゴリズムと統合する際に障壁となっている
+NBは全てのバウンス長に対して均一な測定回数を割り当てることを前
+提としており、LinkSeLFiEではその制約が推定精度への寄与度が低いバウンス
+長にも無駄なリソースを消費する原因となっている。
+一方、QBGPでは情報利得（Fisher情報量）が最大となる特定の m に測定を集中させる戦略をとるが、
+均一配分の制約により、bmを蓄積し、回帰することができないため、
+フィッティング係数 A は初期フェーズの推定値に固定され、
+ロバストにAを求めれない可能性がある。
+
+*** 動機: 非均一配分を許容するNBの拡張が必要である
+これらの問題を解決するために、
+情報利得の高いバウンス長に基づき探索効率を最大化でき、
+フィッティング係数 Aをロバストに回帰できる、
+非均一配分を許容するNBの拡張が必要である
+
+
+*** 目的: 本研究の目的は、NBを非均一配分可能なように拡張することである
+
+
+*** 手法
+
+
+
+
+** 今後の予定
+linkselfieが行なった実験に誤解を生ませるような内容があることを主張する
+論文は保険として進めながら、今回提案したストーリー案の研究を並行して行
+なう予定。
+  
+** E（Example：具体例）
+LinkSeLFiEが目指す「最小限の量子資源で、最も高
+忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
+LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって
+も十分に達成可能であることをシミュレーションによって示す。
+
+VanillaNB は、各リンクを同じ回数だけベンチマークする単純な手法であり、
+LinkSeLFiEではその繰り返し回数Tが200に設定されていた。
+
+繰り返し回数の少ない均等配分戦略アルゴリズムの有効性を評価するために、
+今回の実験ではT=4とT=20のVanilla 4NB、Vanilla 20NBを実装し、LinkSeLFiE
+とこれらの均等配分戦略を比較する。
+
+実験設定や各パラメータ設定はLinkSeLFiEと同じ実験設定で行なった。
+
+- 実験の設定
+我々は 2 つのノード（ソース S とデスティネーション D）から成る単純なネッ
+トワークを構築し、その間に L 本のエンタングルメントリンクを配置する。
+各リンクは4種類の標準的な量子ノイズモデルに従う
+Depolarizing Noise（脱分極ノイズ）
+Dephasing Noise（位相緩和ノイズ）
+Amplitude Damping Noise（振幅減衰ノイズ）
+Bit-Flip Noise（ビット反転ノイズ）
+これらのノイズモデルのパラメータは、同一の忠実度値に対応するように変換
+されている。
+
+
+
+
+
+
+#+BEGIN_EXPORT latex
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_cost_vs_path_num_AmplitudeDamping.eps}
+\caption{Amplitude Damping - Cost vs Path Number}
+\label{fig:cost_amplitude}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_cost_vs_path_num_BitFlip.eps}
+\caption{Bit-Flip - Cost vs Path Number}
+\label{fig:cost_bitflip}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_cost_vs_path_num_Dephase.eps}
+\caption{Dephasing - Cost vs Path Number}
+\label{fig:cost_dephase}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_cost_vs_path_num_Depolar.eps}
+\caption{Depolarizing - Cost vs Path Number}
+\label{fig:cost_depolar}
+\end{figure}
+#+END_EXPORT
+
+まず、これらのリンク選択アルゴリズムにおける量子リソース消費を評価する。
+忠実度ギャップ Δ = 0.05 を固定し、複数の量子エンタングルメントリンクで
+接続された2ノードの量子ネットワークをシミュレートする。それぞれのリン
+クは、忠実度 1, 1 − Δ, 1 − 2Δ, …, 1 − (L − 1)Δ を持つものとする。その
+後、各リンク選択アルゴリズムをネットワークに適用し、さまざまな L の値
+に対してアルゴリズムが終了する際の量子リソース消費量を測定する。ここで、
+量子リソース消費量の指標として総バウンス数を使用し、結果は 10 回の試行
+の平均をとった。Vanilla 4NB、Vanilla 20NBがLinkSeLFiEよりも少ない資源
+で配分できていることがわかる。バウンス数はL = 7のときにVanilla 20NB
+でLinkSeLFiEの半分以下、Vanilla 4NBは1/10ほどである。
+
+
+#+BEGIN_EXPORT latex
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_accuracy_vs_path_num_AmplitudeDamping.eps}
+\caption{Amplitude Damping - Accuracy vs Path Number}
+\label{fig:acc_amplitude}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_accuracy_vs_path_num_BitFlip.eps}
+\caption{Bit-Flip - Accuracy vs Path Number}
+\label{fig:acc_bitflip}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_accuracy_vs_path_num_Dephase.eps}
+\caption{Dephasing - Accuracy vs Path Number}
+\label{fig:acc_dephase}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/plot_accuracy_vs_path_num_Depolar.eps}
+\caption{Depolarizing - Accuracy vs Path Number}
+\label{fig:acc_depolar}
+\end{figure}
+#+END_EXPORT
+
+次に、リンク選択アルゴリズムにおける最適リンク判別率を評価する。忠実度
+ギャップ Δ = 0.05 を固定し、複数の量子エンタングルメントリンクで接続さ
+れた2ノードの量子ネットワークをシミュレートする。それぞれのリンクは、
+忠実度 1, 1 − Δ, 1 − 2Δ, …, 1 − (L − 1)Δ を持つものとする。その後、各
+リンク選択アルゴリズムをネットワークに適用し、さまざまな L の値に対し
+てアルゴリズムの最適リンク判別率を測定する。ここで最適リンク判別率とは
+アルゴリズムが真の忠実度が最大のリンクを正しく選択できた確率のことである。
+結果は10 回の試行の平均をとった。Vanilla 4NB、Vanilla 20NBでは
+LinkSeLFiEと同等の判別率があることがわかる。
+
+
+# mode: org
+# End:

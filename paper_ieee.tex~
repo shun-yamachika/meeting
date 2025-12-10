@@ -1,16 +1,14 @@
-% Intended LaTeX compiler: lualatex
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\DeclareGraphicsExtensions{.eps,.pdf,.png}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
-\usepackage{luatexja}
-\usepackage{luatexja-fontspec}
 \begin{document}
 
 \title{Research Meeting}
@@ -25,9 +23,9 @@ shun@lsnl.jp}}
 
 
 \section{LinkSeLFiEの実験設定について}
-\label{sec:org136f5e2}
+\label{sec:org8b376ec}
 \subsection{P（Point：結論・要点）}
-\label{sec:org5400950}
+\label{sec:org29df353}
 LinkSeLFiEの論文では、均等配分戦略（VanillaNB）は各リンクに過剰な資源
 配分を要求するという前提で議論されているが、 各リンクごとの資源配分を
 大幅に削減した均等配分戦略（Vanilla 20NB、Vanilla 4NB）がLinkSeLFiEと
@@ -35,7 +33,7 @@ LinkSeLFiEの論文では、均等配分戦略（VanillaNB）は各リンクに�
 ムの資源効率性における優位性を示せていない。
 
 \subsection{R（Reason：理由）}
-\label{sec:orga43fc48}
+\label{sec:org49b5deb}
 LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に、特に理由
 なく過剰な試行回数 T=200（各リンクに2,000バウンス）を設定し、その上で
 より少ない資源で同等以上の性能を目指すという形で優位性を示そうとしてい
@@ -63,7 +61,7 @@ LinkSeLFiEは、ベースラインである均等配分手法（VanillaNB）に�
 なベースライン手法を資源効率性で上回るという優位性は示せていないと考え
 る。
 \subsection{E（Example：具体例）}
-\label{sec:org1db8a5f}
+\label{sec:orgc588b0e}
 LinkSeLFiEが目指す「最小限の量子資源で、最も高
 忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
 LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって
@@ -203,7 +201,7 @@ LinkSeLFiEと同等の判別率があることがわかる。
 \end{figure}
 
 \subsection{Fidelity Estimation Accuracy}
-\label{sec:orgae6db20}
+\label{sec:org0000b24}
 次に、各アルゴリズムの忠実度推定精度を評価する。
 各リンクの平均忠実度はそれぞれ \(\mu_1\) = 0.95 および \(\mu_i\) = 0.85（i = 2, 3, …, L）と設定する。
 各リンク i の忠実度 \(f_i\) は、平均 \(\mu_i\)、分散 1/4 のガウス分布からサンプリングされる。
@@ -223,7 +221,7 @@ LinkSeLFiEの論文では"LinkSeLFiE の相対誤差は 1\% 未満であり、�
 
 
 \subsection{P（Point：結論の繰り返し）}
-\label{sec:orgcec7160}
+\label{sec:org2929232}
 結果としてVanilla 20NBはLinkSeLFiEよりもはるかに少ないリソースで最適リ
 ンクを選択しつつ、同等レベルの忠実度推定精度を達成しており、リンク判別
 だけならばVanilla 4NBでもある程度判別可能であるということが分かった。
@@ -233,9 +231,9 @@ LinkSeLFiEが均等配分手法を上回ることができていないことを�
 
 
 \section{補足}
-\label{sec:orge0a7613}
+\label{sec:org7d6d641}
 \subsection{LinkSeLFiEの目的}
-\label{sec:org659c17f}
+\label{sec:orgf1f29e5}
 \begin{itemize}
 \item 最小限の量子資源で、最も高忠実度なリンクを特定し、その忠実度を正確に推定するアルゴリズムを設計する
 \end{itemize}
@@ -252,7 +250,7 @@ high-fidelity link from a link set with high confidence and consuming
 as few resources as possible."
 
 \subsection{相対誤差について言及している箇所}
-\label{sec:org663630b}
+\label{sec:org754424a}
 As expected, LinkSeLFiE can not only identify the optimal link but
 also evaluate its fidelity accurately. The relative error of
 LinkSeLFiE is less than 1\%, which has no significant difference
@@ -263,7 +261,7 @@ compared with other algorithms.
 
 
 \subsection{実験で実証した内容}
-\label{sec:org18b2901}
+\label{sec:org8034e77}
 Moreover, we perform extensive simulations under
 various scenarios to corroborate that L INK S EL F I E outperforms
 other existing methods in terms of both identifying the optimal
@@ -273,7 +271,7 @@ link and reducing quantum resource consumption.
 を上回ることを実証していると言っている
 
 \subsection{VanillaNBの繰り返し回数Tについて言及している箇所}
-\label{sec:orgc0e97a7}
+\label{sec:orgacce58d}
 "We compare our algorithm with two baselines, (1) the vanilla network
 benchmarking algorithm (VanillaNB) and (2) the successive elimination
 algorithm [27] (SuccElimNB).  VanillaNB uniformly benchmarks all the
@@ -286,7 +284,7 @@ invokes the network benchmarking subroutine with repetition times T =
 
 
 \subsection{ネットワークベンチマーキング(NB)について}
-\label{sec:org0abeec9}
+\label{sec:orgf4ad935}
 NBは、量子ネットワークのパフォーマンスを測定するための基礎的な手法であ
 る。特に、ネットワークのリンク品質を評価するために、量子状態の「バウン
 ス」実験を繰り返すプロトコルが利用される。ネットワークベンチマーキング
@@ -329,7 +327,7 @@ Network benchmarking (NB) is a fundamental procedure to evaluate the link qualit
 
 
 \subsection{リンク数が大幅に増えるとVanilla 4NB,Vanilla 20NBはLinkSeLFiEよりも総バウンス数が増えるのか}
-\label{sec:org031f4d4}
+\label{sec:orgc515dd5}
 \begin{itemize}
 \item Vanilla20NB Yes
 \item Vanilla4NB No
@@ -340,7 +338,7 @@ LinkSeLFiEは有望なリンクとそうでないリンクを判別するため�
 い総バウンスになることはない。
 
 \section{なぜこの話をするのか}
-\label{sec:org372d2e2}
+\label{sec:org95b3760}
 ストーリー案に直結しているから。
 ストーリー案の骨格
 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
@@ -354,7 +352,7 @@ LinkSeLFiEは有望なリンクとそうでないリンクを判別するため�
 
 
 \section{今後の方針}
-\label{sec:org8c69e39}
+\label{sec:org5bad211}
 ストーリー案を修正するのか？
 どのように？
 \begin{itemize}
