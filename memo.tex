@@ -21,9 +21,170 @@ shun@lsnl.jp}}
 
 \maketitle
 
+\section{今週話したいこと}
+\label{sec:org803e44a}
+12/8 にいたただいた"shun のストーリー案を Gemini にリライトしてもらう
+サンプルです。"に含まれていたコメントへの回答。
+
+
+\subsection{タイトル}
+\label{sec:orgaf919b0}
+量子ネットワークリンク品質推定における測定リソースの最適化：
+フィッシャー情報量に基づく非均一サンプリング手法
+
+\subsection{背景}
+\label{sec:orge6c76f2}
+量子ネットワークにおいて、通信経路の品質（忠実度）を正確に把握する
+ことは、最適なルーティングを行うための基盤技術である。既存のリンク品質
+推定プロトコル「Network Benchmarking (NB)」は、リンクに対して試験的な
+信号を往復させる「バウンス」を行い、その生存確率からパラメータを推定す
+る。これは、一般的なネットワーク計測におけるアクティブ計測（Ping 等に
+よる遅延・ロス率測定）に相当する重要なプロセスである。
+
+\subsection{動機}
+\label{sec:org71894f0}
+従来の NB は、全てのバウンス長（試行回数・距離）に対して、一律に同
+じ回数のサンプリング（測定）を行っていた。しかし統計学的な観点（フィッ
+シャー情報量）からは、推定精度への寄与度はサンプリング点ごとに異なる。
+均一配分は、情報量の少ないデータ点にもリソースを浪費しており、限られた
+測定コスト（総バウンス数）に対して推定精度が最適化されていないという、
+リソース配分上の課題があった。
+
+\subsubsection{コメント}
+\label{sec:org4d0ce80}
+\begin{itemize}
+\item Q. 統計的に有意なところにバウンスを割り当てる、というのがそもそもの LinkSelfie のアイデアだったのでは? -ohsaki
+\item A.  linkselfieは複数リンクの中から最適なリンクにバウンスを割り当てる
+もの。今回のストーリーは1本のリンクに対してNBをするときに各バウンス
+長に対して均一にサンプル数を割りあてていたものを非均一に割り当てるよ
+うにすることが目的
+\end{itemize}
+
+
+
+\subsection{目的}
+\label{sec:org4e33df0}
+本研究の目的は、NB の測定アルゴリズムを拡張し、バウンス長ごとに異
+なるサンプル数を割り当て可能にすることである。具体的には、フィッシャー
+情報量を最大化する最適なサンプリング配分戦略を導入する。これにより、測
+定リソースが制限された環境下において、リンク品質の推定誤差（不確かさ）
+を最小化し、従来法よりも高効率かつ高精度なネットワーク計測を実現するこ
+とを目指す。
+
+\subsubsection{コメント}
+\label{sec:org73d624b}
+\begin{itemize}
+\item Q. 高効率化、高精度化がなぜ必要なのか? 工学的に本当に必要なのか? -ohsaki
+\end{itemize}
+
+A. 必要。
+忠実度測定で使われる量子リソース(エンタングルメントペア)と実際の量子ネッ
+トワークを介したサービスでをするために必要なテレポーテーションという技
+術で必要な量子リソース(エンタングルメントペア)は同じもの。
+つまり、
+測定に必要な量子リソースが減るということは
+\begin{itemize}
+\item よりたくさんのテレポーテーションを確立することができるようになる
+\end{itemize}
+それ以外にも
+\begin{itemize}
+\item 1リンクあたりに必要なコストが下がることで、新たな経路を測定できるようになる
+\end{itemize}
+というメリットがある。
+
+\begin{itemize}
+\item 例
+\item 一食 12.7 円のカレーライスを 11.4 円にしてもほぼ実用上は意味がない (最初からタダ同然だから)
+\item 一食 12.7 万円のカレーライスを 11.4 万円にしてもほぼ実用上は意味がない (もともと高すぎて食べられないから)
+\item 一食 1200 円のカレーライスを 600 円にしたなら意味がある (1200 円なら無理でも、600 円なら出せる (人であれば))
+\end{itemize}
+
+-Q. 現在提案されている効率的なアルゴリズム(例 Linkselfie)以上の効率化は必要なのか？
+
+A. 今週調べた情報だけでは分からなかった。
+
+
+\subsection{手法}
+\label{sec:orgd3fce4e}
+提案手法では、各バウンス長への配分数が不均一になることで測定データ
+の分散が変動するため、推定アルゴリズムを従来の最小二乗法から重み付き最
+小二乗法（WLS）へと変更する。その上で、総測定コストを固定した制約条件
+下で、推定パラメータの不確実性を最小化するサンプル数配分を数値的に導出
+する。この拡張された推定ロジックをシミュレータ上に実装し、評価を行う。
+
+\subsection{結果}
+\label{sec:orgcb651f6}
+シミュレーション評価の結果、提案手法は従来法（均一配分）と比較して、
+同一の総測定コストにおいて推定の相対不確かさを有意に低減できることを確
+認した。これは、情報利得の高いデータ点にリソースを集中投下することで、
+測定効率（S/N比のような指標）が向上したことを示唆する。本手法により、
+より少ない測定時間で所望の精度のリンク品質情報を取得可能となることが実
+証された。
+
+
+\section{同数の bounce を使用した時の estimated error を比較する}
+\label{sec:org081fd9c}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_error_comparison_pathnum4.eps}
+\caption{Error Comparison - Path Number 4}
+\label{fig:error_comparison_path4}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\columnwidth]{figure/significance_visualization_error_comparison_pathnum8.eps}
+\caption{Error Comparison - Path Number 8}
+\label{fig:error_comparison_path8}
+\end{figure}
+
+\begin{itemize}
+\item 結果は手法ごとに大きな差は検出されなかった。(AmplitudeDamping)
+\item 上のグラフはerror率 vs 総バウンス数
+\item 下のグラフは最大推定忠実度のリンクに使用したバウンス数 vs 総バウンス数
+\end{itemize}
+
+\subsubsection{現在の真の忠実度の設定}
+\label{sec:org4bc666b}
+\begin{itemize}
+\item 最初のリンク: 平均 0.95、分散 0.1 のガウス分布
+\item それ以外のリンク: 平均 0.85、分散 0.1 のガウス分布
+\item すべての忠実度は 0.8 \textasciitilde{} 1.0 の範囲に制限
+\item 上位2つの忠実度の差が 0.02以上 になるまで再生成
+\end{itemize}
+
+別のノイズモデルや忠実度gapに基づいた実験を追加で行なう予定。特に忠実
+度のgapが少なくなれば判別率は落ちると考えられる
+
+\begin{itemize}
+\item 新たにストーリーで主張できる可能性がある部分
+\end{itemize}
+path\_num = 8のとき、全体コスト(総バウンス)が5000あればリンク判別が可能
+である。
+アルゴリズム終了時点でbestなリンクに最もリソースを割けるのはlinkselfie
+である。しかし、リンク判別だけできれば良いのならあまりコストは使う必要
+性はない。どのアルゴリズムも初期段階で目的は達成されている。
+どのアルゴリズムも初期段階では配分方法にあまり差はない。
+今回のストーリー案は1バウンスあたりの情報利得を高めることが可能になる
+ため、初期段階からリンク判別率に差をつけることが可能になるかもしれない。
+
+
+
+\begin{itemize}
+\item Q. なぜlinkselfieのサンプルが少ないのか
+\end{itemize}
+linkselfieのフェーズ数の少なさによるもの
+linkselfieはリンクを淘汰する判断をする回数が少ない(数フェーズ)ので離散
+的になっている。succelimNBは数百フェーズかけて最適リンクを決定するので
+サンプルが多くなる。()
+
+
+
 
 \section{今週話したいこと}
-\label{sec:org37a3510}
+\label{sec:orgb914987}
 \begin{itemize}
 \item ストーリー案トピックセンテンス
 \item 評価方法(効率的な資源配分をどう示すか)
@@ -31,16 +192,16 @@ shun@lsnl.jp}}
 
 
 \subsection{同数の bounce を使用した時の estimated error を比較する}
-\label{sec:org185cde6}
+\label{sec:org1e1a51c}
 サンプルサイズ5倍に増やして実験中。
 結果はまだ取れていない。
 
 \subsection{ストーリー案トピックセンテンス}
-\label{sec:org855cfa4}
+\label{sec:org63a739b}
 title バウンス長ごとの非均一測定回数配分を許容するネットワークベンチマーキング拡張に関する一提案
 
 \subsubsection{背景1: 量子ネットワークでは、効率的な忠実度推定をするプロトコルが考案されている}
-\label{sec:org2887720}
+\label{sec:org29691b6}
 \begin{itemize}
 \item 量子ネットワークでは、リンクを測定し、忠実度の高いリンクを判別する際
 に、すべてのリンクに一様に測定を行うことはリソースの浪費となるため、
@@ -50,7 +211,7 @@ title バウンス長ごとの非均一測定回数配分を許容するネッ�
 
 
 \subsubsection{背景2: 既存プロトコルは、NBを採用している}
-\label{sec:orgf8271fe}
+\label{sec:org1935d5f}
 \begin{itemize}
 \item LinkSeLFiEやQBGP等の既存プロトコルは、ネットワークトポロジーの知識な
 しにリンクの平均忠実度を推定できるという特長から、Network
@@ -59,7 +220,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection{背景3: NBは複数のバウンス長に対して均一な測定回数で忠実度を推定する}
-\label{sec:orgbec0bd3}
+\label{sec:orga6883ec}
 \begin{itemize}
 \item NBは、あらかじめ定めた複数のバウンス長 m ∈ M それぞれに対して同一の
 測定回数を割り当て、得られた生存確率を指数モデルにフィッティングする
@@ -67,14 +228,14 @@ Benchmarking（NB）をサブルーチンとして採用している。
 \end{itemize}
 
 \subsubsection{背景4: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する}
-\label{sec:org9115236}
+\label{sec:orgaafbebf}
 \begin{itemize}
 \item NBにおいて、情報利得を最大化する最適なバウンス長が定義でき、これを選
 択することで同一コストに対する不確実性の削減量を最大化できる。
 \end{itemize}
 
 \subsubsection{動機: NBは均一配分の制約により効率的にリソース配分することができない}
-\label{sec:org736c768}
+\label{sec:orgcb90ccc}
 \begin{itemize}
 \item しかし、NBは全てのバウンス長に対して均一な測定回数を割り当てることを
 前提としており、情報利得の高いバウンス長に測定回数を集中させるような
@@ -83,19 +244,19 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection{目的: NBを非均一配分可能なように拡張する}
-\label{sec:org2e11794}
+\label{sec:org2671f14}
 \begin{itemize}
 \item 本研究の目的は、NBを非均一配分可能なように拡張し、シミュレーションに
 より効率的な資源配分が可能になることを示す。
 \end{itemize}
 
 \subsubsection{手法}
-\label{sec:org77a68b1}
+\label{sec:org8230a05}
 検討中。
 現在は重みつき最小二乗法で実装中
 
 \subsubsection{研究の問い}
-\label{sec:orgb7aa0a4}
+\label{sec:orga3395a5}
 \begin{itemize}
 \item 非均一測定回数配分を許容することでリソース(総バウンス数)はどの程度削
 減できるのか？
@@ -104,7 +265,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection{主要な貢献}
-\label{sec:orgda72566}
+\label{sec:org29e9338}
 \begin{itemize}
 \item バウンス長ごとに異なる測定回数を許容するNBの拡張手法の提案
 \item シミュレーションによる提案手法のリソース削減効果の定量的評価
@@ -112,7 +273,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsection{評価方法(効率的な資源配分をどう示すか)}
-\label{sec:org8fa31ac}
+\label{sec:org8414dfc}
 \begin{itemize}
 \item 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるかで比較する
 \end{itemize}
@@ -120,7 +281,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection{originalのNBの実験設定と結果}
-\label{sec:org45730d0}
+\label{sec:orgfa0b24f}
 \begin{itemize}
 \item バウンス数の範囲: 2〜20 (19点)
 \end{itemize}
@@ -134,7 +295,7 @@ Network link fidelity = 0.899 ± 0.004 \\
 
 
 \subsubsection{どのように比較する予定か}
-\label{sec:orgd170bed}
+\label{sec:org66fe134}
 \begin{itemize}
 \item 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるか
 \end{itemize}
@@ -145,7 +306,7 @@ Network link fidelity = 0.899 ± 0.004 \\
 
 
 \subsection{同数の bounce を使用した時の estimated error を比較する}
-\label{sec:org922c1fa}
+\label{sec:orgbdca6b7}
 
 \begin{figure}[htbp]
 \centering
@@ -202,7 +363,7 @@ pathの本数が4本では無い場合、サンプル数をさらに増やし、
 
 
 \subsection{今回の検証で分かったこと}
-\label{sec:orge59906b}
+\label{sec:org4bec88d}
 linkselfieの実験設定では、
 1リンクあたり40バウンス投資すると、
 高確率で忠実度が最も高いリンクを発見することが可能。
@@ -211,7 +372,7 @@ linkselfieの実験設定では、
 (今後追加検証をする予定)
 
 \subsection{この結果から分かること}
-\label{sec:org7fb455a}
+\label{sec:org4495cf0}
 linkselfieの実験設定で、
 最適リンク判別をするだけならば、
 1リンクあたり40バウンス投資する、
@@ -220,20 +381,20 @@ linkselfieの実験設定で、
 
 
 \subsection{ここから考えたこと}
-\label{sec:orgbe63f2d}
+\label{sec:org2aa7bf5}
 1リンクあたり40バウンス投資する、
 素朴な均等配分アルゴリズムよりも少ないバウンスで、
 最適リンク判別をするにはどうすればいいのか。
 
 
 \subsection{考えた結果}
-\label{sec:orgc78abfa}
+\label{sec:org55ad824}
 忠実度推定のためにサブルーチンとしてアルゴリズム内部で使用されている
 ネットワークベンチマーキング（NB）プロトコルを改善することで解決できる
 のではないか
 
 \subsection{詳しい説明}
-\label{sec:org2da28b8}
+\label{sec:org1690a7c}
 linkselfieでは1回のNBで10バウンス使用する設定。つまり10バウンス単位で
 の測定をしている。
 
@@ -290,9 +451,9 @@ link3 2NB → +0.5NB → +0.5NB → X  合計30バウンス
 
 
 \subsection{ストーリー案トピックセンテンス}
-\label{sec:org00a7b1a}
+\label{sec:org6b317c9}
 \subsubsection{背景1: 量子ネットワークでは、オンライン学習による忠実度推定が必要である}
-\label{sec:orge89cae6}
+\label{sec:orgf7e3455}
 量子ネットワークでは、
 ノイズにより品質が未知である多数の量子リンクの中から、
 忠実度の高いリンクを高精度で判定する際に
@@ -303,7 +464,7 @@ link3 2NB → +0.5NB → +0.5NB → X  合計30バウンス
 
 
 \subsubsection{背景2: オンライン推定を行う既存プロトコルは、NBを採用している}
-\label{sec:org53c374c}
+\label{sec:org9481bb0}
 LinkSeLFiEやQBGP等の既存プロトコルは、
 SPAMエラーとリンク品質を指数モデルへのフィッティングにより分離推定でき、
 トポロジーの知識を必要としない、
@@ -311,7 +472,7 @@ Network Benchmarking (NB) をサブルーチンとして採用している。
 
 
 \subsubsection{背景3: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する}
-\label{sec:org184147f}
+\label{sec:orgdf745c6}
 NBには、
 バウンス長 m に対して2m個のエンタングルメントペアを消費することから、
 1エンタングルメントあたりのFisher情報量として定義される情報利得 I(pi, m) = 16Ai²mp\^{}(4m-2)i を最大化する、
@@ -319,7 +480,7 @@ NBには、
 これを選択することで同一コストに対する不確実性の削減量を最大化できる。
 
 \subsubsection{背景4: NBの均一配分するという制約がリンク選択、経路選択アルゴリズムと統合する際に障壁となっている}
-\label{sec:orgd8252af}
+\label{sec:org2a1db3d}
 NBは全てのバウンス長に対して均一な測定回数を割り当てることを前
 提としており、LinkSeLFiEではその制約が推定精度への寄与度が低いバウンス
 長にも無駄なリソースを消費する原因となっている。
@@ -329,7 +490,7 @@ NBは全てのバウンス長に対して均一な測定回数を割り当てる
 ロバストにAを求めれない可能性がある。
 
 \subsubsection{動機: 非均一配分を許容するNBの拡張が必要である}
-\label{sec:orge32ba23}
+\label{sec:orga7b01c5}
 これらの問題を解決するために、
 情報利得の高いバウンス長に基づき探索効率を最大化でき、
 フィッティング係数 Aをロバストに回帰できる、
@@ -337,23 +498,23 @@ NBは全てのバウンス長に対して均一な測定回数を割り当てる
 
 
 \subsubsection{目的: 本研究の目的は、NBを非均一配分可能なように拡張することである}
-\label{sec:orgf98e8dd}
+\label{sec:orgd7bd8cf}
 
 
 \subsubsection{手法}
-\label{sec:org58fdc93}
+\label{sec:org0b8b33d}
 
 
 
 
 \subsection{今後の予定}
-\label{sec:org91dbcce}
+\label{sec:orga395b24}
 linkselfieが行なった実験に誤解を生ませるような内容があることを主張する
 論文は保険として進めながら、今回提案したストーリー案の研究を並行して行
 なう予定。
 
 \subsection{E（Example：具体例）}
-\label{sec:org64ad4d7}
+\label{sec:orgb93e8dc}
 LinkSeLFiEが目指す「最小限の量子資源で、最も高
 忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
 LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって
