@@ -40,203 +40,158 @@ shun@lsnl.jp}}
 \maketitle
 #+END_EXPORT
 
-* 問題設定
-
-** ストーリーの骨格
-- 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
-- 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
-- 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
-
-** ストーリーの骨格での質問
-- 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
-とあるが、重要度 x 忠実度ではないのか？
-
-- 各リンクに対する通信需要（demand）を重みとし、需要×忠実度が高いリンクを判定する
-
-- 通信需要に基づく実際の利用率を指標とし、利用率×忠実度が高いリンクを
-  判定する。
-
-抽象的なのは重要度、具体的なのは利用率。
-
-
-** 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
-固定予算下のバウンスで。。。
-
-固定予算下かどうか？
-
-
-
-
+* 問題設定においていくつか変更を行なった箇所と、確認するポイント
 
 ** 現在の問題設定
 ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
-ノードS〜ノードD_n間のリンク集合 L_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
+
+ノードS〜ノードD_n間のリンク集合 L_n ($1 \le n \le N$, N はノードSの隣接ノード数)がそれぞれ入力される。
+
 ノードS〜ノードD_n間の重要度 I_n (0〜1 の値) が入力として与えられる。
+
 総バウンスコスト C が入力として与えられる。
+
 この時、ノードS〜ノードD_n のノードペアの中で、
+
 K 個のノードペア (S, D_s_1), (S, D_s_2), ... (S, D_s_K) における
+
 忠実度が最大のリンクをそれぞれ発見する。
+
 ただし、発見するリンクのノードペア数 K は、
+
 重要度と忠実度の積の総和、つまり
+
 I = \sum_{k = 1}^K I_s_k * F_s_k
+
 が最大となるように定める。
+
 ここで F_n は (S, D_n) 間において忠実度の最大のリンクの忠実度である。
-重要度は忠実度と対等な重みをもたせるために正規化をする。(0~1)
 
 
 
+** Kは静的に決まるものかどうか？(確認点、変更点)
+K の扱い: 「K個選ぶ」のか、それとも「スコアの総和を最大化するために K
+も最適化対象とする（ナップサック問題的アプローチ）」のか、厳密な再確認。
 
 
-
-
-** 問題設定において追加の定義が必要なところ
-
-*** 重要度の分布
-
-重要度は忠実度と対等な重みをもたせるために正規化をする。
-
-
-*** Kは静的に決まるもの？
 重要度 I も忠実度 F も正の値（0<I,F≤1）であるため、積 I×F は常にプラス
 になる。 したがって、「総和を最大にする K」を求めると、常に K=N（全て
 の宛先を選択する）ことが答えになってしまう。
 
 
-静的にきまる → 同時に通信可能な宛先数 K がハードウェア制約として与えら
-れたとき、限られたバウンス予算のもとで、重要度と忠実度の積の総和を最大
-化するK個の宛先選択とリンク判定を同時に行う手法を提案する。
-
-K が入力として与えられる
-
-きいてみる
-
-K の扱い: 「K個選ぶ」のか、それとも「スコアの総和を最大化するために K
-も最適化対象とする（ナップサック問題的アプローチ）」のか、厳密な再確認。
+静的にきまる → K が入力として与えられる。K = 3なら上位3個の宛先を選択
+する。
 
 
-*** 予算をCで固定しない
-固定予算下でリンク除去をする問題と、宛先を複数に拡張し、2層(宛先、リン
-ク)の除去を行なう問題が複合している。
+** 予算をCで固定しない(変更点)
+LINKSELFIEの核心的な貢献は「非線形回帰特有の狭い信頼区間（Lemma 1）」
+を利用して探索効率を上げることにあるため、そのメリットを殺してしまう固
+定予算（Fixed Budget）設定よりも、固定信頼度（Fixed Confidence）設定を
+採用する方が圧倒的に論文としてのストーリーが強固になる。
 
-linkselfieは最適リンクを確率 1−δ 以上で正しく推定する手法。
-予算のことは考えていない。
-
-
-- linkselfie
-Lemma 1的除去は、信頼区間に基づいて除去を判断します。ある腕の推定値の
-上側信頼限界が、最良腕の推定値の下側信頼限界を下回ったときに初めて除去
-します。つまり「統計的に有意に劣っていると判断できるものだけを落とす」
-というルールです。
-
-Lemma 1的除去は固定信頼度設定に対応します。信頼パラメータ δ が先に決まっ
-ており、確率 1−δ 以上で正しく識別することを保証しつつ、必要なサンプル
-数（コスト）を最小化することが目標です。識別が完了するまでアルゴリズム
-は停止せず、コストは問題の難易度に応じて変動します。
+本研究では、既存の単一宛先リンク選択問題（LINKSELFIE）を、宛先重要度を
+考慮した複数宛先選択問題へと拡張する。この際、問題設定として「固定予算
+（Fixed Budget）」ではなく**「固定信頼度（Fixed Confidence）」**を採用
+する。その理由は以下の通りである。
 
 
-- 固定予算
-SR的除去は、各フェーズ終了時に推定値が最低の腕を機械的に除去します。推
-定値の信頼性や他の腕との差の統計的有意性は考慮しません。「現時点で一番
-悪く見えるものを落とす」という単純なルールです。
+- LINKSELFIEの本質（Lemma 1的除去）: LINKSELFIEの優位性は、非線形回帰
+  モデルから導出された「Hoeffding不等式よりも狭い信頼区間（Lemma 1）」
+  にある。この手法は、統計的に有意な差（信頼区間の分離）が確認された時
+  点で除去を行う「適応的な停止規則」を前提としている。
 
-SR的除去は固定予算設定に対応します。総サンプル数（予算） C が先に決
-まっており、その制約下で誤識別確率を最小化することが目標です。予算が尽
-きた時点でアルゴリズムは停止し、その時点での最良推定腕を出力します。
-
-LINKSELFIEはLemma 1的除去を採用しており、その強みは非線形回帰に基づく
-信頼区間がHoeffding不等式より狭いことでした。この強みを活かすには、拡
-張手法も固定信頼度設定を維持すべきです。固定予算設定でSR的除去を採用す
-ると、Lemma 1の信頼区間を使う理論的根拠が失われ、LINKSELFIEとの差別化
-も弱くなります。
-
-
-よって、固定予算 C を入力するのではなく、代わりに信頼パラメータ δ を入
-力するようにするといいかもしれない。
-
-
-確率 1−δ 以上で、宛先選択とリンク特定の両方が正しい。
-つまり、目的関数が確率 1−δ 以上で最大値をとる。
-
-
-Fixed Confidence: 入力は δ。コストは結果（最小化対象）。「正解率は保証するから、なるべく安く済ませて」
-
-Fixed Budget: 入力は C。誤り率は結果（最小化対象）。「予算はこれだけだから、この範囲でベストを尽くして」
-
-
-
+- 固定予算の弊害（SR的除去）: 固定予算設定で用いられる逐次除去
+  （Successive Rejects）は、予算消化のために「現時点で最下位の候補」を
+  強制的に除去する。これ導入すると、統計的有意性を無視することになり、
+  LINKSELFIE最大の武器であるLemma 1の信頼区間を利用する理論的根拠が失
+  われる。
 
 
 * new問題設定(箇条書き形式)
+#+BEGIN_EXPORT latex
 
-** 入力 (Inputs)
-- ネットワーク構成: ソースノード $S$ と、その近傍に位置する $N$ 個の宛先ノード集合 $\mathcal{D} = \{D_1, D_2, \dots, D_N\}$
-- リンク集合: 各ノードペア $(S, D_n)$ 間を結ぶ、候補となる量子エンタングルメントリンクの集合 $\mathcal{L}_n = \{l_{n,1}, l_{n,2}, \dots, l_{n, M_n}\}$
-- 重要度: 各宛先 $D_n$ に対する通信の優先度を表す重み $I_n \in (0, 1]$ (既知の定数)
-- 通信制約: 同時に確立すべき通信パスの上限数 $K$ ($1 \le K < N$)
-- 信頼度パラメータ: 許容される誤識別確率の上限 $\delta \in (0, 1)$
+\section{Problem Definition}
 
-** 未知のパラメータ (Unknown Parameters):
-- リンク忠実度: 各リンク $l \in \mathcal{L}_n$ の真の平均忠実度 $F_{n,l} \in [0.5, 1.0]$
-これらは未知であり、ネットワークベンチマーキング(NB)によってのみ推定可能
+本問題を、ネットワークベンチマーキング（NB）の枠組みに基づき、以下の入力、出力、および最適化目標を持つ形式として定義する。
 
-** 目的 
-以下の目的関数 $J(\mathcal{S}_{\mathrm{out}},
-\mathcal{L}_{\mathrm{out}})$ を最大化するような、サイズ $K$ の宛先部分
-集合 $\mathcal{S}_{\mathrm{out}} \subset \mathcal{D}$ および、各選抜宛
-先における最良リンクの集合 $\mathcal{L}_{\mathrm{out}} = \{l_n^* \mid D_n \in \mathcal{S}_{\mathrm{out}}\}$ を特定する。
+\begin{itemize}
+    \item \textbf{入力 (Input):}
+    \begin{itemize}
+        \item ネットワーク構成: ソースノード $S$ および $N$ 個の宛先ノード集合 $\mathcal{D} = \{D_1, \dots, D_N\}$
+        \item 候補リンク集合: 各ペア $(S, D_n)$ 間の物理リンク集合 $\mathcal{L}_n = \{l_{n,1}, \dots, l_{n, M_n}\}$
+        \item \textbf{バウンス番号セット (Bounce Number Set):} NBで使用するバウンス回数の集合 $\mathcal{M} = \{m_1, m_2, \dots, m_{|\mathcal{M}|}\} \subset \mathbb{N}^{+}$ 
+        \item 重要度: 各宛先 $D_n$ の通信需要 $I_n \in (0, 1]$ (既知の定数)
+        \item 通信制約: 選択する宛先数の上限 $K$ ($1 \le K \le N$)
+        \item 信頼度パラメータ: 許容誤り確率 $\delta \in (0, 1)$
+    \end{itemize}
 
-$$
-\text{Maximize } \quad J = \sum_{D_n \in \mathcal{S}_{\mathrm{out}}} I_n \cdot F_{n, l_n^*}
-$$
+    \item \textbf{出力 (Output):}
+    \begin{itemize}
+        \item 選抜宛先集合 $\mathcal{S}_{\mathrm{out}} \subset \mathcal{D}$ (ただし $|\mathcal{S}_{\mathrm{out}}| = K$)
+        \item 選抜リンク集合 $\mathcal{L}_{\mathrm{out}} = \{l_n^* \in \mathcal{L}_n \mid D_n \in \mathcal{S}_{\mathrm{out}}\}$
+    \end{itemize}
+    
+    \item \textbf{仮定 (Assumption):}
+    \begin{itemize}
+        \item \textbf{実現可能性:} 宛先総数は選択数以上である ($N \ge K$)。
+        \item \textbf{タイブレイク:} 重要度重み付き忠実度和 $J$ を最大化する宛先集合が複数存在する場合、そのうち任意の1つを出力すれば正解とみなす。
+    \end{itemize}
 
-ここで、$F_{n, l_n^*} = \max_{l \in \mathcal{L}_n} F_{n,l}$ は宛先 $D_n$ における真の最大忠実度である。
+    \item \textbf{正解性制約 (Correctness Constraint):}
+    アルゴリズムの出力 $(\mathcal{S}_{\mathrm{out}}, \mathcal{L}_{\mathrm{out}})$ が、真の最適解の集合 $\Omega^*$ に含まれる確率を保証すること。
+    \begin{equation}
+        \mathbb{P}\left( (\mathcal{S}_{\mathrm{out}}, \mathcal{L}_{\mathrm{out}}) \in \Omega^* \right) \ge 1 - \delta
+    \end{equation}
+    ここで $\Omega^*$ は、目的関数 $J = \sum_{D_n \in \mathcal{S}} I_n \cdot \max_{l \in \mathcal{L}_n} F_{n,l}$ を最大化する全てのペア $(\mathcal{S}, \mathcal{L})$ の集合である。
 
-** 要件と評価指標 (Requirements & Metric):
-- $\delta$-正解性: アルゴリズムが出力する解が真の最適解と一致する確率が、少なくとも $1-\delta$ 以上であること。
-- サンプル複雑性の最小化: 上記の正解性を満たしつつ、アルゴリズム停止ま
-  でに要する総バウンス数 (Total Bounce Cost) を最小化すること。
+    \item \textbf{最適化目標 (Optimization Goal):}
+    正解性制約を満たすアルゴリズムの中で、停止するまでに消費する**総バウンス数 (Total Bounce Cost)** の期待値を最小化すること。
+    すなわち、各リンク $l$ へのベンチマーキング実施回数を $T_l$ としたとき、以下のコスト $C_{\mathrm{total}}$ を最小化する。
+    \begin{equation}
+        \text{Minimize } \quad \mathbb{E}[C_{\mathrm{total}}] = \mathbb{E}\left[ \sum_{n=1}^{N} \sum_{l \in \mathcal{L}_n} T_l \cdot \left( \sum_{m \in \mathcal{M}} m \right) \right]
+    \end{equation}
+\end{itemize}
 
-* new問題設定(文章形式)
+#+END_EXPORT
+
+** 問題設定(論文)
+#+BEGIN_EXPORT latex
 \section{Problem Formulation}
 
-本研究では、量子ネットワークにおけるリソース制約と宛先重要度を考慮した
-リンク選択問題を扱う。ソースノード $S$ と $N$ 個の宛先ノード
-$\mathcal{D} = \{D_1, \dots, D_N\}$ からなるスター型トポロジーを想定す
-る。各ノードペア $(S, D_n)$ 間には複数の物理的経路等に由来する候補リン
-ク集合 $\mathcal{L}_n$ が存在し、各リンク $l \in \mathcal{L}_n$ は未知
-の忠実度 $F_{n,l}$ を持つと仮定する。また、各宛先 $D_n$ には、アプリケー
-ション層の要求に基づく重要度 $I_n \in (0, 1]$ が付与されている。
+本研究では、量子ネットワークにおけるリソース制約と宛先重要度を考慮したリンク選択問題を扱う。
+ソースノード $S$ と、$N$ 個の宛先ノード集合 $\mathcal{D} = \{D_1, \dots, D_N\}$ からなるスター型トポロジーを想定する。
+各ノードペア $(S, D_n)$ 間には、物理的経路の違い等に由来する候補リンク集合 $\mathcal{L}_n$ が存在し、各リンク $l \in \mathcal{L}_n$ は未知の忠実度 $F_{n,l}$ を持つと仮定する。これらはネットワークベンチマーキング（NB）によってのみ推定可能である。
+また、各宛先 $D_n$ には、通信需要を表す重要度 $I_n \in (0, 1)$ が既知の定数として付与されている。
 
-本問題の目的は、同時に通信可能な宛先数が $K$ ($K < N$) に制限された状
-況下で、システム全体の「重要度重み付き忠実度和」を最大化する通信構成を
-決定することである。まず、各宛先 $D_n$ の潜在的な価値（スコア）$V_n$
-を、その宛先が持つ最良リンクの忠実度を用いて次式で定義する。
 
+本問題の目的は、同時にエンタングルメントを確立する宛先ノード数が $K$ ($1 \le K \le N$) を上限とする制約下で、システム全体の「重要度重み付き忠実度和」を最大化する通信構成を決定することである。
+各宛先 $D_n$ のスコア $V_n$ を次式で定義する。
 \begin{equation}
     V_n = I_n \cdot \max_{l \in \mathcal{L}_n} F_{n,l}
 \end{equation}
 
-最適化の目標は、スコア $V_n$ が高い上位 $K$ 個の宛先集合
-$\mathcal{S}_{\mathrm{out}}$ を特定し、かつ各宛先 $n \in
-\mathcal{S}_{\mathrm{out}}$ について最適なリンク $l_n^* = \arg\max_{l
-\in \mathcal{L}_n} F_{n,l}$ を特定することである。すなわち、以下の目的
-関数 $J$ を最大化する解を求める。
-
+最適化の目標は、スコアの和を最大化するサイズ $K$ の宛先集合 $\mathcal{S}_{\mathrm{out}}$ および、各宛先の最良リンク $l_n^*$ を特定することである。
+すなわち、以下の目的関数 $J$ を最大化する解を求める。
 \begin{equation}
-    \text{Maximize } \quad J(\mathcal{S}_{\mathrm{out}}) = \sum_{D_n \in \mathcal{S}_{\mathrm{out}}} V_n = \sum_{D_n \in \mathcal{S}_{\mathrm{out}}} I_n \cdot F_{n, l_n^*}
+    \text{Maximize } \quad J(\mathcal{S}_{\mathrm{out}}) = \sum_{D_n \in \mathcal{S}_{\mathrm{out}}} V_n
 \end{equation}
 
-本設定は、多腕バンディット問題における「固定信頼度（Fixed Confidence）
-設定の最適腕識別問題」の拡張として定式化される。アルゴリズムには、信頼
-度パラメータ $\delta \in (0, 1)$ が入力として与えられる。アルゴリズム
-はネットワークベンチマーキング（バウンス）を通じてリンク忠実度を推定し、
-逐次的に宛先およびリンクの取捨選択を行う。最終的に出力される宛先集合お
-よびリンク集合が真の最適解と一致しない確率（誤識別確率）を $\delta$ 以
-下に抑えつつ、その達成に必要な総バウンス数（Sample Complexity）を最小
-化することを最適化の指標とする。
+\paragraph{Assumption 1 (Tie-breaking and Feasibility):}
+\begin{itemize}
+    \item 宛先総数 $N$ は選択数 $K$ 以上であるとする ($N \ge K$)。
+    \item スコア $V_n$ にタイ（同値）が存在し、最適解 $\mathcal{S}^*$ が一意に定まらない場合、アルゴリズムは目的関数 $J$ を最大化する任意の集合 $\mathcal{S}^*$ を一つ出力すれば正解とみなす。
+\end{itemize}
+
+本問題は、固定信頼度（Fixed Confidence）設定におけるサンプル複雑性最小化問題として定式化される。
+\begin{align}
+    \textbf{Minimize:} \quad & \mathbb{E}[\text{Total Bounce Cost}] \\
+    \textbf{Subject to:} \quad & \mathbb{P}\left( J(\hat{\mathcal{S}}_{\mathrm{out}}) < J(\mathcal{S}^*) \lor \hat{\mathcal{L}}_{\mathrm{out}} \neq \mathcal{L}^*(\hat{\mathcal{S}}_{\mathrm{out}}) \right) \le \delta
+\end{align}
+ここで $\mathcal{L}^*(\mathcal{S})$ は集合 $\mathcal{S}$ 内の各宛先における真の最良リンク集合を表す。
+#+END_EXPORT
 
 
-** 骨格をもとに構築したストーリー案
+** この問題設定に対応するストーリー案の骨格
 背景
 
 量子ネットワークでは、ノード間のエンタングルメントリンクの忠実度が通信
@@ -262,140 +217,306 @@ $\mathcal{S}_{\mathrm{out}}$ を特定し、かつ各宛先 $n \in
 選択が可能となる。
 
 
-* 手法
 
+
+* 手法(変更した問題設定での手法)
 #+BEGIN_EXPORT latex
+\section{Algorithm: MD-LINKSELFIE}
 
+\subsection{Overview}
 
-\section{提案アルゴリズム: MD-LINKSELFIE}
-
-\subsection{概要}
-
-本稿で提案するMD-LINKSELFIE（Multi-Destination LINKSELFIE）は、フェー
-ズベースの二重除去（Dual Elimination）アルゴリズムである。本アルゴリズ
-ムは、各フェーズにおいて生存しているリンクに対してネットワークベンチマー
-キングを行い、推定精度を段階的に向上させる。フェーズの終了時には、得ら
-れた信頼区間に基づき、以下の二つの除去メカニズムを適用する。
+提案法 MD-LINKSELFIE は、適応的な二重除去（Dual Elimination）メカニズムを持つフェーズベースの探索アルゴリズムである。本アルゴリズムは、各フェーズで生存している候補リンクに対してネットワークベンチマーキング（NB）を実行し、得られた推定値の信頼区間に基づいて以下の二つの除去判定を行う。
 
 \begin{itemize}
-    \item \textbf{内層除去 (Inner Elimination):} 各宛先$n$内部において、最良リンクとなる可能性が統計的に否定された劣等なリンクを除去する。
-    \item \textbf{外層除去 (Outer Elimination):} 宛先集合全体において、重要度重み付き忠実度が上位$K$位以内に入る可能性が統計的に否定された宛先を除去する。
+    \item \textbf{内層除去 (Inner Elimination):} 各宛先 $n$ 内部において、その宛先内の最良リンクと比較して統計的に有意に劣るリンクを除去する。
+    \item \textbf{外層除去 (Outer Elimination):} 宛先集合全体において、重要度重み付きスコアが上位 $K$ 位以内に入る可能性が統計的に否定された宛先を除去する。
 \end{itemize}
 
-これら二つのメカニズムは、停止条件が満たされるまで統合されたループ内で
-並行して実行される。除去判定は厳密な信頼区間に基づいて行われるため、真
-の最良リンクや真の上位$K$宛先が誤って除去される確率は、許容誤差パラメー
-タ$\delta$以下に抑えられる。
+これらは統合されたループ内で並行して実行される。内層除去は不必要なリンクへのリソース配分を削減し、外層除去は重要度の低い宛先や品質の低い宛先を早期に切り捨てる役割を果たす。
 
-\subsection{初期化}
+\subsection{Initialization}
 
-全$N$個の宛先をアクティブ宛先集合$\mathcal{A}$に格納する。各宛先$n \in
-\mathcal{A}$について、その宛先に属する全リンクをアクティブリンク集合
-$\mathcal{S}_n$に格納する。フェーズカウンタを$s \leftarrow 1$とし、累
-積反復回数を$T_0 \leftarrow 0$に初期化する。
+全 $N$ 個の宛先を初期アクティブ宛先集合 $\mathcal{A} \leftarrow \{D_1, \dots, D_N\}$ とする。各宛先 $n \in \mathcal{A}$ について、全リンクを初期アクティブリンク集合 $\mathcal{S}_n \leftarrow \mathcal{L}_n$ とする。
+フェーズカウンタを $s \leftarrow 1$、累積反復回数を $T_0 \leftarrow 0$ に初期化する。
 
-\subsection{アルゴリズムの実行}
+\subsection{Execution Loop}
 
-以下の停止条件が満たされるまで、フェーズ$s=1, 2, \dots$を繰り返す。
-\begin{itemize}
-    \item \textbf{停止条件:} アクティブな宛先数が$K$以下であり（$|\mathcal{A}| \le K$）、かつ全てのアクティブ宛先$n \in \mathcal{A}$において候補リンクが1本に絞られている（$|\mathcal{S}_n| = 1$）。
-\end{itemize}
+以下の\textbf{停止条件}が満たされるまで、フェーズ $s = 1, 2, \dots$ を繰り返す。
+
+\begin{equation}
+    \text{停止条件: } |\mathcal{A}| = K \quad \land \quad \forall n \in \mathcal{A}, |\mathcal{S}_n| = 1
+\end{equation}
+(すなわち、アクティブな宛先が $K$ 個に絞り込まれ、かつ残った各宛先の候補リンクが1本に特定された時点で停止する。)
 
 各フェーズでは以下の手順を実行する。
 
-\subsubsection{1. 反復回数の設定}
-フェーズ$s$における累積反復回数$T_s$を次式で設定する。
+\subsubsection{1. Setting Repetition Counts}
+フェーズ $s$ における累積反復回数 $T_s$ を、補題 \ref{lem:confidence} (Lemma 1) に基づき次式で設定する。
 \begin{equation}
     T_s = C_{\mathrm{NB}} \cdot 2^{2s} \cdot \log\left( \frac{(s+1)(s+2) N L_{\max}}{\delta} \right)
 \end{equation}
-ここで、$C_{\mathrm{NB}}$はLemma 1により定まる定数、$L_{\max}$は宛先あ
-たりの最大リンク数である。本フェーズで追加実行する反復回数は $\Delta T
-= T_s - T_{s-1}$ である。
+ここで、$C_{\mathrm{NB}}$ はシステム定数、$L_{\max}$ は宛先あたりの最大リンク数である。本フェーズで追加実行する反復回数を $\Delta T = T_s - T_{s-1}$ とする。
 
-\subsubsection{2. ベンチマーキングと推定}
-各アクティブ宛先$n \in \mathcal{A}$の各アクティブリンク$l \in \mathcal{S}_n$に対して、ネットワークベンチマーキングを$\Delta T$回実行する。各バウンス数$m \in \mathcal{M}$における生存確率の測定値について、前フェーズまでの累積データと統合し、更新された平均生存確率$b_{n,l,m}^{(s)}$を算出する。
+\subsubsection{2. Benchmarking and Estimation}
+各アクティブ宛先 $n \in \mathcal{A}$ の各アクティブリンク $l \in \mathcal{S}_n$ に対して、NBサブルーチンを $\Delta T$ 回実行する。
+各バウンス数 $m \in \mathcal{M}$ における生存確率の測定値について、過去のデータと統合し、加重平均を用いて累積平均生存確率 $b_{n,l,m}^{(s)}$ を更新する。
 \begin{equation}
     b_{n,l,m}^{(s)} = \frac{b_{n,l,m}^{\text{new}} \cdot \Delta T + b_{n,l,m}^{(s-1)} \cdot T_{s-1}}{T_s}
 \end{equation}
-この累積データを指数モデル $b_m = A p^{2m}$ にフィッティングし、各リン
-クの脱分極パラメータ推定値 $\hat{p}_{n,l}^{(s)}$ を得る。
+このデータを指数モデル $b_m = A p^{2m}$ にフィッティングし、現時点での脱分極パラメータ推定値 $\hat{p}_{n,l}^{(s)}$ を得る。
 
-\subsubsection{3. 信頼半径の計算}
-Lemma 1に基づき、フェーズ$s$における脱分極パラメータ$p$に対する信頼半径$\varepsilon_s$を計算する。
+\subsubsection{3. Confidence Radius Calculation}
+フェーズ $s$ における信頼半径 $\varepsilon_s$ を計算する。
 \begin{equation}
     \varepsilon_s = \sqrt{\frac{C_{\mathrm{NB}}}{T_s} \cdot \log\left( \frac{(s+1)(s+2) N L_{\max}}{\delta} \right)}
 \end{equation}
-このとき、全ての$n, l, s$において、確率$1-\delta$以上で
-$|\hat{p}_{n,l}^{(s)} - p_{n,l}| \le \varepsilon_s$ が成立する。
+この信頼半径により、確率 $1-\delta$ 以上で $|\hat{p}_{n,l}^{(s)} - p_{n,l}| \le \varepsilon_s$ が保証される。
 
-\subsubsection{4. 内層除去（リンク選抜）}
-各アクティブ宛先$n \in \mathcal{A}$について、リンク集合$\mathcal{S}_n$内の最大推定値 $\hat{p}_{\max,n} = \max_{l \in \mathcal{S}_n} \hat{p}_{n,l}^{(s)}$ を特定する。
-上側信頼限界が暫定最良リンクの下側信頼限界を下回るリンクを除去する。
+\subsubsection{4. Inner Elimination (Link Selection)}
+各アクティブ宛先 $n \in \mathcal{A}$ について、最良リンク候補を特定し、劣等リンクを除去する。
+まず、宛先内の最大推定値 $\hat{p}_{\max,n} = \max_{l \in \mathcal{S}_n} \hat{p}_{n,l}^{(s)}$ を求める。次に、上側信頼限界が暫定最良リンクの下側信頼限界を下回るリンクを除去する。
 \begin{equation}
     \mathcal{S}_n \leftarrow \mathcal{S}_n \setminus \left\{ l \in \mathcal{S}_n : \hat{p}_{n,l}^{(s)} + \varepsilon_s < \hat{p}_{\max,n} - \varepsilon_s \right\}
 \end{equation}
-除去後、宛先$n$の代表忠実度推定値 $\hat{F}_n$ および重要度重み付きスコ
-ア推定値 $\hat{V}_n$ を更新する。
+除去後、宛先 $n$ の代表忠実度 $\hat{F}_n$ および重要度重み付きスコア $\hat{V}_n$ を更新する。
 \begin{equation}
     \hat{F}_n = \frac{\hat{p}_{\max,n} + 1}{2}, \quad \hat{V}_n = I_n \cdot \hat{F}_n
 \end{equation}
 
-\subsubsection{5. 外層除去（宛先選抜）}
-現在のアクティブ宛先数が$K$を超えている場合（$|\mathcal{A}| > K$）、宛先の除去を行う。
-各宛先$n$のスコア$\hat{V}_n$に対する信頼半径は $I_n \cdot \varepsilon_s / 2$ となるため、スコアの上側信頼限界（UCB）と下側信頼限界（LCB）は次式で与えられる。
+\subsubsection{5. Outer Elimination (Destination Selection)}
+現在のアクティブ宛先数が $K$ を超えている場合（$|\mathcal{A}| > K$）に限り、宛先の除去を行う。
+各宛先 $n$ のスコア $\hat{V}_n$ に対する信頼区間の幅は $I_n \cdot \varepsilon_s$ である。上側信頼限界 (UCB) と下側信頼限界 (LCB) を次式で計算する。
 \begin{equation}
     \mathrm{UCB}_n = I_n \left( \hat{F}_n + \frac{\varepsilon_s}{2} \right), \quad \mathrm{LCB}_n = I_n \left( \hat{F}_n - \frac{\varepsilon_s}{2} \right)
 \end{equation}
-アクティブ宛先集合$\mathcal{A}$の中で$K$番目に大きい下側信頼限界を閾値
-$\Theta_K = \mathrm{LCB}_{(K)}$ とする。上側信頼限界がこの閾値を下回る
-宛先は、上位$K$位に入る可能性がないため除去する。
+現在のアクティブ集合 $\mathcal{A}$ の中で、$K$ 番目に大きい下側信頼限界を閾値 $\Theta_K$ とする。
+\begin{equation}
+    \Theta_K = \text{The } K\text{-th largest value in } \{ \mathrm{LCB}_n \}_{n \in \mathcal{A}}
+\end{equation}
+UCBがこの閾値を下回る宛先は、Top-Kに入る可能性がないため除去する。
 \begin{equation}
     \mathcal{A} \leftarrow \mathcal{A} \setminus \left\{ n \in \mathcal{A} : \mathrm{UCB}_n < \Theta_K \right\}
 \end{equation}
 
-\subsubsection{6. フェーズ更新}フェーズカウンタを更新し（$s \leftarrow
-s + 1$）、次のフェーズへ移行する。
+\subsubsection{6. Phase Update}
+フェーズカウンタを更新し（$s \leftarrow s + 1$）、次のフェーズへ移行する。
 
-\subsection{出力}アルゴリズム停止時、アクティブ宛先集合$\mathcal{A}$は
-最適な$K$個の宛先を含み、かつ各宛先$n \in \mathcal{A}$のリンク集合
-$\mathcal{S}_n$は唯一の最良リンクを含んでいる。これを最終的な通信経路
-として出力する。
+\subsection{Output}
+停止条件を満たした時点での $\mathcal{A}$ を出力宛先集合 $\mathcal{S}_{\mathrm{out}}$ とし、各宛先 $n \in \mathcal{S}_{\mathrm{out}}$ に残った唯一のリンク $\{l_n\} = \mathcal{S}_n$ を最良リンク $l_n^*$ として出力する。
+#+END_EXPORT
 
 
+** この手法の解析
+#+BEGIN_EXPORT latex
+
+\section{Theoretical Analysis}
+
+本節では、MD-LINKSELFIEの理論的保証を与える。まず、解析に必要なギャップを定義し、その上でサンプル複雑性の上界を示す。
+
+\subsection{Gap Definitions}
+
+\begin{definition}[Inner Gap]
+宛先 $n$ 内におけるリンク $l \in \mathcal{L}_n$ の内層ギャップ $\Delta_{n,l}^{\mathrm{in}}$ を以下で定義する。
+\begin{equation}
+    \Delta_{n,l}^{\mathrm{in}} := \begin{cases}
+    F_{n,l_n^*} - F_{n,l_n^{(2)}} & \text{if } l = l_n^* \\
+    F_{n,l_n^*} - F_{n,l} & \text{otherwise}
+    \end{cases}
+\end{equation}
+ここで $l_n^* = \arg\max_{l \in \mathcal{L}_n} F_{n,l}$ は宛先 $n$ 内の最良リンクであり、$l_n^{(2)} = \arg\max_{l \in \mathcal{L}_n \setminus \{l_n^*\}} F_{n,l}$ は2番目に高い忠実度を持つリンクである。
+\end{definition}
+
+\begin{remark}[Relation between Fidelity and Depolarizing Parameter]
+忠実度 $F$ と脱分極パラメータ $p$ は $F = (p+1)/2$ の線形関係にある。したがって、忠実度空間でのギャップ $\Delta F$ とパラメータ空間でのギャップ $\Delta p$ は $\Delta F = \Delta p / 2$ の関係を持つ。本解析における定数項は、この係数を吸収したものとして扱う。
+\end{remark}
+
+\begin{definition}[Outer Gap]
+宛先 $n$ の外層ギャップ $\Delta_{n}^{\mathrm{out}}$ を以下で定義する。
+\begin{equation}
+    \Delta_{n}^{\mathrm{out}} := \begin{cases}
+    V_n - V_{(K+1)} & \text{if } n \in \mathcal{S}^* \text{ (Optimal set)} \\
+    V_{(K)} - V_n & \text{if } n \notin \mathcal{S}^* \text{ (Sub-optimal set)}
+    \end{cases}
+\end{equation}
+ここで $V_{(k)}$ は全宛先の中で $k$ 番目に大きいスコアを表す。
+\end{definition}
+
+\begin{definition}[Effective Gap]
+リンク $l \in \mathcal{L}_n$ の有効ギャップ $\Delta_{n,l}^{\mathrm{eff}}$ を次式で定義する。
+\begin{equation}
+    \Delta_{n,l}^{\mathrm{eff}} := \max\left( \Delta_{n,l}^{\mathrm{in}}, \frac{\Delta_{n}^{\mathrm{out}}}{I_{\max}} \right)
+\end{equation}
+ここで $I_{\max} = \max_{n} I_n \le 1$ である。
+\end{definition}
+
+\subsection{Main Theorem}
+
+\begin{theorem}[Sample Complexity]
+\label{thm:complexity}
+MD-LINKSELFIEは、有限フェーズで停止し、確率 $1-\delta$ 以上で正しい解を出力する。その際にかかる総バウンス数の期待値は以下で上界評価される。
+\begin{equation}
+    \mathbb{E}[N_{\mathrm{total}}] \le O\left( \sum_{n=1}^{N} \sum_{l \in \mathcal{L}_n} \frac{1}{(\Delta_{n,l}^{\mathrm{eff}})^2} \log \left( \frac{L_{\mathrm{tot}}}{\delta \cdot \Delta_{n,l}^{\mathrm{eff}}} \right) \right) \cdot \overline{m}
+\end{equation}
+ここで、$L_{\mathrm{tot}} = \sum_{n=1}^{N} |\mathcal{L}_n|$ は全リンク数、$\overline{m} = \sum_{m \in \mathcal{M}} m$ は1回のNBサブルーチンあたりの総バウンス数である。
+\end{theorem}
+
+
+\section{Appendix: Proof of Theorem \ref{thm:complexity}}
+
+\subsection{Step 1: Good Event and Probability}
+補題1（LinkSelFiEの信頼区間）に基づき、事象 $\mathcal{E}$ を定義する。
+\begin{equation}
+    \mathcal{E} = \left\{ \forall s \ge 1, \forall n, l : | \hat{p}_{n,l}^{(s)} - p_{n,l} | \le \varepsilon_s \right\}
+\end{equation}
+ここで信頼半径 $\varepsilon_s$ は $\delta_s = \frac{\delta}{(s+1)(s+2) N L_{\max}}$ に対応して設定される。Union Boundにより、失敗確率は以下のように抑えられる。
+\begin{align}
+    \mathbb{P}(\bar{\mathcal{E}}) &\le \sum_{s=1}^{\infty} \sum_{n=1}^{N} \sum_{l \in \mathcal{L}_n} \frac{\delta}{(s+1)(s+2) N L_{\max}} \\
+    &\le \sum_{s=1}^{\infty} \frac{N L_{\max} \cdot \delta}{(s+1)(s+2) N L_{\max}} \\
+    &= \delta \sum_{s=1}^{\infty} \left( \frac{1}{s+1} - \frac{1}{s+2} \right) = \delta \cdot \frac{1}{2} < \delta
+\end{align}
+よって $\mathbb{P}(\mathcal{E}) \ge 1-\delta$ である。これ以降、事象 $\mathcal{E}$ が成立している前提で議論する。
+
+\begin{remark}[Decay of Confidence Radius]
+$T_s$ の設定式を $\varepsilon_s$ の定義式に代入すると、
+\begin{equation}
+    \varepsilon_s = \sqrt{\frac{C_{\mathrm{NB}}}{T_s} \cdot \log\left( \frac{(s+1)(s+2) N L_{\max}}{\delta} \right)} = \sqrt{\frac{1}{2^{2s}}} = 2^{-s}
+\end{equation}
+となり、フェーズ $s$ が進むごとに信頼半径が半減する。これにより、フェーズ $s$ でギャップが $O(2^{-s})$ 程度のリンク・宛先が除去可能となる。
+\end{remark}
+
+\subsection{Step 2: Safety of Elimination}
+
+\paragraph{Safety of Inner Elimination:}
+真の最良リンク $l^* = l_n^*$ が除去されないことを示す。除去条件は $\hat{p}_{l^*}^{(s)} + \varepsilon_s < \hat{p}_{\max,n}^{(s)} - \varepsilon_s$ である。
+Good Event $\mathcal{E}$ 下で、$\hat{p}_{l^*}^{(s)} \ge p_{l^*} - \varepsilon_s$ および $\hat{p}_{\max,n}^{(s)} \le p_{l^*} + \varepsilon_s$ が成立するため、
+\begin{align}
+    \hat{p}_{l^*}^{(s)} + \varepsilon_s &\ge (p_{l^*} - \varepsilon_s) + \varepsilon_s = p_{l^*} \\
+    \hat{p}_{\max,n}^{(s)} - \varepsilon_s &\le (p_{l^*} + \varepsilon_s) - \varepsilon_s = p_{l^*}
+\end{align}
+したがって $\hat{p}_{l^*}^{(s)} + \varepsilon_s \ge p_{l^*} \ge \hat{p}_{\max,n}^{(s)} - \varepsilon_s$ となり、除去条件は満たされない。
+
+\paragraph{Safety of Outer Elimination (Guaranteed $|\mathcal{A}| \ge K$):}
+外層除去において、少なくとも $K$ 個の宛先は除去されないことを示す。
+$\Theta_K$ は現在のアクティブ集合 $\mathcal{A}$ における $K$ 番目に大きい LCB である。
+LCB が上位 $K$ 位以内にある宛先集合を $\mathcal{K}_{\mathrm{top}} \subset \mathcal{A}$ とすると、定義により $\forall n \in \mathcal{K}_{\mathrm{top}}, \mathrm{LCB}_{n} \ge \Theta_K$ である。
+任意の宛先 $n$ について $\mathrm{UCB}_n \ge \mathrm{LCB}_n$ が常に成立するため、
+\begin{equation}
+    \forall n \in \mathcal{K}_{\mathrm{top}}, \quad \mathrm{UCB}_{n} \ge \mathrm{LCB}_{n} \ge \Theta_K
+\end{equation}
+となり、これら $K$ 個の宛先は除去条件 $\mathrm{UCB}_n < \Theta_K$ を満たさない。よって常に $|\mathcal{A}| \ge K$ が維持される。
+
+\paragraph{Safety of Outer Elimination for True Top-K:}
+真の Top-K 宛先 $n^* \in \mathcal{S}^*$ が除去されないことを示す。Good Event $\mathcal{E}$ 下で、
+\begin{align}
+    \mathrm{UCB}_{n^*} &= I_{n^*} \left( \hat{F}_{n^*} + \frac{\varepsilon_s}{2} \right) \ge I_{n^*} \left( F_{n^*} - \frac{\varepsilon_s}{2} + \frac{\varepsilon_s}{2} \right) = I_{n^*} F_{n^*} = V_{n^*}
+\end{align}
+また、閾値 $\Theta_K = \mathrm{LCB}_{(K)}$ について、$\mathrm{LCB}_{(K)} \le V_{(K)}$ が成立する（$K$番目に大きいLCBは、対応する真のスコア以下）。
+$n^* \in \mathcal{S}^*$ より $V_{n^*} \ge V_{(K)}$ であるから、
+\begin{equation}
+    \mathrm{UCB}_{n^*} \ge V_{n^*} \ge V_{(K)} \ge \mathrm{LCB}_{(K)} = \Theta_K
+\end{equation}
+したがって、$n^*$ は除去条件を満たさない。
+
+\paragraph{Correctness at Stopping Time:}
+以上の議論より、真のTop-K宛先および真の最良リンクは決して除去されず、かつ $|\mathcal{A}| \ge K$ が維持される。
+したがって、停止条件 $|\mathcal{A}| = K$ かつ $\forall n, |\mathcal{S}_n|=1$ が満たされた時点で、出力解は真の最適解 $(\mathcal{S}^*, \mathcal{L}^*)$ と一致する。
+
+\subsection{Step 3: Sample Complexity and Termination}
+
+\begin{lemma}[Termination]
+MD-LINKSELFIE は有限フェーズで停止する。
+\end{lemma}
+\begin{proof}
+Good Event $\mathcal{E}$ 下で、各リンク・宛先の有効ギャップ $\Delta_{n,l}^{\mathrm{eff}} > 0$ が存在する。
+$\varepsilon_s = 2^{-s}$ であるから、十分大きなフェーズ $s^*$ において $\varepsilon_{s^*} \le \frac{1}{4} \min_{n,l} \Delta_{n,l}^{\mathrm{eff}}$ が成立する。この時点で全ての劣等リンクおよび劣等宛先は除去され、停止条件が満たされる。
+\end{proof}
+
+次に、リンク $l \in \mathcal{L}_n$ の探索が終了するための十分条件を示す。
+
+\paragraph{Case 1: Termination by Inner Elimination}
+$\Delta_{n,l}^{\mathrm{in}} \ge 4\varepsilon_s$ のとき、
+\begin{align}
+    (\hat{p}_{\max} - \varepsilon_s) - (\hat{p}_l + \varepsilon_s) &\ge (p_{l^*} - \varepsilon_s - \varepsilon_s) - (p_l + \varepsilon_s + \varepsilon_s) \\
+    &= (p_{l^*} - p_l) - 4\varepsilon_s = \Delta^{\mathrm{in}} - 4\varepsilon_s \ge 0
+\end{align}
+となり、リンク $l$ は内層除去される。
+
+\paragraph{Case 2: Termination by Outer Elimination}
+宛先 $n \notin \mathcal{S}^*$ であり、$\Delta_n^{\mathrm{out}} \ge 4 I_{\max} \varepsilon_s$ のとき、外層除去されることを示す。
+
+まず、$\mathrm{LCB}_{(K)}$ の下界を評価する。真の Top-K 宛先 $n^* \in \mathcal{S}^*$ について、
+\begin{equation}
+    \mathrm{LCB}_{n^*} = I_{n^*} (\hat{F}_{n^*} - \varepsilon_s/2) \ge I_{n^*} (F_{n^*} - \varepsilon_s) = V_{n^*} - I_{n^*} \varepsilon_s \ge V_{(K)} - I_{\max} \varepsilon_s
+\end{equation}
+真の Top-K 宛先 $K$ 個は全てアクティブであり、そのLCBは全て $V_{(K)} - I_{\max} \varepsilon_s$ 以上である。
+$\mathrm{LCB}_{(K)}$ はアクティブ集合の中で $K$ 番目に大きいLCBであるから、
+\begin{equation}
+    \mathrm{LCB}_{(K)} \ge V_{(K)} - I_{\max} \varepsilon_s
+\end{equation}
+
+次に、$\mathrm{UCB}_n$ の上界を評価する。
+\begin{equation}
+    \mathrm{UCB}_n = I_n (\hat{F}_n + \varepsilon_s/2) \le I_n (F_n + \varepsilon_s) = V_n + I_n \varepsilon_s
+\end{equation}
+
+以上より、
+\begin{align}
+    \mathrm{LCB}_{(K)} - \mathrm{UCB}_n &\ge (V_{(K)} - I_{\max} \varepsilon_s) - (V_n + I_n \varepsilon_s) \\
+    &= (V_{(K)} - V_n) - (I_{\max} + I_n) \varepsilon_s \\
+    &= \Delta_n^{\mathrm{out}} - (I_{\max} + I_n) \varepsilon_s \\
+    &\ge \Delta_n^{\mathrm{out}} - 2 I_{\max} \varepsilon_s \quad (\because I_n \le I_{\max})
+\end{align}
+
+$\Delta_n^{\mathrm{out}} \ge 4 I_{\max} \varepsilon_s$ のとき、
+\begin{equation}
+    \mathrm{LCB}_{(K)} - \mathrm{UCB}_n \ge 4 I_{\max} \varepsilon_s - 2 I_{\max} \varepsilon_s = 2 I_{\max} \varepsilon_s > 0
+\end{equation}
+よって $\mathrm{UCB}_n < \mathrm{LCB}_{(K)} \le \Theta_K$ となり、宛先 $n$ は除去される。
 
 #+END_EXPORT
+
 
 ** 信頼度deltaの扱いについて
 
 linkselfieにおけるdelta
 
-守備範囲: 「ある1つの宛先」に対するリンク選択のみ。
+- 守備範囲: 「ある1つの宛先」に対するリンク選択のみ。
 
-意味: 選ばれたリンクが、実は最良ではない（本当はもっと良いリンクがあったのに捨ててしまった）確率が δ 以下。
+- 意味: 選ばれたリンクが、実は最良ではない（本当はもっと良いリンクがあったのに捨ててしまった）確率が δ 以下。
 
 
 
 今回の問題設定における信頼度パラメータdelta
 
-守備範囲: 「全 N 宛先」の選定と、「その中のリンク」選択のすべて。
+- 守備範囲: 「全 N 宛先」の選定と、「その中のリンク」選択のすべて。
 
-意味: 以下の 2種類のミスのどちらか一方でも発生する確率 の合計が δ 以下。
+- 意味: 以下の 2種類のミスのどちらか一方でも発生する確率 の合計が δ 以下。
 
-ミスA（宛先選択のミス）: 本当はスコア（重要度×忠実度）が高く、トップK
-に入るべき宛先を、誤って「圏外」と判断して捨ててしまうこと。
+- ミスA（宛先選択のミス）: 本当はスコア（重要度×忠実度）が高く、トップ
+  Kに入るべき宛先を、誤って「圏外」と判断して捨ててしまうこと。
 
-ミスB（リンク選択のミス）: 選ばれた宛先の中で、本当はもっと忠実度が高
-いリンクがあるのに、誤って低品質なリンクを代表として選んでしまうこと。
-
+- ミスB（リンク選択のミス）: 選ばれた宛先の中で、本当はもっと忠実度が
+  高いリンクがあるのに、誤って低品質なリンクを代表として選んでしまうこ
+  と。
 
 = アルゴリズムが最終的に出した答えが、本当の最適解（正解）と一致しない確率の上限
-
 つまり、1 - delta = アルゴリズムが正しく最適解を出力する確率を表わす。
 
 
 
 
+* ストーリー案での確認点
 
+** ストーリーの骨格
+- 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
+- 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
+- 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
+
+** ストーリーの骨格での質問
+- 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
+とあるが、重要度 x 忠実度ではないのか？
+
+- 各リンクに対する通信需要（demand）を重みとし、需要×忠実度が高いリンクを判定する
 
 
 
