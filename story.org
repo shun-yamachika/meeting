@@ -426,7 +426,7 @@ $\Lambda_A$ が存在することを意味する。この仮定はRB文献にお
     \EndFor
     \State 平均結果を計算：$\bar{b}_m = \frac{1}{N_m} \sum_{n_m=1}^{N_m} b_{n_m}$
 \EndFor
-\State リスト $\{\bar{b}_m\}_{m \in \mathbb{M}}$ を出力
+p\State リスト $\{\bar{b}_m\}_{m \in \mathbb{M}}$ を出力
 \end{algorithmic}
 \end{algorithm}
 

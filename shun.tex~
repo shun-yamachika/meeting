@@ -1,34 +1,16 @@
-# -*- mode: org; coding: utf-8 -*-
-#
-# IEEE Conference Paper org-mode テンプレート
-#
-# このファイルを編集して、C-c C-e l l で memo.tex にエクスポートできます
-# エクスポート後、以下のコマンドでPDFを生成します：
-#   platex memo.tex
-#   pbibtex memo
-#   platex memo.tex
-#   platex memo.tex
-#   dvipdfmx memo.dvi
-#
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.eps,.pdf,.png}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\begin{document}
 
-#+LATEX_CLASS: IEEEtran
-#+LATEX_CLASS_OPTIONS: [conference]
-#+LATEX_COMPILER: platex
-#+BIND: org-latex-pdf-process ("platex -interaction=nonstopmode -output-directory=%o %f" "pbibtex %b" "platex -interaction=nonstopmode -output-directory=%o %f" "platex -interaction=nonstopmode -output-directory=%o %f" "dvipdfmx %b.dvi")
-#+LATEX_HEADER: \IEEEoverridecommandlockouts
-#+LATEX_HEADER: \usepackage{cite}
-#+LATEX_HEADER: \usepackage{amsmath,amssymb,amsfonts}
-#+LATEX_HEADER: \usepackage{algorithmic}
-#+LATEX_HEADER: \usepackage{graphicx}
-#+LATEX_HEADER: \DeclareGraphicsExtensions{.eps,.pdf,.png}
-#+LATEX_HEADER: \usepackage{textcomp}
-#+LATEX_HEADER: \usepackage{xcolor}
-#+LATEX_HEADER: \usepackage{url}
-#+LATEX_HEADER: \usepackage{hyperref}
-
-#+OPTIONS: toc:nil author:nil date:nil title:nil tex:t timestamp:nil
-
-#+BEGIN_EXPORT latex
 \title{Research Meeting}
 
 \author{\IEEEauthorblockN{Shun Yamachika}
@@ -38,20 +20,20 @@ Sanda, Hyogo, Japan \\
 shun@lsnl.jp}}
 
 \maketitle
-#+END_EXPORT
 
-* 前までの問題設定(先生の対話から抜粋)
+\subsection*{前までのの問題設定(先生の対話から抜粋)}
+\label{sec:orgb868a8d}
 ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
 
-ノードS〜ノードD_n間のリンク集合 L_n ($1 \le n \le N$, N はノードSの隣接ノード数)がそれぞれ入力される。
+ノードS〜ノードD\_n間のリンク集合 L\_n (\(1 \le n \le N\), N はノードSの隣接ノード数)がそれぞれ入力される。
 
-ノードS〜ノードD_n間の重要度 I_n (0〜1 の値) が入力として与えられる。
+ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
 
 総バウンスコスト C が入力として与えられる。
 
-この時、ノードS〜ノードD_n のノードペアの中で、
+この時、ノードS〜ノードD\_n のノードペアの中で、
 
-K 個のノードペア (S, D_s_1), (S, D_s_2), ... (S, D_s_K) における
+K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における
 
 忠実度が最大のリンクをそれぞれ発見する。
 
@@ -59,22 +41,17 @@ K 個のノードペア (S, D_s_1), (S, D_s_2), ... (S, D_s_K) における
 
 重要度と忠実度の積の総和、つまり
 
-I = \sum_{k = 1}^K I_s_k * F_s_k
+I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 が最大となるように定める。
 
-ここで F_n は (S, D_n) 間において忠実度の最大のリンクの忠実度である。
+ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
 
 
-* ストーリー案の骨格(redmineより抜粋)
-
-- 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
-- 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
-- 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
 
 
-* 新たに定義した問題設定
-#+BEGIN_EXPORT latex
+\section*{新たに定義した問題設定}
+\label{sec:orgdfb47c6}
 
 \section{Problem Formulation}
 
@@ -128,13 +105,10 @@ I = \sum_{k = 1}^K I_s_k * F_s_k
 すなわち、全ての内層ギャップおよび外層ギャップは正（$\Delta_{n,l}^{\mathrm{in}} > 0,\; \Delta_n^{\mathrm{out}} > 0$）であるとする。
 
 
-#+END_EXPORT
 
+\section*{手法}
+\label{sec:org260f8fb}
 
-
-* 手法
-
-#+BEGIN_EXPORT latex
 \section{Algorithm: MD-LINKSELFIE}
 
 \subsection{Overview}
@@ -217,11 +191,10 @@ UCBがこの閾値を下回る宛先は、Top-Kに入る可能性がないため
 
 \subsection{Output}
 停止条件を満たした時点での $\mathcal{A}$ を出力宛先集合 $\mathcal{S}_{\mathrm{out}}$ とし、各宛先 $n \in \mathcal{S}_{\mathrm{out}}$ に残った唯一のリンク $\{l_n\} = \mathcal{S}_n$ を最良リンク $l_n^*$ として出力する。
-#+END_EXPORT
 
-* 解析
+\section*{解析}
+\label{sec:orgb62fa78}
 
-#+BEGIN_EXPORT latex
 
 \section{Theoretical Analysis}
 
@@ -390,20 +363,4 @@ $\Delta_n^{\mathrm{out}} \ge 4 I_{\max} \varepsilon_s$ のとき、
     \mathrm{LCB}_{(K)} - \mathrm{UCB}_n \ge 4 I_{\max} \varepsilon_s - 2 I_{\max} \varepsilon_s = 2 I_{\max} \varepsilon_s > 0
 \end{equation}
 よって $\mathrm{UCB}_n < \mathrm{LCB}_{(K)} \le \Theta_K$ となり、宛先 $n$ は除去される。
-#+END_EXPORT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# mode: org
-# End:
+\end{document}
