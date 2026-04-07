@@ -9,6 +9,9 @@
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{revhistory}
+\newenvironment{raddblock}{\color{red}}{}
+\newenvironment{rdelblock}{\color{gray}}{}
 \begin{document}
 
 \title{Research Meeting}
@@ -21,46 +24,105 @@ shun@lsnl.jp}}
 
 \maketitle
 
-\section*{問題設定においていくつか変更を行なった箇所と、確認するポイント}
-\label{sec:org31a2c40}
 
-\subsection*{現在の問題設定(先生の対話から抜粋)}
-\label{sec:org34fe443}
-ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
+\section*{現在のストーリー案の骨格}
+\label{sec:org981813c}
 
-ノードS〜ノードD\_n間のリンク集合 L\_n (\(1 \le n \le N\), N はノードSの隣接ノード数)がそれぞれ入力される。
+\begin{itemize}
+\item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
+\item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
+\item 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
+\end{itemize}
+
+
+\section*{現在の問題設定(先生の対話から抜粋)}
+\label{sec:org840b997}
+
+--- 
+Q. LinkSelfie の論文の問題を拡張したい。
+
+
+ノードS〜ノードD 間のリンク集合 Ｌ だけでなく、
+
+ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
 
 ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
 
-総バウンスコスト C が入力として与えられる。
+
+
+\begin{raddblock}
+固定信頼度delta が入力として与えられる。
+\end{raddblock}
 
 この時、ノードS〜ノードD\_n のノードペアの中で、
 
-K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における
+K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における忠実度が最大のリンクをそれぞれ発見する。
 
-忠実度が最大のリンクをそれぞれ発見する。
-
-ただし、発見するリンクのノードペア数 K は、
-
-重要度と忠実度の積の総和、つまり
-
-I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
-
-が最大となるように定める。
+\begin{raddblock}
+発見するリンクのノードペア数 K は入力として与えられる。
+\end{raddblock}
 
 ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
 
 
+\section*{なぜ変更したか}
+\label{sec:org01b82ea}
+
+\begin{raddblock}
+\begin{itemize}
+\item 固定信頼度delta が入力として与えられる。
+\end{itemize}
+\end{raddblock}
+
+\begin{rdelblock}
+\begin{itemize}
+\item 総バウンスコスト C が入力として与えられる。
+\end{itemize}
+\end{rdelblock}
+
+
+先行研究である、linkselfieの優秀なロジックを活かすことができるため。
+
+\begin{raddblock}
+\begin{itemize}
+\item 発見するリンクのノードペア数 K は入力として与えられる。
+\end{itemize}
+\end{raddblock}
+\begin{rdelblock}
+ただし、発見するリンクのノードペア数 K は、
+
+重要度と忠実度の積の総和、つまり
+
+I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k 
+
+が最大となるように定める。
+\end{rdelblock}
+
+
+重要度と忠実度の積は負にならないので、この変更前の設定だと
+
+発見するリンクのノードペア数 K = 宛先ノードの数
+
+になる。常に全ての宛先を選択することになり、複数の宛先間の重要度を考慮
+する意味がなくなるため。
+
+
+
+
+
+
+
+\clearpage
 
 \subsection*{Kは静的に決まるものかどうか？(確認点、変更点)}
-\label{sec:orga53662f}
-K の扱い: 「K個選ぶ」のか、それとも「スコアの総和を最大化するために K
-も最適化対象とする（ナップサック問題的アプローチ）」のか、厳密な再確認。
+\label{sec:org87176fc}
 
 
-重要度 I も忠実度 F も正の値（0<I,F≤1）であるため、積 I×F は常にプラス
-になる。 したがって、「総和を最大にする K」を求めると、常に K=N（全て
-の宛先を選択する）ことが答えになってしまう。
+
+
+重要度 I も忠実度 F も正の値であるため、積 I×F は常にプラスになる。 し
+たがって、「総和を最大にする K」を求めると、常に K=N（全ての宛先を選択
+する）ことが答えになってしまう。
 
 
 静的にきまる → K が入力として与えられる。K = 3なら上位3個の宛先を選択
@@ -68,7 +130,7 @@ K の扱い: 「K個選ぶ」のか、それとも「スコアの総和を最大
 
 
 \subsection*{制約条件を固定予算ではなく、固定信頼度にする(変更点)}
-\label{sec:orgc263ffc}
+\label{sec:orgc8446f0}
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
 \item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
@@ -88,7 +150,7 @@ K の扱い: 「K個選ぶ」のか、それとも「スコアの総和を最大
 
 
 \subsection*{従来設定との比較}
-\label{sec:org3b73006}
+\label{sec:orgd71d95b}
 
 
 固定予算（Fixed Budget）から固定信頼度（Fixed Confidence）への移行
@@ -123,71 +185,45 @@ delta = 0.05の場合、誤判定率を5\%以下にしないといけない。
 linkselfieのロジックを使うのなら固定信頼度にするべきだと思った。
 
 
-\section*{問題設定(箇条書き形式)}
-\label{sec:org3063713}
-\section{Problem Definition}
+\section*{前までの問題設定(先生の対話から抜粋)}
+\label{sec:orgc60424a}
+ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
 
-本問題を、ネットワークベンチマーキング（NB）の枠組みに基づき、以下の入力、出力、および最適化目標を持つ形式として定義する。
+ノードS〜ノードD\_n間のリンク集合 L\_n (\(1 \le n \le N\), N はノードSの隣接ノード数)がそれぞれ入力される。
+
+ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
+
+総バウンスコスト C が入力として与えられる。
+
+この時、ノードS〜ノードD\_n のノードペアの中で、
+
+K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における
+
+忠実度が最大のリンクをそれぞれ発見する。
+
+ただし、発見するリンクのノードペア数 K は、
+
+重要度と忠実度の積の総和、つまり
+
+I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
+
+が最大となるように定める。
+
+ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
+
+
+\section*{ストーリー案の骨格(redmineより抜粋)}
+\label{sec:org44e813e}
 
 \begin{itemize}
-    \item \textbf{入力 (Input):}
-    \begin{itemize}
-        \item ネットワーク構成: ソースノード $S$ および $N$ 個の宛先ノード集合 $\mathcal{D} = \{D_1, \dots, D_N\}$
-        \item 候補リンク集合: 各ペア $(S, D_n)$ 間の物理リンク集合 $\mathcal{L}_n = \{l_{n,1}, \dots, l_{n, M_n}\}$
-        \item \textbf{バウンス番号セット (Bounce Number Set):} NBで使用するバウンス回数の集合 $\mathcal{M} = \{m_1, m_2, \dots, m_{|\mathcal{M}|}\} \subset \mathbb{N}^{+}$ 
-        \item 重要度: 各宛先 $D_n$ の通信需要 $I_n \in (0, 1]$ (既知の定数)
-        \item 通信制約: 選択する宛先数の上限 $K$ ($1 \le K \le N$)
-        \item 信頼度パラメータ: 許容誤り確率 $\delta \in (0, 1)$
-    \end{itemize}
-
-    \item \textbf{未知パラメータ (Unknown Parameters):}
-    \begin{itemize}
-        \item 各リンク $l \in \mathcal{L}_n$ は未知の真の忠実度 $F_{n,l} \in [0.5, 1.0]$ を持つ。
-        \item 忠実度は基礎となる脱分極パラメータ $p_{n,l}$ と $F_{n,l} = (p_{n,l} + 1)/2$ の関係にある。
-        \item 各バウンス数 $m \in \mathcal{M}$ における真の平均生存確率 $b_{n,l,m}$ は、指数減衰モデル $b_{n,l,m} = A_{n,l} \cdot (p_{n,l})^{2m}$ に従う（$A_{n,l}$ は状態準備・測定誤差を表す定数）。
-    \end{itemize}
-
-    \item \textbf{観測モデル (Observation Model):}
-    リンク $l \in \mathcal{L}_n$ に対してバウンス数 $m \in \mathcal{M}$ で測定を1回行うと、平均が $b_{n,l,m}$ となる確率変数 $X_{n,l,m}$ を観測する。
-    異なる測定試行の間では、互いに統計的独立性 (mutual independence) が成り立つものとする。
-
-    \item \textbf{出力 (Output):}
-    \begin{itemize}
-        \item 選抜宛先集合 $\hat{\mathcal{S}}_{\mathrm{out}} \subset \mathcal{D}$ (ただし $|\hat{\mathcal{S}}_{\mathrm{out}}| = K$)
-        \item 選抜リンク集合 $\hat{\mathcal{L}}_{\mathrm{out}} = \{l_n \in \mathcal{L}_n \mid D_n \in \hat{\mathcal{S}}_{\mathrm{out}}\}$ (各選抜宛先につき1つのリンクを選択)
-    \end{itemize}
-    
-    \item \textbf{仮定 (Assumption):}
-    \begin{itemize}
-        \item \textbf{実現可能性:} 宛先総数は選択数以上である ($N \ge K$)。
-        \item \textbf{タイブレイク:} 目的関数 $J$ を最大化するペア $(\mathcal{S}, \mathcal{L})$ が複数存在する場合、そのうち任意の1つを出力すれば正解とみなす。
-        \item \textbf{回帰実行条件:} アルゴリズムが $p_{n,l}$ および $A_{n,l}$ を一意に推定するために、推定対象となる各リンク $l$ について、少なくとも2つの異なるバウンス数 $m$ で測定が行われる（すなわち $|\{m \in \mathcal{M} : T_{n,l,m} > 0\}| \ge 2$）ものとする。
-    \end{itemize}
-
-    \item \textbf{正解性制約 (Correctness Constraint):}
-    ある宛先集合 $\mathcal{S}$ と、各宛先 $D_n \in \mathcal{S}$ に対して割り当てられたリンク集合 $\mathcal{L} = \{l_n \in \mathcal{L}_n \mid D_n \in \mathcal{S}\}$ に対する評価関数 $J(\mathcal{S}, \mathcal{L})$ を次式で定義する。
-    \begin{equation}
-        J(\mathcal{S}, \mathcal{L}) = \sum_{D_n \in \mathcal{S}} I_n \cdot F_{n, l_n}
-    \end{equation}
-    このとき、アルゴリズムの出力 $(\hat{\mathcal{S}}_{\mathrm{out}}, \hat{\mathcal{L}}_{\mathrm{out}})$ が、真の最適解の集合 $\Omega^*$ に含まれる確率を保証すること。
-    \begin{equation}
-        \mathbb{P}\left( (\hat{\mathcal{S}}_{\mathrm{out}}, \hat{\mathcal{L}}_{\mathrm{out}}) \in \Omega^* \right) \ge 1 - \delta
-    \end{equation}
-    ここで $\Omega^*$ は、以下のように定義される最大化問題を達成する全てのペア $(\mathcal{S}, \mathcal{L})$ の集合である。
-    \begin{equation}
-        \Omega^* = \left\{ (\mathcal{S}, \mathcal{L}) \mathrel{\Bigg|} J(\mathcal{S}, \mathcal{L}) = \max_{\substack{\mathcal{S}' \subset \mathcal{D},\; |\mathcal{S}'|=K \\ l'_n \in \mathcal{L}_n\; (D_n \in \mathcal{S}')}} J(\mathcal{S}', \mathcal{L}') \right\}
-    \end{equation}
-
-    \item \textbf{最適化目標 (Optimization Goal):}
-    正解性制約を満たすアルゴリズムの中で、停止するまでに消費する総バウンス数 (Total Bounce Cost)の期待値を最小化すること。
-    リンク $l$ に対してバウンス数 $m \in \mathcal{M}$ での測定を行った回数を $T_{n,l,m}$ とするとき、総コスト $C_{\mathrm{total}}$ は次式で定義される。
-    \begin{equation}
-        \text{Minimize } \quad \mathbb{E}[C_{\mathrm{total}}] = \mathbb{E}\left[ \sum_{n=1}^{N} \sum_{l \in \mathcal{L}_n} \sum_{m \in \mathcal{M}} T_{n,l,m} \cdot m \right]
-    \end{equation}
+\item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
+\item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
+\item 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
 \end{itemize}
 
-\section*{問題設定(文章)}
-\label{sec:org7919f02}
+
+\section*{新たに定義した問題設定}
+\label{sec:org8ce7f4d}
 
 \section{Problem Formulation}
 
@@ -235,13 +271,15 @@ linkselfieのロジックを使うのなら固定信頼度にするべきだと�
 \paragraph{Assumption 2 (Regression Condition):}
 未知パラメータ $p_{n,l}$ および $A_{n,l}$ を推定可能とするため、アルゴリズムは各リンクについて少なくとも2つの異なるバウンス数 $m$ で測定を行わなければならない。すなわち、最終的な測定回数について $|\{m \in \mathcal{M} : T_{n,l,m} > 0\}| \ge 2$ が成立するものとする。
 
-
-
+\paragraph{Assumption 3 (Uniqueness):}
+各宛先 $n$ 内の最良リンクは一意であり（$\arg\max_{l \in \mathcal{L}_n} p_{n,l}$ が唯一）、
+かつ最適宛先集合 $\mathcal{S}^*$ のスコア境界も一意である（$V_{(K)} \neq V_{(K+1)}$）。
+すなわち、全ての内層ギャップおよび外層ギャップは正（$\Delta_{n,l}^{\mathrm{in}} > 0,\; \Delta_n^{\mathrm{out}} > 0$）であるとする。
 
 
 
 \section*{手法}
-\label{sec:org0624bdc}
+\label{sec:org313816e}
 
 \section{Algorithm: MD-LINKSELFIE}
 
@@ -327,7 +365,7 @@ UCBがこの閾値を下回る宛先は、Top-Kに入る可能性がないため
 停止条件を満たした時点での $\mathcal{A}$ を出力宛先集合 $\mathcal{S}_{\mathrm{out}}$ とし、各宛先 $n \in \mathcal{S}_{\mathrm{out}}$ に残った唯一のリンク $\{l_n\} = \mathcal{S}_n$ を最良リンク $l_n^*$ として出力する。
 
 \section*{解析}
-\label{sec:orgb1a160e}
+\label{sec:orgae7c8ff}
 
 
 \section{Theoretical Analysis}
@@ -339,16 +377,17 @@ UCBがこの閾値を下回る宛先は、Top-Kに入る可能性がないため
 \begin{definition}[Inner Gap]
 宛先 $n$ 内におけるリンク $l \in \mathcal{L}_n$ の内層ギャップ $\Delta_{n,l}^{\mathrm{in}}$ を以下で定義する。
 \begin{equation}
-    \Delta_{n,l}^{\mathrm{in}} := \begin{cases}
-    F_{n,l_n^*} - F_{n,l_n^{(2)}} & \text{if } l = l_n^* \\
-    F_{n,l_n^*} - F_{n,l} & \text{otherwise}
-    \end{cases}
+    \Delta_{n,l}^{\mathrm{in}} := \begin{cases} p_{n,l_n^*} - p_{n,l_n^{(2)}} & \text{if } l = l_n^* \\ p_{n,l_n^*} - p_{n,l} & \text{otherwise} \end{cases}
 \end{equation}
-ここで $l_n^* = \arg\max_{l \in \mathcal{L}_n} F_{n,l}$ は宛先 $n$ 内の最良リンクであり、$l_n^{(2)} = \arg\max_{l \in \mathcal{L}_n \setminus \{l_n^*\}} F_{n,l}$ は2番目に高い忠実度を持つリンクである。
+ここで $l_n^* = \arg\max_{l \in \mathcal{L}_n} p_{n,l}$ は宛先 $n$ 内の最良リンクであり、$l_n^{(2)} = \arg\max_{l \in \mathcal{L}_n \setminus \{l_n^*\}} p_{n,l}$ は2番目に高い脱分極パラメータを持つリンクである。
 \end{definition}
 
-\begin{remark}[Relation between Fidelity and Depolarizing Parameter]
-忠実度 $F$ と脱分極パラメータ $p$ は $F = (p+1)/2$ の線形関係にある。したがって、忠実度空間でのギャップ $\Delta F$ とパラメータ空間でのギャップ $\Delta p$ は $\Delta F = \Delta p / 2$ の関係を持つ。本解析における定数項は、この係数を吸収したものとして扱う。
+\begin{remark}[Choice of Gap Space]
+内層ギャップは信頼区間が直接適用される脱分極パラメータ $p$ の空間で定義している。
+忠実度との関係は $F = (p+1)/2$ であり、$\Delta p = 2 \Delta F$ が成り立つ。
+外層ギャップはスコア $V_n = I_n F_n$ の空間で定義されるが、
+有効ギャップ $\Delta_{n,l}^{\mathrm{eff}}$ の定義における $\Delta_n^{\mathrm{out}} / I_{\max}$
+は $p$ 空間の量とオーダーで整合し、最終的な複雑性上界の $O(\cdot)$ 記法の中で定数差は吸収される。
 \end{remark}
 
 \begin{definition}[Outer Gap]
@@ -363,9 +402,12 @@ UCBがこの閾値を下回る宛先は、Top-Kに入る可能性がないため
 \end{definition}
 
 \begin{definition}[Effective Gap]
-リンク $l \in \mathcal{L}_n$ の有効ギャップ $\Delta_{n,l}^{\mathrm{eff}}$ を次式で定義する。
+リンク $l \in \mathcal{L}_n$ の有効ギャップ $\Delta_{n,l}^{\mathrm{eff}}$ を、宛先 $n$ が最適集合 $\mathcal{S}^*$ に含まれるか否かで場合分けして定義する。
 \begin{equation}
-    \Delta_{n,l}^{\mathrm{eff}} := \max\left( \Delta_{n,l}^{\mathrm{in}}, \frac{\Delta_{n}^{\mathrm{out}}}{I_{\max}} \right)
+    \Delta_{n,l}^{\mathrm{eff}} := \begin{cases}
+    \Delta_{n,l}^{\mathrm{in}} & \text{if } n \in \mathcal{S}^* \\
+    \max\left( \Delta_{n,l}^{\mathrm{in}}, \frac{\Delta_{n}^{\mathrm{out}}}{I_{\max}} \right) & \text{if } n \notin \mathcal{S}^*
+    \end{cases}
 \end{equation}
 ここで $I_{\max} = \max_{n} I_n \le 1$ である。
 \end{definition}
@@ -495,84 +537,8 @@ $\Delta_n^{\mathrm{out}} \ge 4 I_{\max} \varepsilon_s$ のとき、
 よって $\mathrm{UCB}_n < \mathrm{LCB}_{(K)} \le \Theta_K$ となり、宛先 $n$ は除去される。
 
 
-
-
-
-
-
-
-\section{Experimental Setup}
-
-\subsection{Simulator}
-量子ネットワークのシミュレーションは NetSquid v1.1.7（離散イベント量子シミュレータ）を用い、LinkSelFiE サブモジュールの \texttt{NBProtocolAlice}・\texttt{NBProtocolBob}・\texttt{EntanglingConnectionOnDemand} を再利用する。
-
-\subsection{Network Configuration}
-ネットワーク構成は以下の通り。
-\begin{itemize}
-    \item 宛先数 $N = 5$、各宛先のリンク数 $M_n = 5$（全宛先共通）。
-    \item 選択数 $K = 2$。
-    \item バウンス数の集合 $\mathcal{M} = \{1, 2, 3, 4\}$。
-\end{itemize}
-
-全宛先は同一の忠実度プロファイルを持ち、リンク間の分離は均一とする：
-\begin{equation}
-    F_{n,l} = 0.900 - 0.025 \times l, \quad l \in \{0, 1, 2, 3, 4\}
-\end{equation}
-すなわち、各宛先の忠実度リストは $[0.900,\; 0.875,\; 0.850,\; 0.825,\; 0.800]$ で、対応する脱分極パラメータは $p_{n,l} = 2F_{n,l} - 1 = [0.80,\; 0.75,\; 0.70,\; 0.65,\; 0.60]$ となる。
-
-重要度は宛先ごとに異なり、宛先間の分離はもっぱら重要度によって決まる：
-\begin{equation}
-    (I_0, I_1, I_2, I_3, I_4) = (0.8,\; 1.0,\; 0.5,\; 0.9,\; 0.3)
-\end{equation}
-
-これより、各宛先の真の効用は $V_n = I_n \cdot F_{n,0} = I_n \times 0.900$ となり、ランキングは
-\[
-    V_1 = 0.900 > V_3 = 0.810 > V_0 = 0.720 > V_2 = 0.450 > V_4 = 0.270
-\]
-であり、最適解は $\mathcal{S}^* = \{D_1, D_3\}$、$l_1^* = l_3^* = 0$、$J^* = 1.710$ となる。
-
-\subsection{Noise Model}
-チャンネルノイズは除極化ノイズ（Depolarizing）を採用する。
-\texttt{EntanglingConnectionOnDemand} はEPR対の片側（ソース→Alice）のみにノイズチャンネルを適用し、もう片側（ソース→Bob）は理想チャンネルとする。
-エラーパラメータは $\epsilon = 1 - p_{n,l}$ で、NetSquid の \texttt{DepolarNoiseModel}（時間非依存）に渡される。
-
-測定ノイズとして、LinkSelFiE の \texttt{GET\_FIDELITY} 関数により、各サンプルに対して独立に $\mathcal{N}(0,\; 0.015^2)$ のガウスノイズが加える。これは元のLinkSelFiEコードのまま再利用されている。
-
-\subsection{Compared Algorithms}
-以下の2手法を比較する。
-
-\paragraph{Baseline: Per-Destination LinkSelFiE（累積版）}
-各宛先について独立に elimination ループを実行し、最後に $V_n = I_n \cdot (p_{n,l}+1)/2$ でtop-Kを選ぶ。
-サンプルは累積（元のLinkSelFiEの非累積と異なる）で、各フェーズでの新規サンプル数は $\Delta T_s = T_s - T_{s-1}$ とし、REGRESSION は累積平均を用いる。elimination のマージンは $2^{-s}$。
-サンプルスケジュール定数 $C = 0.1$。
-
-\paragraph{MD-LINKSELFIE（累積版・Dual Elimination）}
-全宛先を同時に扱い、リンク内・宛先間の二段階消除を行う。
-リンク内（Inner）消除は UCB/LCB を用い、宛先間（Outer）消除は $K$ 番目大きいLCBの閾値 $\Theta_K$ を用いて、UCB < $\Theta_K$ となる宛先を除去する。
-サンプルも累積で、信頼区間半径は $\varepsilon_s = \sqrt{C_{\mathrm{NB}} \cdot \log\text{-term} / T_s}$。
-サンプルスケジュール定数 $C_{\mathrm{NB}} = 0.1$。
-
-\subsection{Evaluation Metrics}
-\begin{itemize}
-    \item \textbf{Correctness:} 出力 $(\hat{\mathcal{S}}, \hat{\mathcal{L}})$ が $\Omega^*$ に属するか（0 or 1）。
-    \item \textbf{Total Bounce Cost:} $\sum_{n,l,m} T_{n,l,m} \cdot m$（NBProtocol の累積バウンス数）。
-\end{itemize}
-複数试行にわたって正確率と平均コストを報告し、コスト比率（MD / Baseline）も算出する。
-
-\subsection{Reproducibility}
-各実験には整数シード（デフォルト $42$）を与え、\texttt{numpy}・\texttt{random}・NetSquid の乱数生成器を全て同一シードで初期化する（\texttt{set\_random\_seed}）。
-各trialsのシードは $\texttt{np.random.default\_rng(42)}$ から順次生成されるため、同じ引数で実行すれば実験は完全に再現される。
-各trial内では Baseline と MD に同じ trial seed を与え、ネットワークは毎回 \texttt{ns.sim\_reset()} で再生成する。
-
-
-
-
-
-
-
-
 \subsection*{信頼度deltaの扱いについて}
-\label{sec:org5aa4aa0}
+\label{sec:org9ca209b}
 
 linkselfieにおけるdelta
 
@@ -606,10 +572,10 @@ Kに入るべき宛先を、誤って「圏外」と判断して捨ててしま�
 
 
 \section*{ストーリー案での確認点}
-\label{sec:orgc83579d}
+\label{sec:orgff0c909}
 
 \subsection*{ストーリーの骨格}
-\label{sec:org5743b31}
+\label{sec:org8910e5b}
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
 \item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
@@ -617,7 +583,7 @@ Kに入るべき宛先を、誤って「圏外」と判断して捨ててしま�
 \end{itemize}
 
 \subsection*{ストーリーの骨格での質問}
-\label{sec:orge190cca}
+\label{sec:org2be37d1}
 \begin{itemize}
 \item 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
 \end{itemize}
@@ -631,7 +597,7 @@ Kに入るべき宛先を、誤って「圏外」と判断して捨ててしま�
 
 \clearpage
 \section*{エンタングルメント生成にかかる費用を計算する}
-\label{sec:org98fae0b}
+\label{sec:org5c05277}
 
 結論 距離によって変化するが、ほぼ0円
 
@@ -654,7 +620,7 @@ A,B間で1エンタングルメント生成するのにかかるコストは何�
 
 
 \section*{じゃあなぜエンタングルメントは高コストと言われているのか？}
-\label{sec:org883d669}
+\label{sec:org48604ca}
 
 エンタングルメントの生成成功率が極めて低く、品質維持も困難だから。
 
@@ -703,7 +669,7 @@ A,B間で1エンタングルメント生成するのにかかるコストは何�
 
 
 \section*{40バウンスが高コストなのかどうか}
-\label{sec:orgd487395}
+\label{sec:org55e5280}
 エンタングルメント生成にかかるコストは上述した通り、コストに比例して指
 数関数的に増えていくので距離によるが、非常に高コストであると言える。
 
@@ -744,7 +710,7 @@ A,B間で1エンタングルメント生成するのにかかるコストは何�
 
 
 \subsection*{補足}
-\label{sec:org530ce25}
+\label{sec:org72d20ea}
 linkselfie、NBは抽象的なネットワークモデルに基づいており、以下の3つの
 機能を持つノードであれば、基礎となるハードウェアに関わらず適用できると
 されている。
@@ -763,9 +729,9 @@ linkselfie、NBは抽象的なネットワークモデルに基づいており�
 
 
 \section*{現行ストーリーの問題設定における提案}
-\label{sec:org38eac90}
+\label{sec:org0edab06}
 \subsection*{ストーリーの骨格}
-\label{sec:orge27df35}
+\label{sec:org271fe38}
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
 \item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
@@ -773,7 +739,7 @@ linkselfie、NBは抽象的なネットワークモデルに基づいており�
 \end{itemize}
 
 \subsection*{現在の問題設定}
-\label{sec:org4b15d7b}
+\label{sec:orgbbeb888}
 ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
 ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
 ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
@@ -789,7 +755,7 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 
 \subsection*{提案}
-\label{sec:orgfd46e66}
+\label{sec:org725c5cd}
 
 \begin{itemize}
 \item 変更前
@@ -813,7 +779,7 @@ U_{\text{total}}
 （ここで \(F_{\text{th}}\) は通信に必要な最低忠実度である。）
 
 \subsection*{物理的な動機}
-\label{sec:org06f04a5}
+\label{sec:orgd8a5e76}
 
 量子通信には『使えない領域』と『使える領域』の明確な境界がある
 
@@ -840,7 +806,7 @@ U_{\text{total}}
 
 
 \subsection*{アルゴリズム的な動機}
-\label{sec:orge40e776}
+\label{sec:org201e4bb}
 忠実度 0.91 と 0.92 の差は、絶対値で見ればわずか約 1\% である。単純な掛
 け算（I×F）では、この差が重要度 I の大小に埋もれてしまう。
 
@@ -858,7 +824,7 @@ U=I×max(0,F−Fth​)
 
 
 \subsection*{用語の説明}
-\label{sec:org57630db}
+\label{sec:org4db8d6e}
 蒸留とは、複数の低品質なエンタングルメント対を消費して、高品質なペアを
 抽出（純粋化）するプロトコルである。このプロセスにおいて、初期忠実度
 が特定のしきい値 Fth​（例: 0.5やそれ以上の特定値）を下回っている場合、
@@ -873,7 +839,7 @@ QKDにおいては、量子ビット誤り率（QBER）が保安限界（例: BB
 
 
 \subsection*{論文での説明のイメージ}
-\label{sec:org2967baa}
+\label{sec:orgea4bdee}
 効用関数の定義について 量子通信において、忠実度 F がしきい値 Fth​ をわ
 ずかに超えた程度では、蒸留効率（Distillation Yield）は極めて低く、実効
 的な通信レートはゼロに近い。 そのため、リンクの効用は単純な F ではなく、
@@ -888,7 +854,7 @@ U=I×max(0,F−Fth​) を採用する。これは蒸留可能エンタングル
 
 
 \section*{複数の宛先をどのように解釈するか}
-\label{sec:orgd8e2b93}
+\label{sec:org311d62f}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{/home/shun/quantum/meeting/figure/toporogi.eps}
@@ -913,7 +879,7 @@ U=I×max(0,F−Fth​) を採用する。これは蒸留可能エンタングル
 
 
 \section*{手法(どのような手法でこの問題をとくか)}
-\label{sec:org081485d}
+\label{sec:org3148dff}
 
 LinkSelFiE はすべてのリンクを公平に扱い、忠実度が低いものを捨てる手法
 である。 今回の提案手法はこれを拡張し、以下の2段階の「足切り（Pruning）」
@@ -935,7 +901,7 @@ LinkSelFiE はすべてのリンクを公平に扱い、忠実度が低いもの
 
 
 \subsection*{具体的なアルゴリズムの手順}
-\label{sec:orga0f36df}
+\label{sec:orga9f567a}
 
 
 
@@ -991,7 +957,7 @@ U_n^{\min}
 
 
 \section*{この研究の分野}
-\label{sec:org261b48b}
+\label{sec:orga60a5c5}
 関連研究を調べたところ、全く同じ研究は存在しなかった。
 
 似ている研究
@@ -1016,19 +982,19 @@ U_n^{\min}
 
 
 \section*{これまでやったこと}
-\label{sec:org353bfc6}
+\label{sec:org113db6d}
 
 \subsection*{ソサイエティ}
-\label{sec:org43a1571}
+\label{sec:org53f49a9}
 通信需要 (リンク利用率) を重みとして導入し、有限なバウンスコスト下で需
 要×忠実度スコアが最大となるリンクを選定可能とする評価手法を考案した。
 
 
 
 \subsection*{ソサイエティ後}
-\label{sec:org46e21a9}
+\label{sec:org13f5b7a}
 \subsubsection*{先生から頂いたaiとの対話の抜粋}
-\label{sec:orgd19be05}
+\label{sec:org05350d7}
 ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
 ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
 ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
@@ -1048,7 +1014,7 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k という目的関数を最大化
 linkselfieの分析を始めた。具体的には以下のようなことが分かった。
 
 \subsubsection*{linkselfieのアルゴリズムの流れ}
-\label{sec:orgcf57c1b}
+\label{sec:org7171704}
 \begin{enumerate}
 \item 全てのリンクに対し、少量の資源を使い、おおまかな忠実度を推定する。
 \item 明らかに低い忠実度と判断されたリンクを除外。
@@ -1096,7 +1062,7 @@ NB は1本のリンクの平均忠実度を推定するのに 数千バウンス
 
 
 \subsection*{NBの改善}
-\label{sec:orgae66cdd}
+\label{sec:orgbdc1e60}
 
 そこで、linkselfieにおいて忠実度推定のサブルーチンとして使用されている
 NBの忠実度推定精度を向上させることで、目的関数 I = \(\sum\)\_\{k = 1\}\^{}K
@@ -1106,7 +1072,7 @@ I\_s\_k * F\_s\_kをより少ないコストで効率的に最大化できるの
 
 
 \subsubsection*{1つ目の手法}
-\label{sec:org36dc1d0}
+\label{sec:org7f1959f}
 フィッシャー情報量に基づいて最適なmと測定回数を割りあてる手法を考案し
 た。
 linkselfieにおいて、NBはバウンス長 m に対して均一な測定回数N\_mを割り
@@ -1142,7 +1108,7 @@ m を特定。
 
 
 \subsubsection*{2つ目の手法}
-\label{sec:org30ce27a}
+\label{sec:orgf4f580a}
 NBの特性から、mごとの分散が m の大きさに依存して変化することが知られて
 いる。しかし、NBでは全ての m が等分散であることを仮定しており、最小二
 乗法によるフィッティングが行なわれている。
@@ -1232,7 +1198,7 @@ RBとNBの違いを明確化し、NBならではのコスト効率化をしな�
 
 
 \subsection*{NBの説明}
-\label{sec:org8433fb4}
+\label{sec:org4e8b739}
 ノードA、ノードB間の通信路の品質を推定する時の動き
 
 
@@ -1276,14 +1242,14 @@ S_{OLS} = \sum_{m \in \mathbb{M}} (\bar{b}_m - A f^m)^2
 
 
 \subsection*{お聞きしたいこと}
-\label{sec:orgd8354a5}
+\label{sec:orgd14a845}
 
 \subsubsection*{卒論はどの研究を書くべきか？(ソサイエティの研究テーマか、NBの研究テーマか、両方か)}
-\label{sec:orgdf35c04}
+\label{sec:orge72a90f}
 
 
 \subsubsection*{compsacに採択される論文を書きたいです。今のテーマのまま研究を進めても先行研究と似た内容になってしまうことを恐れています。どのようなアクションをとればいいですか？}
-\label{sec:orgd40e84b}
+\label{sec:org9c5c65e}
 
 
 \begin{itemize}
@@ -1302,7 +1268,7 @@ S_{OLS} = \sum_{m \in \mathbb{M}} (\bar{b}_m - A f^m)^2
 
 
 \section*{今週話したいこと}
-\label{sec:org3b99385}
+\label{sec:org4a691ae}
 \begin{itemize}
 \item ストーリー案トピックセンテンス
 \item 評価方法(効率的な資源配分をどう示すか)
@@ -1310,16 +1276,16 @@ S_{OLS} = \sum_{m \in \mathbb{M}} (\bar{b}_m - A f^m)^2
 
 
 \subsection*{同数の bounce を使用した時の estimated error を比較する}
-\label{sec:org35114d9}
+\label{sec:org09b8e12}
 サンプルサイズ5倍に増やして実験中。
 結果はまだ取れていない。
 
 \subsection*{ストーリー案トピックセンテンス}
-\label{sec:org7990346}
+\label{sec:org0c604f1}
 title バウンス長ごとの非均一測定回数配分を許容するネットワークベンチマーキング拡張に関する一提案
 
 \subsubsection*{背景1: 量子ネットワークでは、効率的な忠実度推定をするプロトコルが考案されている}
-\label{sec:org28c1a05}
+\label{sec:org9f7c6cb}
 \begin{itemize}
 \item 量子ネットワークでは、リンクを測定し、忠実度の高いリンクを判別する際
 に、すべてのリンクに一様に測定を行うことはリソースの浪費となるため、
@@ -1329,7 +1295,7 @@ title バウンス長ごとの非均一測定回数配分を許容するネッ�
 
 
 \subsubsection*{背景2: 既存プロトコルは、NBを採用している}
-\label{sec:orge6fe547}
+\label{sec:org8969d41}
 \begin{itemize}
 \item LinkSeLFiEやQBGP等の既存プロトコルは、ネットワークトポロジーの知識な
 しにリンクの平均忠実度を推定できるという特長から、Network
@@ -1338,7 +1304,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection*{背景3: NBは複数のバウンス長に対して均一な測定回数で忠実度を推定する}
-\label{sec:org474264f}
+\label{sec:org822b096}
 \begin{itemize}
 \item NBは、あらかじめ定めた複数のバウンス長 m ∈ M それぞれに対して同一の
 測定回数を割り当て、得られた生存確率を指数モデルにフィッティングする
@@ -1346,14 +1312,14 @@ Benchmarking（NB）をサブルーチンとして採用している。
 \end{itemize}
 
 \subsubsection*{背景4: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する}
-\label{sec:orgeccb156}
+\label{sec:org9113986}
 \begin{itemize}
 \item NBにおいて、情報利得を最大化する最適なバウンス長が定義でき、これを選
 択することで同一コストに対する不確実性の削減量を最大化できる。
 \end{itemize}
 
 \subsubsection*{動機: NBは均一配分の制約により効率的にリソース配分することができない}
-\label{sec:orgf355305}
+\label{sec:org13aeba9}
 \begin{itemize}
 \item しかし、NBは全てのバウンス長に対して均一な測定回数を割り当てることを
 前提としており、情報利得の高いバウンス長に測定回数を集中させるような
@@ -1362,19 +1328,19 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection*{目的: NBを非均一配分可能なように拡張する}
-\label{sec:orgd153fa5}
+\label{sec:orgdd62e69}
 \begin{itemize}
 \item 本研究の目的は、NBを非均一配分可能なように拡張し、シミュレーションに
 より効率的な資源配分が可能になることを示す。
 \end{itemize}
 
 \subsubsection*{手法}
-\label{sec:org84bc650}
+\label{sec:org54e737c}
 検討中。
 現在は重みつき最小二乗法で実装中
 
 \subsubsection*{研究の問い}
-\label{sec:orge884d2b}
+\label{sec:org7fa23d6}
 \begin{itemize}
 \item 非均一測定回数配分を許容することでリソース(総バウンス数)はどの程度削
 減できるのか？
@@ -1383,7 +1349,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection*{主要な貢献}
-\label{sec:org5d2d263}
+\label{sec:org0124232}
 \begin{itemize}
 \item バウンス長ごとに異なる測定回数を許容するNBの拡張手法の提案
 \item シミュレーションによる提案手法のリソース削減効果の定量的評価
@@ -1391,7 +1357,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsection*{評価方法(効率的な資源配分をどう示すか)}
-\label{sec:orgeb13ba5}
+\label{sec:orgb42a53c}
 \begin{itemize}
 \item 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるかで比較する
 \end{itemize}
@@ -1399,7 +1365,7 @@ Benchmarking（NB）をサブルーチンとして採用している。
 
 
 \subsubsection*{originalのNBの実験設定と結果}
-\label{sec:org50c6866}
+\label{sec:org26e5ff9}
 \begin{itemize}
 \item バウンス数の範囲: 2〜20 (19点)
 \end{itemize}
@@ -1413,7 +1379,7 @@ Network link fidelity = 0.899 ± 0.004 \\
 
 
 \subsubsection*{どのように比較する予定か}
-\label{sec:org88367c6}
+\label{sec:orgf99e4d3}
 \begin{itemize}
 \item 同じ総バウンス数のときに"相対不確かさ"をどれだけ減らせるか
 \end{itemize}
@@ -1424,7 +1390,7 @@ Network link fidelity = 0.899 ± 0.004 \\
 
 
 \subsection*{同数の bounce を使用した時の estimated error を比較する}
-\label{sec:orga092599}
+\label{sec:org042dac0}
 
 \begin{figure}[htbp]
 \centering
@@ -1481,7 +1447,7 @@ pathの本数が4本では無い場合、サンプル数をさらに増やし、
 
 
 \subsection*{今回の検証で分かったこと}
-\label{sec:org506b808}
+\label{sec:org0c162c6}
 linkselfieの実験設定では、
 1リンクあたり40バウンス投資すると、
 高確率で忠実度が最も高いリンクを発見することが可能。
@@ -1490,7 +1456,7 @@ linkselfieの実験設定では、
 (今後追加検証をする予定)
 
 \subsection*{この結果から分かること}
-\label{sec:org2d572f7}
+\label{sec:org3eb019f}
 linkselfieの実験設定で、
 最適リンク判別をするだけならば、
 1リンクあたり40バウンス投資する、
@@ -1499,20 +1465,20 @@ linkselfieの実験設定で、
 
 
 \subsection*{ここから考えたこと}
-\label{sec:org078343d}
+\label{sec:org26cc9cc}
 1リンクあたり40バウンス投資する、
 素朴な均等配分アルゴリズムよりも少ないバウンスで、
 最適リンク判別をするにはどうすればいいのか。
 
 
 \subsection*{考えた結果}
-\label{sec:org2a4a888}
+\label{sec:org4469039}
 忠実度推定のためにサブルーチンとしてアルゴリズム内部で使用されている
 ネットワークベンチマーキング（NB）プロトコルを改善することで解決できる
 のではないか
 
 \subsection*{詳しい説明}
-\label{sec:orga5047f5}
+\label{sec:org199669e}
 linkselfieでは1回のNBで10バウンス使用する設定。つまり10バウンス単位で
 の測定をしている。
 
@@ -1569,9 +1535,9 @@ link3 2NB → +0.5NB → +0.5NB → X  合計30バウンス
 
 
 \subsection*{ストーリー案トピックセンテンス}
-\label{sec:orgde21295}
+\label{sec:org33022ba}
 \subsubsection*{背景1: 量子ネットワークでは、オンライン学習による忠実度推定が必要である}
-\label{sec:org3c8f997}
+\label{sec:org59ff968}
 量子ネットワークでは、
 ノイズにより品質が未知である多数の量子リンクの中から、
 忠実度の高いリンクを高精度で判定する際に
@@ -1582,7 +1548,7 @@ link3 2NB → +0.5NB → +0.5NB → X  合計30バウンス
 
 
 \subsubsection*{背景2: オンライン推定を行う既存プロトコルは、NBを採用している}
-\label{sec:orge796e03}
+\label{sec:orgf1d760d}
 LinkSeLFiEやQBGP等の既存プロトコルは、
 SPAMエラーとリンク品質を指数モデルへのフィッティングにより分離推定でき、
 トポロジーの知識を必要としない、
@@ -1590,7 +1556,7 @@ Network Benchmarking (NB) をサブルーチンとして採用している。
 
 
 \subsubsection*{背景3: NBには情報利得（Fisher情報量）が最大となる特定の m が存在する}
-\label{sec:orgd60de6a}
+\label{sec:org052a86d}
 NBには、
 バウンス長 m に対して2m個のエンタングルメントペアを消費することから、
 1エンタングルメントあたりのFisher情報量として定義される情報利得 I(pi, m) = 16Ai²mp\^{}(4m-2)i を最大化する、
@@ -1598,7 +1564,7 @@ NBには、
 これを選択することで同一コストに対する不確実性の削減量を最大化できる。
 
 \subsubsection*{背景4: NBの均一配分するという制約がリンク選択、経路選択アルゴリズムと統合する際に障壁となっている}
-\label{sec:orga8f108b}
+\label{sec:org2087e03}
 NBは全てのバウンス長に対して均一な測定回数を割り当てることを前
 提としており、LinkSeLFiEではその制約が推定精度への寄与度が低いバウンス
 長にも無駄なリソースを消費する原因となっている。
@@ -1608,7 +1574,7 @@ NBは全てのバウンス長に対して均一な測定回数を割り当てる
 ロバストにAを求めれない可能性がある。
 
 \subsubsection*{動機: 非均一配分を許容するNBの拡張が必要である}
-\label{sec:orgf834876}
+\label{sec:org9abd1a6}
 これらの問題を解決するために、
 情報利得の高いバウンス長に基づき探索効率を最大化でき、
 フィッティング係数 Aをロバストに回帰できる、
@@ -1616,23 +1582,23 @@ NBは全てのバウンス長に対して均一な測定回数を割り当てる
 
 
 \subsubsection*{目的: 本研究の目的は、NBを非均一配分可能なように拡張することである}
-\label{sec:orga93745a}
+\label{sec:org171ba69}
 
 
 \subsubsection*{手法}
-\label{sec:orge7ce09b}
+\label{sec:orgbac394d}
 
 
 
 
 \subsection*{今後の予定}
-\label{sec:orgc3657d2}
+\label{sec:orga750ced}
 linkselfieが行なった実験に誤解を生ませるような内容があることを主張する
 論文は保険として進めながら、今回提案したストーリー案の研究を並行して行
 なう予定。
 
 \subsection*{E（Example：具体例）}
-\label{sec:org1a09696}
+\label{sec:org752df29}
 LinkSeLFiEが目指す「最小限の量子資源で、最も高
 忠実度なリンクを特定し、その忠実度を正確に推定する」という目的が、
 LinkSeLFiEよりもはるかに少ない資源と単純な戦略（均等配分戦略）によって

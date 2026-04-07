@@ -1,0 +1,107 @@
+% -*- LaTeX -*-
+% 
+% A simple LaTeX style file for recording revision history.
+% Copyright (c) 2004, Hiroyuki Ohsaki.
+% All rights reserved.
+% 
+% $Id: revhistory.sty,v 1.13 2021/10/02 01:31:26 ohsaki Exp ohsaki $
+% 
+
+\usepackage{ifthen}
+\usepackage{color}
+\usepackage{ulem}
+
+\definecolor{gray}{rgb}{.6,.6,.6}
+\definecolor{DarkGreen}{rgb}{.0,.5,.0}
+
+\newcommand{\revhead}{}
+\newcounter{revcount}[section]
+
+\newcommand{\radd}[1]{%
+  \textcolor{red}{#1}}
+
+\newcommand{\rdel}[1]{%
+  \textcolor{gray}{\sout{#1}}}
+
+% usage \rev[FOOTNOTE_TEXT]{ORIGINAL_TEXT}{MODIFIED_TEXT}
+\newcommand{\rev}[3][]{%
+  \rdel{#2}%
+  \radd{#3}%
+  \ifthenelse{\equal{#1}{}}{}{%
+    \addtocounter{revcount}{1}%
+    \renewcommand{\revhead}{%
+      \ifthenelse{\value{section} > 0}{%
+        \ifthenelse{\value{subsection} > 0}{%
+          \arabic{section}.\arabic{subsection}--\arabic{revcount}}{%
+          \arabic{section}--\arabic{revcount}}}%
+      {\arabic{revcount}}}%
+    \marginpar{\revhead}%
+    \renewcommand{\@makefnmark}{}%
+    \footnote{\revhead. #1}}}
+
+\newcommand{\subj}[1]{%
+  \textcolor{DarkGreen}{\underline{#1}}}
+
+\newcommand{\pred}[1]{%
+  \textcolor{DarkGreen}{\underline{#1}}}
+
+% use \importrevisions for incorporating all changes
+\newcommand{\importrevisions}{
+  \renewcommand{\radd}[1]{##1}
+  \renewcommand{\rdel}[1]{}
+  \renewcommand{\rev}[3][]{##3}
+}
+
+% use \discardrevisions for discarding all changes
+\newcommand{\discardrevisions}{
+  \renewcommand{\radd}[1]{}
+  \renewcommand{\rdel}[1]{##1}
+  \renewcommand{\rev}[3][]{##2}
+}
+
+% \documentclass{jarticle}
+% \usepackage{revhistory}
+% 
+% \begin{document}
+% 
+% \title{グリッドコンピューティング\rev{の}{について}研究}
+% \author{関学 太郎}
+% \maketitle
+% 
+% \section{研究の目的}
+% 
+% 大規模な Grid コンピューティングを実現するためには、
+% \rev{非常に}{きわめて} 高速なネットワークが不可欠である。
+% 
+% 現在の \radd{低速な} インターネットで用いられているトラヒック
+% 制御方式は、比較的低速な通信回線を前提として設計されている。
+% 
+% このため、超高速かつ広域を必要とする Grid に対しては、
+% \rev[ミーティングのコメントを反映]{既存のインターネットとは異なる
+%   アプローチが必要となる}{従来の典型的な性能評価手法は適用できない}。
+% 
+% \rdel{最終的には、} \radd{$\lambda$} Grid 
+% \subj{コンピューティング}のための、
+% 超高速かつ広域ネットワークアーキテクチャの設計を\pred{目指す}。
+% 
+% % 以下、正しくない日本語のサンプルです。主語・述語対応していません。
+% % \subj{}、\pred{} で囲むと、文の構造が間違っていることがわかります。
+% 
+% グラフ上の\subj{ランダムウォーク}とは、
+% グラフにおけるある始点ノードから移動を開始したエージェントが、
+% 現在訪問しているノードの隣接ノードからランダムに次の移動先を選択することで、
+% グラフ上を移動する移動\subj{モデルである}。
+% % 主語なし
+% 拡張性と実装の容易から、
+% 未知のグラフにおけるサンプリング手法として広く\subj{用いられている}。
+% 
+% % 主語なし
+% 一方で、スペクトル指標を求めるにはグラフの固有値が必要となるため、
+% グラフの全体構造を把握する\pred{必要がある}。
+% % 主語なし
+% しかし、実際にはネットワークの完全な構造情報を得るには\pred{制限がある}。
+% 例えば、多くのオンラインソーシャルネットワークにおいて、
+% ユーザのプライバシーを保護するため、
+% 制限付きの API を介してネットワークのデータを\subj{取得することのみ}が\pred{許されている}。
+% 
+% \end{document}
