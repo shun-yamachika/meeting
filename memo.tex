@@ -3,13 +3,15 @@
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage[dvipdfmx]{graphicx}
 \DeclareGraphicsExtensions{.eps,.pdf,.png}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{revhistory}
+\usepackage{enumitem}
+\setlist{itemsep=0pt, parsep=0pt, topsep=2pt}
 \newenvironment{raddblock}{\color{red}}{}
 \newenvironment{rdelblock}{\color{gray}}{}
 \begin{document}
@@ -25,48 +27,46 @@ shun@lsnl.jp}}
 \maketitle
 
 
-\section*{現在のストーリー案の骨格}
-\label{sec:orga133276}
-
-\begin{itemize}
-\item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
-\item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
-\item 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
-\end{itemize}
 
 
 \section*{現在の問題設定(先生の対話から抜粋)}
-\label{sec:org7674224}
+\label{sec:org4a41cdd}
 
 --- 
 Q. LinkSelfie の論文の問題を拡張したい。
 
 
-ノードS〜ノードD 間のリンク集合 Ｌ だけでなく、
+\begin{itemize}
+\item ノードS〜ノードD 間のリンク集合 Ｌ だけでなく、ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
 
-ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
-
-ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
-
+\item ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
+\end{itemize}
 
 
-\begin{raddblock}
-固定信頼度delta が入力として与えられる。
-\end{raddblock}
-
-この時、ノードS〜ノードD\_n のノードペアの中で、
-
-K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における忠実度が最大のリンクをそれぞれ発見する。
 
 \begin{raddblock}
-発見するリンクのノードペア数 K は入力として与えられる。
+\begin{itemize}
+\item 固定信頼度delta が入力として与えられる。
+\end{itemize}
 \end{raddblock}
 
-ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
+\begin{itemize}
+\item この時、ノードS〜ノードD\_n のノードペアの中で、K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における忠実度が最大のリンクをそれぞれ発見する。
+\end{itemize}
+
+\begin{raddblock}
+\begin{itemize}
+\item 発見するリンクのノードペア数 K は入力として与えられる。
+\end{itemize}
+\end{raddblock}
+
+\begin{itemize}
+\item ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
+\end{itemize}
 
 
 \section*{なぜ変更したか}
-\label{sec:org2861ca5}
+\label{sec:orgdfac524}
 
 \begin{raddblock}
 \begin{itemize}
@@ -101,16 +101,120 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 重要度と忠実度の積は負にならないので、この変更前の設定だと
 
-発見するリンクのノードペア数 K = 宛先ノードの数
+\begin{itemize}
+\item 発見するリンクのノードペア数 K = 宛先ノードの数
+\end{itemize}
 
 になる。常に全ての宛先を選択することになり、複数の宛先間の重要度を考慮
 する意味がなくなるため。
 
 
 
+\section*{現在のテーマの問題点}
+\label{sec:org00a2b90}
+\begin{itemize}
+\item 固定信頼度と K 本の選択を同時に採用している点
+\end{itemize}
+
+この問題設定から想定されるシナリオごとに問題点が異なる。
+
+\subsection*{シナリオ1}
+\label{sec:org3a5608a}
+
+\begin{itemize}
+\item 選ばれた K 本のリンクを全て使う前提のシナリオ。
+\end{itemize}
+
+例) 送信者（配信元のオリジナルサーバー）が、世界中にあるN個の中継サー
+バーにデータを送りたいと考えている。オリジナルサーバーのアップロード回
+線には上限があるため、全員に直接データを送ることはできない。オリジナル
+サーバーが直接コネクションを張れる最大数 K があらかじめ入力される。最
+も回線が太く、他の多くのノードへ効率よくデータを送信してくれそうな K
+個の中継ノードを選択して通信を行うとき。
+
+
+上位 K 位のリンクと K + 1 位のリンク間に価値の差があるので固定信頼度と
+K 本を組合せても違和感は無い。
+
+\subsubsection*{なぜ違和感がないか}
+\label{sec:orgbc2c1f0}
+N = 5、K = 3、固定信頼度 delta = 0.1のとき。我々の問題設定では
+
+5個の宛先の中から、それぞれの宛先間にまたがるリンクの質と宛先の重要度
+をもとに、上位 3 個の宛先とそれらの宛先間にまたがる最高の質のリンクを
+1 - 0.1(固定信頼度) = 0.9 (90\%)以上の確率で選択する必要がある。
+
+あらかじめ入力されたコネクションを張れる最大数 K 本のリンク全てを最も
+効果的に使うことができるので違和感が無いと思った。
+
+
+\subsection*{シナリオ1の問題点}
+\label{sec:orgd9b170e}
+\begin{itemize}
+\item N や K が非常に大きくなるような、結果的に上位 K 本目のリンクと K+1
+本目のリンクの価値の差が小さくなる状況では少し無理がある問題設定になっ
+てしまう可能性がある。
+
+\item 量子ネットワークでこれに相当するシナリオがあまり思いつかない。
+\end{itemize}
+
+
+
+\subsection*{シナリオ2}
+\label{sec:org7b69480}
+\begin{itemize}
+\item 選ばれた K 本のリンクを全て使わない前提のシナリオ。
+\end{itemize}
+
+例) 送信者 S と最終目的地 D\_L の間に網目状の大規模な中継ノード群がある。
+各中継ノードは1ホップ先のノードまでしかルーティングテーブルに登録され
+ていないため、登録されている1ホップ先の N個のノードから K 個のノードを
+選択する動作を繰り返していく。最終的にS - D\_L間に確立されたリンクから
+最も良いリンクを使用して通信する。
+
+選んだ上位 K 本のリンクと選ばれなかった K + 1 本目のリンク間にあまり価
+値の差がない(最終的には1本しか使わない)ので固定信頼度と K 本を組合わせ
+に違和感がある。
+
+このようなシナリオでは固定信頼度 + K 本選択は厳しい
+
+
+\section*{どうしたいか}
+\label{sec:orgf6e73e9}
+今後の研究を進める上で、シナリオ1か、シナリオ2、または別の新たなシナリ
+オを想定するのかある程度決めておくべきだと思った。現在はとりあえず違和
+感が無いシナリオ1を想定して研究を進めているが、今後の研究ではシナリオ2
+のようなより大きな問題に拡張するのもありだと思った。
 
 
 
 
-\clearpage
+\section*{現在のストーリー案の骨格}
+\label{sec:org7e81646}
+
+\begin{itemize}
+\item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
+\item 動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
+\item 目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
+\end{itemize}
+
+
+\section*{研究の問い}
+\label{sec:orgf687ef1}
+
+本研究では、以下の問いに対して理論的および実践的な洞察を提供することを目指します 。
+
+\begin{itemize}
+\item 宛先の重要度とリンクの忠実度を組み合わせた重要度加重スコアに基づき、
+誤り確率を最大で δ とした条件下で、上位 K 個の宛先とその最適なリンク
+を特定する問題をどのように定式化できるか？
+
+\item 各宛先内での最適リンク特定と宛先間での上位 K 個の選択を共同で行うこ
+とで、不要な測定を削減する適応型アルゴリズムを設計できるか？
+
+\item 重要度加重スコアのギャップや宛先内の忠実度ギャップといった、識別の困
+難さを捉える指標を用いて、測定コストをどのように特性評価できるか？
+
+\item 提案手法は、代表的な量子ノイズ環境下において規定の信頼水準を達成できるか？
+\end{itemize}
 \end{document}
