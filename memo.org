@@ -58,6 +58,224 @@ shun@lsnl.jp}}
   
 
 
+* COMPSAC査読結果
+** Review1
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 3 (Strong Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+
+*** Strong Aspects
+The paper presents a well-structured approach to improving software
+system reliability using an automated framework that combines recent
+machine learning techniques with system-level monitoring and analysis.
+
+The suggested methodology is a practical pipeline that
+collects runtime data, analyzes system behavior, and employs
+data-driven techniques to discover performance and reliability
+issues.
+
+The experimental evaluation indicates measurable advances in
+system behavior analysis, as well as the suggested framework's
+usefulness across sample scenarios.
+
+Overall, the paper tackles an important issue in modern software
+systems and proposes a workable solution that may be implemented in
+real-world scenarios.
+
+*** Weak Aspects
+The evaluation is performed on a limited number of scenarios and system configurations.
+# 問題: 論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。
+
+While the results show that the proposed method is effective, more
+experiments with larger datasets and more different system contexts
+would help to evaluate the framework's robustness and wide applicability.
+# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。)
+
+# 問題: 比較手法が少ない。異なるシステムに応用されている似たような手法
+# でも比較手法として検討できるのでは？
+
+
+*** Recommended Changes
+The paper could be improved by extending the evaluation to cover more
+datasets and system configurations.
+# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。)
+
+Further comparisons with other current approaches to automated system
+monitoring and analysis would help to highlight the suggested method's
+advantages.
+# 問題: 比較手法が少ない。計3手法しか結果にplotされていない。そのうち2
+# 手法は今回考案したもので、1手法は平等に比較できない手法(重要度を考慮
+# しない手法)。
+# 問題: モダンな手法が比較手法に存在しない。
+
+Additional discussion on scalability and deployment considerations in
+large-scale environments will greatly improve the contribution.
+# 問題: 今後の展望として大規模ネットワークへの活用を検討すべき
+
+
+* Review2
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+** Strong Aspects
+The paper addresses a relevant problem in quantum networks by
+incorporating destination importance into high-fidelity link
+selection.
+
+It also presents a clear algorithmic design with theoretical analysis
+and simulation results across multiple noise models.
+
+** Weak Aspects
+The novelty is moderate, as the work mainly extends existing
+link-selection and bandit-based approaches to a demand-aware Top-K
+setting.
+# 問題: 新規性が並程度しかない。既存手法を単にTop-K問題に拡張している
+# だけにしかみえない。
+
+The evaluation is limited to simulations, and performance under
+amplitude damping shows reduced robustness due to model mismatch.
+# 疑問: 評価がシミュレーションだけにとどまっている。とあるが、解析は？
+
+# 問題: amplitude damping下の結果はモデルのロバスト性の低さを示してい
+# る。
+
+** Recommended Changes
+The paper would benefit from a clearer explanation of its novelty
+relative to prior methods such as LinkSelFiE and related Top-K
+selection work.
+
+# 問題: Linkselfieや、既存のTop-K選択手法と比較した本研究の新規性が述
+# べられていない。
+
+It would also be helpful to expand the discussion of robustness under
+non-Pauli noise and practical deployment considerations.
+# 問題: 非パウリノイズ下でのロバスト性を考慮した設計を検討するべき
+
+
+
+* Review3
+----------- Originality -----------
+SCORE: 1 (Weak Accept)
+----------- Quality -----------
+SCORE: 1 (Weak Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 1 (Weak Accept)
+----------- Overall Recommendation -----------
+SCORE: 1 (Weak Accept)
+
+** Strong Aspects
+The paper addresses an important problem in quantum networks by
+incorporating demand-aware link selection under limited resources.
+
+The proposed DaTopLinks algorithm effectively combines intra- and
+inter-destination optimization with a clear design.
+
+The inclusion of theoretical guarantees and evaluation across multiple
+noise models strengthens the contribution.
+
+
+** Weak Aspects
+The novelty is somewhat incremental, as it builds on existing
+bandit-based link selection methods.
+# 問題: 既存のバンディッド問題のリンク選択手法を基盤としており、新規性
+# に欠ける。
+
+The evaluation relies only on simulations, limiting practical
+validation.
+# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。)
+# 問題: 評価がシミュレーションに依存しており、実環境での検証ができてい
+# ない。
+
+Additionally, the method depends on specific noise assumptions, and
+some sections are dense.
+# 問題: ↑ (amplitude damping下の結果はモデルのロバスト性の低さを示して
+# いる。)
+# 問題: 特定のノイズ仮定に依存されている。
+# 問題: いくつかのセクションは内容が詰めこまれすぎて読みにくい。(アル
+# ゴリズムの説明)
+
+** Recommended Changes
+The authors should improve clarity by simplifying the algorithm
+description and adding intuitive explanations.
+# 問題: アルゴリズムの説明が複雑すぎて可読性が低い。直感的に理解できる
+# 内容になっていない。
+
+Expanding evaluation to more realistic scenarios or noise models would
+strengthen the work.
+# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。)
+# 問題: ノイズモデルが現実的ではない
+
+A clearer discussion of limitations and broader comparisons would also
+help.
+# 問題: 手法の性能の限界についての明確な説明が少ない。amplitude dampingで本
+# 手法が成立しない説明が少ない。
+
+* Review4
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+
+** Strong Aspects
+The authors address a realistic gap—existing work ignores
+heterogeneous demand across destinations in quantum networks.
+
+This work extends best-arm identification to a demand-aware Top-K
+selection problem, which is both meaningful and non-trivial.
+
+** Weak Aspects
+The approach relies on simplified assumptions (e.g., fixed importance,
+star topology, and idealized conditions), which may limit its
+applicability to real-world, dynamic quantum networks.
+# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
+# しているため、限られた条件下での結果しか検証できていない。)
+# 問題: 重要度の固定、スタートポロジ、理想的な条件(パウリノイズモデル
+# 下での実験)は現実の動的な量子ネットワークへの適用性が制限される可能
+# 性がある
+
+
+** Recommended Changes
+Incorporate more realistic network conditions—such as dynamic traffic
+patterns, multi-hop topologies, and uncertain or time-varying
+destination importance—to improve practical applicability.
+
+Need to extend the utility function and validate the approach through
+real-world experiments or testbed deployments to demonstrate
+robustness beyond simulation.
+
+
+
+  
 * 現在の問題設定(先生の対話から抜粋)
 
 --- 
