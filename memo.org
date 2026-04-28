@@ -55,7 +55,215 @@ shun@lsnl.jp}}
   # │ 段落・複数行を赤く   │ #+BEGIN_raddblock … #+END_raddblock │
   # | 段落・複数行を灰色に  |    #+BEGIN_rdelblock ...#+END_rdelblock|
 
-  
+
+* 査読の対処方法
+
+査読者の指摘している内容が正しいか？
+→ yes
+  指摘内容が研究の問い、貢献に影響を及ぼさないか？
+  → yes
+  修正
+  → no
+  今後の課題で説明するor修正しない
+→ no
+  読者に誤解を招くような文章になっていると推測される部分を修正
+
+
+* 研究の問い
+
+- 宛先の重要度とリンクの忠実度（フィデリティ）を組み合わせた「重要度重
+  み付けスコア」に基づき、許容誤差確率 δ 以下でTop-Kの宛先とその最適な
+  リンクを特定する問題を、どのように定式化できるか？
+
+- 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+  行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
+
+- 重要度重み付けスコアのギャップや宛先内の忠実度のギャップなど、特定の
+  難しさを捉える指標を用いて、測定コストをどのように特徴づけることがで
+  きるか？
+
+- 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+
+
+* 主要な貢献
+
+- 単一の宛先に対する最適リンク特定問題を、宛先ごとに異なる需要を反映し
+  た複数宛先に対する「重み付きTop-K選択問題」へと拡張し、固定信頼性
+  （fixed-confidence）の枠組みの中で定式化した 。
+
+- 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
+  外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
+  さらに早期確定（Early Confirmation）メカニズムを組み込んだ適応型アル
+  ゴリズム「DaTopLinks」を開発した 。
+
+- 宛先とリンクの有効ギャップ（ Δn,leff​ ）に基づくサンプル複雑性の上限
+  を導出した 。さらに、早期確定機能によって、Top-K宛先の最適リンク特定
+  にかかる測定コストが「宛先間ギャップ」と「宛先内ギャップ」のボトルネッ
+  クによって支配されることを理論的に示した 。
+
+- NetSquidシミュレータを用いた評価により、提案手法（DaTopLinks）が脱分
+  極（depolarizing）、位相緩和（dephasing）、ビット反転（bit-flip）の
+  各ノイズ環境下において、目標とする信頼性レベルを達成することを示した。
+
+
+
+* 実験の目的
+VI. 実験のセットアップ 本節では、提案手法であるDaTopLinksの有効性を検
+証するためのシミュレーション環境と評価条件について詳しく説明します 。
+
+→ 実環境が...と言われる原因はここかもしれない？
+
+
+* 新規性の主張
+- 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
+  外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
+  さらに早期確定（Early Confirmation）メカニズムを組み込んだ適応型アル
+  ゴリズム「DaTopLinks」を開発した 。
+
+とあるように、単に忠実度 → 重要度x忠実度 としたのではなく、両方とも除
+外判定に使うことで効率的にリンク除去をしている点を分かりやすく言う必要
+がある。
+
+よって比較手法としては重要度x忠実度のスコアのみを使うような手法を入れ
+るべき。
+
+
+提案手法
+
+忠実度 + 忠実度x重要度 + 早期確定
+宛先内比較 + 宛先外比較を行ない、重要度 x 忠実度の値と忠実度両方を用い
+てリンク除去をするうえに、早期確定もする
+
+
+比較手法1
+
+忠実度 + 忠実度x重要度
+宛先内比較 + 宛先外比較を行ない、重要度 x 忠実度の値と忠実度両方を用い
+てリンク除去をする
+
+比較手法2(新)
+
+忠実度x重要度
+宛先内比較 + 宛先外比較は行なうが、重要度 x 忠実度の値しか使わない
+
+
+比較手法2(旧)
+重要度を考慮しない手法を再現するため、忠実度のみを用いてリンク除去を行
+ない、重要度 x 忠実度の値を使わない。
+
+論文にて...
+
+これは、重要度 In​ を全く考慮せず、推定忠実度（フィデリティ） Fn​ の降順
+に上位K個の宛先を選択する手法である 。これは、先行研究であるLinkSelFiE
+[6] をすべての宛先に適用した手法である 。...重要度の考慮が探索効率にど
+のような影響を与えるかを測定するためのベースラインとして使用される
+
+重要度を考慮しない手法を実装する意味が分からない。
+linkselfieは重要度が考慮できない訳ではない。
+単に今まで忠実度としていた部分を重要度x忠実度としてしまえば重要度は考
+慮できている。では何ができないか。これは、
+2つの指標を同時に扱い、並行してリンク除去すること
+
+宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏外
+の宛先除外（out-of-Top-K destination elimination）を並行して実行し、、、
+
+↑ これができない
+
+
+よって、重要度を考慮しない手法ではなく、2つの指標を同時に扱い、並行し
+てリンク除去することができない手法をplotするべきだと思った。
+
+
+→ 修正案
+
+実験の目的
+
+各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+行うことで、不要な測定を削減できることと、代表的な量子ノイズ環境におい
+て、規定の信頼性レベルを達成できることを実証するため。
+
+実験の目的が研究の問い 2,4 に対応している。
+
+
+
+
+
+
+
+* 新テーマ
+
+
+QSPF
+
+従来のOSPFは帯域幅や伝播遅延をメトリクスとしてDijkstraアルゴリズムで最
+小ホップパスを計算する。しかし、QKDネットワークにおける情報の伝送は量
+子安全鍵（Quantum Secure Key）の消費に依存するため、単なる遅延だけを最
+適化しても機能しない。そこでQ-OSPFでは、経路の品質メトリクスとして「量
+子安全鍵の生成能力」「量子安全鍵の消費率」「量子鍵プールの残量
+（Remaining Quantum Key）」などの量子特有のパラメータを追加し、リンク
+ステート情報を拡張している 。
+
+
+
+* 既存のルーティングプロトコル
+量子ネットワークの機能は、採用されるエラー訂正能力に応じて3つの世代
+（1G、2G、3G）に分類される 。現在活発に研究され、実装が進められている
+ルーティングプロトコルの大多数は、量子メモリとヘラルド型エンタングルメ
+ント生成に依存する第一世代（1G）の量子リピータネットワークを前提として
+いる。
+
+
+** QSPF
+
+- 従来のOSPFは帯域幅や伝播遅延をメトリクスとしてDijkstraアルゴリズムで
+  最小ホップパスを計算する。しかし、QKDネットワークにおける情報の伝送
+  は量子安全鍵（Quantum Secure Key）の消費に依存するため、単なる遅延だ
+  けを最適化しても機能しない。そこでQ-OSPFでは、経路の品質メトリクスと
+  して「量子安全鍵の生成能力」「量子安全鍵の消費率」「量子鍵プールの残
+  量（Remaining Quantum Key）」などの量子特有のパラメータを追加し、リ
+  ンクステート情報を拡張している 。
+
+実際に、中国の北京-上海間QKDネットワークの実環境において、鍵生成レート
+や中継ノードのセキュリティ情報を組み込んだ改良型OSPFが採用され、堅牢な
+運用が実証されている 。
+
+↑ ネットワーク全体の待機時間を削減した
+
+
+新たなフィデリティ認識型プロトコルは、以下の高度なメカニズムを統合して
+いる。
+
+動的経路選択: ネットワーク上の利用可能なベル状態の「位置」と「リ
+アルタイムのフィデリティ情報」を監視し、スワッピングの確率的結果に応じ
+て動的にルーティングソリューションを選択する 。
+
+ 量子メモリ・カットオフ（DiscardCutoff）技術: デコヒーレンスによる致命
+的な情報喪失を防ぐため、量子メモリの最大保存時間に「カットオフ（打ち切
+り時間）」を導入する。量子ビットのフィデリティが事前定義された閾値を下
+回った瞬間、その状態をネットワークから意図的に破棄（Discard）する 。こ
+れにより、低品質なエンタングルメントがスワッピングによって伝播し、全体
+のフィデリティを汚染することを防ぐ。
+
+スケールフリー・トポロジでは、ハブノードにおける量子メモリの競合やスワッ
+ピングのボトルネックが極端化し、いかなる高度なルーティングアルゴリズム
+を用いてもパフォーマンスが低下する。したがって、将来の量子インターネッ
+トは古典的な進化に任せるのではなく、特定のノード密度とリンク長を念頭に
+置いて「厳密にエンジニアリング（Strictly engineered）」される必要があ
+る 。
+
+
+
+量子メモリとヘラルド型エンタングルメント生成に依存する第一世代（1G）の
+量子リピータネットワークにおいて、自律分散型のルーティングプロトコルの
+研究はされていますか？有名なものを3つピックアップして。
+
+
+
+- RuleSetベースルーティングアーキテクチャの制御・実行分離モデル
+- Q-CASTおよび量子インターネットにおける分散ルーティングとリソース競合
+  管理
+
+
 
 
 * COMPSAC査読結果
@@ -92,17 +300,26 @@ real-world scenarios.
 
 *** Weak Aspects
 The evaluation is performed on a limited number of scenarios and system configurations.
-# 問題: 論文では2種類の実験をしているが、両方とも忠実度を固定して実験
-# しているため、限られた条件下での結果しか検証できていない。
 
 While the results show that the proposed method is effective, more
 experiments with larger datasets and more different system contexts
 would help to evaluate the framework's robustness and wide applicability.
-# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
-# しているため、限られた条件下での結果しか検証できていない。)
+# 言ってることが正しいか？ → 実験では、測定コストが忠実度gapに依存する
+# ことが伝わればいいのでは？
+# → 実験の目的を確認
+# つまり、fixのままでも良いかも
 
-# 問題: 比較手法が少ない。異なるシステムに応用されている似たような手法
-# でも比較手法として検討できるのでは？
+現在の実験の目的
+提案手法であるDaTopLinksの有効性を検証すること。
+
+これは、何の有効性か分からないのがよくない。実環境での有効性と捉えられ
+てもおかしくない。
+
+→ Top-K拡張をしない場合と、重要度を考慮しない手法と
+比較した際の有効性および、各ノイズモデル下で許容誤り率を満たすかどうか
+を検証すると明記し、実環境でどうなるかを考察で書く。
+
+
 
 
 *** Recommended Changes
@@ -114,14 +331,20 @@ datasets and system configurations.
 Further comparisons with other current approaches to automated system
 monitoring and analysis would help to highlight the suggested method's
 advantages.
-# 問題: 比較手法が少ない。計3手法しか結果にplotされていない。そのうち2
-# 手法は今回考案したもので、1手法は平等に比較できない手法(重要度を考慮
-# しない手法)。
-# 問題: モダンな手法が比較手法に存在しない。
+# 言ってることが正しいか？ → 既存の関連手法とあるが、存在するのか？今
+# 回始めてこの問題設定を提唱したことが貢献の1つであるため、同じフィー
+# ルドで戦える手法はないかもしれない
+
+  # 他の比較手法を検討する。
+
+# 研究の貢献で始めてこの問題設定を考えたことは言っている。
+
+
+
 
 Additional discussion on scalability and deployment considerations in
 large-scale environments will greatly improve the contribution.
-# 問題: 今後の展望として大規模ネットワークへの活用を検討すべき
+# → 今後の課題でのべる
 
 
 * Review2
@@ -148,28 +371,31 @@ and simulation results across multiple noise models.
 The novelty is moderate, as the work mainly extends existing
 link-selection and bandit-based approaches to a demand-aware Top-K
 setting.
-# 問題: 新規性が並程度しかない。既存手法を単にTop-K問題に拡張している
-# だけにしかみえない。
+# 今後の課題
 
 The evaluation is limited to simulations, and performance under
 amplitude damping shows reduced robustness due to model mismatch.
-# 疑問: 評価がシミュレーションだけにとどまっている。とあるが、解析は？
 
-# 問題: amplitude damping下の結果はモデルのロバスト性の低さを示してい
-# る。
+# 言っていることは正しいか？ ただしい。
+
+# →NBのモデル自体が正規分布のノイズを仮定しており、それが根本的な原因
+# であるため、この手法の弱点としてどうがんばっても非パウリノイズには対
+# 応できないことを分かりやすく書く。(NBをサブルーチンとしているため)
+
+
 
 ** Recommended Changes
 The paper would benefit from a clearer explanation of its novelty
 relative to prior methods such as LinkSelFiE and related Top-K
 selection work.
 
-# 問題: Linkselfieや、既存のTop-K選択手法と比較した本研究の新規性が述
-# べられていない。
+→ イントロで新規性の主張をもう少しする
+
 
 It would also be helpful to expand the discussion of robustness under
 non-Pauli noise and practical deployment considerations.
 # 問題: 非パウリノイズ下でのロバスト性を考慮した設計を検討するべき
-
+# → 今後の課題でかく
 
 
 * Review3
@@ -198,40 +424,41 @@ noise models strengthens the contribution.
 ** Weak Aspects
 The novelty is somewhat incremental, as it builds on existing
 bandit-based link selection methods.
-# 問題: 既存のバンディッド問題のリンク選択手法を基盤としており、新規性
-# に欠ける。
+
+# 既存のバンティッドベースのリンク選択手法(linkselfie)に基づいている。
+→ 今後の課題で説明する
+
 
 The evaluation relies only on simulations, limiting practical
 validation.
-# 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
-# しているため、限られた条件下での結果しか検証できていない。)
-# 問題: 評価がシミュレーションに依存しており、実環境での検証ができてい
-# ない。
 
 Additionally, the method depends on specific noise assumptions, and
 some sections are dense.
-# 問題: ↑ (amplitude damping下の結果はモデルのロバスト性の低さを示して
-# いる。)
-# 問題: 特定のノイズ仮定に依存されている。
-# 問題: いくつかのセクションは内容が詰めこまれすぎて読みにくい。(アル
-# ゴリズムの説明)
+# この手法というよりも、NBを使う手法全てにあてはまる問題点であることを
+# 示すためにも、NBの紹介時に非パウリノイズへの適用が難しいことを追記し
+# ておく
+
 
 ** Recommended Changes
 The authors should improve clarity by simplifying the algorithm
 description and adding intuitive explanations.
 # 問題: アルゴリズムの説明が複雑すぎて可読性が低い。直感的に理解できる
 # 内容になっていない。
+# 主観的な評価なので後回し
+
 
 Expanding evaluation to more realistic scenarios or noise models would
 strengthen the work.
 # 問題: ↑(論文では2種類の実験をしているが、両方とも忠実度を固定して実験
 # しているため、限られた条件下での結果しか検証できていない。)
 # 問題: ノイズモデルが現実的ではない
+考察でリアリスティックな状況でどうなるか書く。
+
 
 A clearer discussion of limitations and broader comparisons would also
 help.
-# 問題: 手法の性能の限界についての明確な説明が少ない。amplitude dampingで本
-# 手法が成立しない説明が少ない。
+# NBの章で手法の限界を説明する
+
 
 * Review4
 ----------- Originality -----------
@@ -264,6 +491,8 @@ applicability to real-world, dynamic quantum networks.
 # 性がある
 
 
+# → 考察で追記する
+
 ** Recommended Changes
 Incorporate more realistic network conditions—such as dynamic traffic
 patterns, multi-hop topologies, and uncertain or time-varying
@@ -273,7 +502,8 @@ Need to extend the utility function and validate the approach through
 real-world experiments or testbed deployments to demonstrate
 robustness beyond simulation.
 
-
+実世界での実験や効用関数の拡張を...
+→ 今後の課題
 
   
 * 現在の問題設定(先生の対話から抜粋)
