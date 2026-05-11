@@ -27,10 +27,508 @@ shun@lsnl.jp}}
 \maketitle
 
 
+\section*{今週やったこと}
+\label{sec:orgcb7faab}
+\begin{itemize}
+\item 新テーマ考案
+\item COMSACの査読分析
+\end{itemize}
+
+
+\section*{新テーマ(72点)}
+\label{sec:org54edea5}
+\begin{itemize}
+\item 大規模量子ネットワークにおける局所リンク測定に基づく高忠実度経路選択アルゴリズムの提案
+\end{itemize}
+
+\subsection*{背景}
+\label{sec:org113a25a}
+
+既存の量子ネットワークルーティングに関する研究の多くは、すべてのノード
+が単一の管理組織に属し、ネットワーク全体のトポロジ情報を利用できる中央
+集権的な環境を前提としている。しかし、将来的に数千規模のノードから構成
+される大規模量子ネットワークを実現するためには、ネットワーク全体のトポ
+ロジ情報に依存しないルーティングプロトコルが必要となる。
+
+近年、このようなトポロジ非依存型の量子ルーティングプロトコルに統合可能
+な経路選択手法として、エンドツーエンド経路集合の中から、経路の忠実度に
+基づいて最適な経路を選択するアルゴリズムが提案されている。代表的な研究
+として、LinkSelFiE や QBGP がある。
+
+
+\subsection*{動機}
+\label{sec:org1d6e4a8}
+
+これらの既存手法では、中継ノードや途中のリンクを抽象化し、各エンドツー
+エンド経路を独立した候補として扱うことで、ネットワーク全体の詳細なトポ
+ロジ情報に依存しない経路選択を実現している。
+
+しかし、この抽象化により、複数のエンドツーエンド経路が同一の中継ノード
+やリンクを共有している場合であっても、それらは別個の候補経路として扱わ
+れる。そのため、中継ノード数が増加すると、送信者と宛先を結ぶ候補経路の
+数が組合せ的に増大してしまうという問題点がある。
+
+よってエンドツーエンド経路集合を事前に列挙し、それらを網羅的に評価する
+方式を大規模量子ネットワークで運用することは現実的ではない。
+
+\subsection*{目的}
+\label{sec:orgedbc1fc}
+
+本研究の目的は、エンドツーエンド経路集合の事前列挙が不可能な規模の量子
+ネットワークにおいても、高忠実度な送受信経路を選択可能にすることである。
+
+具体的には、候補経路数 L が中継ノード数に対して組合せ的に増大する状況
+において、すべての候補経路を列挙・測定することなく、忠実度が最適経路に
+対して所定の許容誤差内に収まる経路を高確率で発見可能にすることを目指す。
+
+より定量的には、最適経路の忠実度を \(F^\ast\)、選択された経路の忠実度を
+\(F\) としたとき、候補経路集合全体を列挙せずに、
+\[
+\Pr\left[ F \geq (1-\epsilon)F^\ast \right] \geq 1-\delta
+\]
+を満たす経路選択を実現することを目的とする。
+
+
+\subsection*{手法}
+\label{sec:org45b784f}
+
+本研究では、エンドツーエンド経路をあらかじめ列挙して比較するのではなく、
+各中継ノードにおいて利用可能な隣接リンクの品質を測定し、有望な次ホップ
+を逐次的に選択する方式を検討する。
+
+このとき、単に局所的に最も忠実度の高いリンクを選択するだけでは、大域的
+に高忠実度な経路を得られるとは限らない。そこで、リンク単体の品質に加え
+て、宛先までの到達可能性や残り経路の期待品質を考慮した選択指標を設計し、
+経路全体として高忠実度となる次ホップ選択を行う。
+
+また、各局所選択において厳密な最良リンクを特定するのではなく、所定の誤
+差範囲内で十分に良いリンクを選択することで、測定回数の削減を図る。最終
+的に、提案手法により得られる経路の忠実度、測定回数、および既存手法との
+比較を通じて、経路列挙が困難な大規模量子ネットワークにおける有効性を評
+価する。
+
+
+\section*{新テーマv2(76点)}
+\label{sec:orgb6c39d5}
+
+\begin{itemize}
+\item 全経路列挙を用いない量子ネットワークルーティングの近似可能性と測定複
+雑度
+\end{itemize}
+
+\subsection*{背景}
+\label{sec:org494066e}
+量子ネットワークでは、送信者と受信者の間に高忠実度のエンタングルメント
+を確立するため、複数の中継ノードを経由した経路選択が必要となる。既存の
+量子ルーティング研究の多くは、ネットワーク全体のトポロジ情報やリンク品
+質情報を利用できることを前提として、最適経路または高品質な候補経路を選
+択する。しかし、将来的に数千規模以上のノードから構成される大規模量子ネッ
+トワークでは、全ノード・全リンクの状態を常時把握することは、測定コスト、
+通信コスト、情報の陳腐化、管理主体の分散性の観点から現実的でない。した
+がって、大規模量子ネットワークでは、全体情報や全経路列挙に依存しないルー
+ティング原理が必要となる。
+
+\subsection*{動機}
+\label{sec:orgf7cf607}
+近年、LinkSelFiE や QBGP のように、中央集権的な全体制御に依存せず、高
+忠実度な経路選択を実現しようとする研究が提案されている。これらは大規模
+量子ネットワークに向けた重要な方向性を示しているが、候補となるエンドツー
+エンド経路集合が与えられる、または十分に探索可能であることを前提として
+いる。大規模ネットワークでは、送信者と受信者を結ぶ候補経路数が中継ノー
+ド数に対して組合せ的に増大し得るため、全候補経路を列挙・測定・比較する
+方式は現実的でない。一方、局所的に観測可能なリンク情報だけで逐次的に次
+ホップを選ぶ場合、それが大域的に高忠実度な経路を保証するとは限らない。
+したがって、局所観測のみで何が可能で、何が不可能かを明らかにする必要が
+ある。
+
+\subsection*{目的}
+\label{sec:org2b8c7c5}
+本研究の目的は，大規模量子ネットワークにおいて，全経路列挙や
+全体トポロジ情報を用いず，局所的に観測可能な情報のみから，
+最適忠実度経路に対してどの程度近い経路選択が可能であるかを
+明らかにすることである．具体的には，候補経路集合を
+\(\mathcal{P}\)，経路 \(p \in \mathcal{P}\) の忠実度を \(F(p)\)，
+最適忠実度を
+\[
+F^\ast = \max_{p \in \mathcal{P}} F(p)
+\]
+とし，選択経路 \(\hat{p}\) が
+\[
+\Pr\left[
+  F(\hat{p}) \geq (1-\epsilon)F^\ast
+\right] \geq 1-\delta
+\]
+を満たすための条件を解析する．さらに，局所観測のみで
+近似保証が可能となる十分条件と，不可能となる条件または
+測定回数の下界を明らかにする．その上で，全候補経路数に
+線形依存しない測定回数で近似保証を持つ経路選択手法を設計する．
+
+
+
+
+\section*{COMPSAC査読分析}
+\label{sec:org2c898d3}
+\subsection*{研究の問い}
+\label{sec:orgdc02c9a}
+
+\begin{itemize}
+\item 宛先の重要度とリンクの忠実度（フィデリティ）を組み合わせた「重要度重
+み付けスコア」に基づき、許容誤差確率 δ 以下でTop-Kの宛先とその最適な
+リンクを特定する問題を、どのように定式化できるか？
+
+\item 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
+
+\item 重要度重み付けスコアのギャップや宛先内の忠実度のギャップなど、特定の
+難しさを捉える指標を用いて、測定コストをどのように特徴づけることがで
+きるか？
+
+\item 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+\end{itemize}
+
+
+\subsection*{主要な貢献}
+\label{sec:orgb785941}
+
+\begin{itemize}
+\item 単一の宛先に対する最適リンク特定問題を、宛先ごとに異なる需要を反映し
+た複数宛先に対する「重み付きTop-K選択問題」へと拡張し、固定信頼性
+（fixed-confidence）の枠組みの中で定式化した 。
+
+\item 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
+外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
+さらに早期確定（Early Confirmation）メカニズムを組み込んだ適応型アル
+ゴリズム「DaTopLinks」を開発した 。
+
+\item 宛先とリンクの有効ギャップ（ Δn,leff​ ）に基づくサンプル複雑性の上限
+を導出した 。さらに、早期確定機能によって、Top-K宛先の最適リンク特定
+にかかる測定コストが「宛先間ギャップ」と「宛先内ギャップ」のボトルネッ
+クによって支配されることを理論的に示した 。
+
+\item NetSquidシミュレータを用いた評価により、提案手法（DaTopLinks）が脱分
+極（depolarizing）、位相緩和（dephasing）、ビット反転（bit-flip）の
+各ノイズ環境下において、目標とする信頼性レベルを達成することを示した。
+\end{itemize}
+
+
+
+\subsection*{実験の目的}
+\label{sec:org3e10ec9}
+VI. 実験のセットアップ 本節では、提案手法であるDaTopLinksの有効性を検
+証するためのシミュレーション環境と評価条件について詳しく説明します 。
+
+→ 実環境が\ldots{}と言われる原因はここかもしれない？
+
+
+\subsection*{新規性の主張}
+\label{sec:org87290d5}
+\begin{itemize}
+\item 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
+外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
+さらに早期確定（Early Confirmation）メカニズムを組み込んだ適応型アル
+ゴリズム「DaTopLinks」を開発した 。
+\end{itemize}
+
+とあるように、単に忠実度 → 重要度x忠実度 としたのではなく、両方とも除
+外判定に使うことで効率的にリンク除去をしている点を分かりやすく言う必要
+がある。
+
+よって比較手法としては重要度x忠実度のスコアのみを使うような手法を入れ
+るべき。
+
+
+提案手法
+
+忠実度 + 忠実度x重要度 + 早期確定
+宛先内比較 + 宛先外比較を行ない、重要度 x 忠実度の値と忠実度両方を用い
+てリンク除去をするうえに、早期確定もする
+
+
+\begin{itemize}
+\item 比較手法1
+\end{itemize}
+
+忠実度 + 忠実度x重要度
+宛先内比較 + 宛先外比較を行ない、重要度 x 忠実度の値と忠実度両方を用い
+てリンク除去をする
+
+\begin{itemize}
+\item 比較手法2(新)
+\end{itemize}
+
+忠実度x重要度
+宛先内比較 + 宛先外比較は行なうが、重要度 x 忠実度の値しか使わない
+
+
+\begin{itemize}
+\item 比較手法2(旧)
+\end{itemize}
+重要度を考慮しない手法を再現するため、忠実度のみを用いてリンク除去を行
+ない、重要度 x 忠実度の値を使わない。
+
+論文にて\ldots{}
+
+これは、重要度 In​ を全く考慮せず、推定忠実度（フィデリティ） Fn​ の降順
+に上位K個の宛先を選択する手法である 。これは、先行研究であるLinkSelFiE
+[6] をすべての宛先に適用した手法である 。\ldots{}重要度の考慮が探索効率にど
+のような影響を与えるかを測定するためのベースラインとして使用される
+
+重要度を考慮しない手法を実装する意味が分からない。
+linkselfieは重要度が考慮できない訳ではない。
+単に今まで忠実度としていた部分を重要度x忠実度としてしまえば重要度は考
+慮できている。では何ができないか。これは、
+2つの指標を同時に扱い、並行してリンク除去すること
+
+宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏外
+の宛先除外（out-of-Top-K destination elimination）を並行して実行し、、、
+
+↑ これができない
+
+
+よって、重要度を考慮しない手法ではなく、2つの指標を同時に扱い、並行し
+てリンク除去することができない手法をplotするべきだと思った。
+
+
+→ 修正案
+
+実験の目的
+
+各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+行うことで、不要な測定を削減できることと、代表的な量子ノイズ環境におい
+て、規定の信頼性レベルを達成できることを実証するため。
+
+実験の目的が研究の問い 2,4 に対応している。
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section*{COMPSAC査読結果}
+\label{sec:org92e8777}
+\subsection*{Review1}
+\label{sec:org157c229}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 3 (Strong Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+
+\subsubsection*{Strong Aspects}
+\label{sec:org9c7b020}
+The paper presents a well-structured approach to improving software
+system reliability using an automated framework that combines recent
+machine learning techniques with system-level monitoring and analysis.
+
+The suggested methodology is a practical pipeline that
+collects runtime data, analyzes system behavior, and employs
+data-driven techniques to discover performance and reliability
+issues.
+
+The experimental evaluation indicates measurable advances in
+system behavior analysis, as well as the suggested framework's
+usefulness across sample scenarios.
+
+Overall, the paper tackles an important issue in modern software
+systems and proposes a workable solution that may be implemented in
+real-world scenarios.
+
+\subsubsection*{Weak Aspects}
+\label{sec:org3bf82f6}
+The evaluation is performed on a limited number of scenarios and system configurations.
+
+While the results show that the proposed method is effective, more
+experiments with larger datasets and more different system contexts
+would help to evaluate the framework's robustness and wide applicability.
+
+現在の実験の目的
+提案手法であるDaTopLinksの有効性を検証すること。
+
+これは、何の有効性か分からないのがよくない。実環境での有効性と捉えられ
+てもおかしくない。
+
+→ Top-K拡張をしない場合と、重要度を考慮しない手法と
+比較した際の有効性および、各ノイズモデル下で許容誤り率を満たすかどうか
+を検証すると明記し、実環境でどうなるかを考察で書く。
+
+
+
+
+\subsubsection*{Recommended Changes}
+\label{sec:orgbc6a473}
+The paper could be improved by extending the evaluation to cover more
+datasets and system configurations.
+
+Further comparisons with other current approaches to automated system
+monitoring and analysis would help to highlight the suggested method's
+advantages.
+
+
+
+
+Additional discussion on scalability and deployment considerations in
+large-scale environments will greatly improve the contribution.
+
+
+\section*{Review2}
+\label{sec:org3a0ba7c}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+\subsection*{Strong Aspects}
+\label{sec:org138db31}
+The paper addresses a relevant problem in quantum networks by
+incorporating destination importance into high-fidelity link
+selection.
+
+It also presents a clear algorithmic design with theoretical analysis
+and simulation results across multiple noise models.
+
+\subsection*{Weak Aspects}
+\label{sec:orga383357}
+The novelty is moderate, as the work mainly extends existing
+link-selection and bandit-based approaches to a demand-aware Top-K
+setting.
+
+The evaluation is limited to simulations, and performance under
+amplitude damping shows reduced robustness due to model mismatch.
+
+
+
+\subsection*{Recommended Changes}
+\label{sec:orge606798}
+The paper would benefit from a clearer explanation of its novelty
+relative to prior methods such as LinkSelFiE and related Top-K
+selection work.
+
+→ イントロで新規性の主張をもう少しする
+
+
+It would also be helpful to expand the discussion of robustness under
+non-Pauli noise and practical deployment considerations.
+
+
+\section*{Review3}
+\label{sec:orgfd1f30c}
+----------- Originality -----------
+SCORE: 1 (Weak Accept)
+----------- Quality -----------
+SCORE: 1 (Weak Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 1 (Weak Accept)
+----------- Overall Recommendation -----------
+SCORE: 1 (Weak Accept)
+
+\subsection*{Strong Aspects}
+\label{sec:org2195f19}
+The paper addresses an important problem in quantum networks by
+incorporating demand-aware link selection under limited resources.
+
+The proposed DaTopLinks algorithm effectively combines intra- and
+inter-destination optimization with a clear design.
+
+The inclusion of theoretical guarantees and evaluation across multiple
+noise models strengthens the contribution.
+
+
+\subsection*{Weak Aspects}
+\label{sec:org488b6c7}
+The novelty is somewhat incremental, as it builds on existing
+bandit-based link selection methods.
+
+→ 今後の課題で説明する
+
+
+The evaluation relies only on simulations, limiting practical
+validation.
+
+Additionally, the method depends on specific noise assumptions, and
+some sections are dense.
+
+
+\subsection*{Recommended Changes}
+\label{sec:org5fcafe5}
+The authors should improve clarity by simplifying the algorithm
+description and adding intuitive explanations.
+
+
+Expanding evaluation to more realistic scenarios or noise models would
+strengthen the work.
+
+考察でリアリスティックな状況でどうなるか書く。
+
+
+A clearer discussion of limitations and broader comparisons would also
+help.
+
+
+\section*{Review4}
+\label{sec:orgc6ec308}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+
+\subsection*{Strong Aspects}
+\label{sec:org4960808}
+The authors address a realistic gap—existing work ignores
+heterogeneous demand across destinations in quantum networks.
+
+This work extends best-arm identification to a demand-aware Top-K
+selection problem, which is both meaningful and non-trivial.
+
+\subsection*{Weak Aspects}
+\label{sec:org2ce27a2}
+The approach relies on simplified assumptions (e.g., fixed importance,
+star topology, and idealized conditions), which may limit its
+applicability to real-world, dynamic quantum networks.
+
+\subsection*{Recommended Changes}
+\label{sec:orgdd6ea71}
+Incorporate more realistic network conditions—such as dynamic traffic
+patterns, multi-hop topologies, and uncertain or time-varying
+destination importance—to improve practical applicability.
+
+Need to extend the utility function and validate the approach through
+real-world experiments or testbed deployments to demonstrate
+robustness beyond simulation.
+
+実世界での実験や効用関数の拡張を\ldots{}
+→ 今後の課題
 
 
 \section*{現在の問題設定(先生の対話から抜粋)}
-\label{sec:org4a41cdd}
+\label{sec:org079af2d}
 
 --- 
 Q. LinkSelfie の論文の問題を拡張したい。
@@ -66,7 +564,8 @@ Q. LinkSelfie の論文の問題を拡張したい。
 
 
 \section*{なぜ変更したか}
-\label{sec:orgdfac524}
+\label{sec:orgc7dbfc5}
+
 
 \begin{raddblock}
 \begin{itemize}
@@ -111,86 +610,47 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 
 \section*{現在のテーマの問題点}
-\label{sec:org00a2b90}
+\label{sec:org64d315a}
 \begin{itemize}
-\item 固定信頼度と K 本の選択を同時に採用している点
-\end{itemize}
-
-この問題設定から想定されるシナリオごとに問題点が異なる。
-
-\subsection*{シナリオ1}
-\label{sec:org3a5608a}
-
-\begin{itemize}
-\item 選ばれた K 本のリンクを全て使う前提のシナリオ。
-\end{itemize}
-
-例) 送信者（配信元のオリジナルサーバー）が、世界中にあるN個の中継サー
-バーにデータを送りたいと考えている。オリジナルサーバーのアップロード回
-線には上限があるため、全員に直接データを送ることはできない。オリジナル
-サーバーが直接コネクションを張れる最大数 K があらかじめ入力される。最
-も回線が太く、他の多くのノードへ効率よくデータを送信してくれそうな K
-個の中継ノードを選択して通信を行うとき。
-
-
-上位 K 位のリンクと K + 1 位のリンク間に価値の差があるので固定信頼度と
-K 本を組合せても違和感は無い。
-
-\subsubsection*{なぜ違和感がないか}
-\label{sec:orgbc2c1f0}
-N = 5、K = 3、固定信頼度 delta = 0.1のとき。我々の問題設定では
-
-5個の宛先の中から、それぞれの宛先間にまたがるリンクの質と宛先の重要度
-をもとに、上位 3 個の宛先とそれらの宛先間にまたがる最高の質のリンクを
-1 - 0.1(固定信頼度) = 0.9 (90\%)以上の確率で選択する必要がある。
-
-あらかじめ入力されたコネクションを張れる最大数 K 本のリンク全てを最も
-効果的に使うことができるので違和感が無いと思った。
-
-
-\subsection*{シナリオ1の問題点}
-\label{sec:orgd9b170e}
-\begin{itemize}
-\item N や K が非常に大きくなるような、結果的に上位 K 本目のリンクと K+1
-本目のリンクの価値の差が小さくなる状況では少し無理がある問題設定になっ
-てしまう可能性がある。
-
-\item 量子ネットワークでこれに相当するシナリオがあまり思いつかない。
+\item 固定予算ではなく固定信頼度が制約条件になっているため、最適なリンクを
+選べた or 選べていないで評価しなければいけない点
 \end{itemize}
 
 
+例)
 
-\subsection*{シナリオ2}
-\label{sec:org7b69480}
+リンク1 0.9
+リンク2 0.89
+リンク3 0.88
+リンク4 0.65
+リンク5 0.6
+
+このリンクの中から上位2本のリンクを選ぶとき、あまり差のない、3番目に質の
+高いリンク3を選ばないようにするために大量の測定資源を消費してしまう。
+
+リンクごとの忠実度の差が小さければ小さいほど、本来は区別する必要が無い
+が、今の問題設定だと K位 のリンクと K+1 位のリンクは必ず区別しなければ
+いけないところが問題である。
+
+\subsection*{解決策}
+\label{sec:orgaf9d82e}
 \begin{itemize}
-\item 選ばれた K 本のリンクを全て使わない前提のシナリオ。
+\item 固定信頼度をやめ、固定予算方式にする。
+\item 固定信頼度をそのまま使うが、条件を緩和する。(仮に K+1位のリンクを選
+んでも、そのリンクが K位のリンクとほぼ同じ忠実度ならセーフにする)
 \end{itemize}
 
-例) 送信者 S と最終目的地 D\_L の間に網目状の大規模な中継ノード群がある。
-各中継ノードは1ホップ先のノードまでしかルーティングテーブルに登録され
-ていないため、登録されている1ホップ先の N個のノードから K 個のノードを
-選択する動作を繰り返していく。最終的にS - D\_L間に確立されたリンクから
-最も良いリンクを使用して通信する。
-
-選んだ上位 K 本のリンクと選ばれなかった K + 1 本目のリンク間にあまり価
-値の差がない(最終的には1本しか使わない)ので固定信頼度と K 本を組合わせ
-に違和感がある。
-
-このようなシナリオでは固定信頼度 + K 本選択は厳しい
+PurestQuantumStateIdentification
+Learning Best Paths in Quantum Networks
 
 
-\section*{どうしたいか}
-\label{sec:orgf6e73e9}
-今後の研究を進める上で、シナリオ1か、シナリオ2、または別の新たなシナリ
-オを想定するのかある程度決めておくべきだと思った。現在はとりあえず違和
-感が無いシナリオ1を想定して研究を進めているが、今後の研究ではシナリオ2
-のようなより大きな問題に拡張するのもありだと思った。
-
+ソサイエティではこれで実験をしてみる？
+「\$\(\epsilon\)\$-最適アーム識別（\$\(\epsilon\)\$-Best Arm Identification）」または「Good Arm Identification (GAI)」
 
 
 
 \section*{現在のストーリー案の骨格}
-\label{sec:org7e81646}
+\label{sec:orga4f2245}
 
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
@@ -200,7 +660,7 @@ N = 5、K = 3、固定信頼度 delta = 0.1のとき。我々の問題設定で�
 
 
 \section*{研究の問い}
-\label{sec:orgf687ef1}
+\label{sec:org496e82f}
 
 本研究では、以下の問いに対して理論的および実践的な洞察を提供することを目指します 。
 
@@ -217,4 +677,11 @@ N = 5、K = 3、固定信頼度 delta = 0.1のとき。我々の問題設定で�
 
 \item 提案手法は、代表的な量子ノイズ環境下において規定の信頼水準を達成できるか？
 \end{itemize}
+
+
+\section*{別の案}
+\label{sec:orgd7020b3}
+分散が大きい（ノイズのばらつきが激しい）量子リンクに対して一律の予算配
+分を行うと、そのリンクの忠実度が過大評価または過小評価され、真に有望な
+リンクを誤って排除してしまうリスクが高まる。
 \end{document}

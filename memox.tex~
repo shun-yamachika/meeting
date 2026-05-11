@@ -1,41 +1,21 @@
-# -*- mode: org; coding: utf-8 -*-
-#
-# IEEE Conference Paper org-mode テンプレート
-#
-# このファイルを編集して、C-c C-e l l で memo.tex にエクスポートできます
-# エクスポート後、以下のコマンドでPDFを生成します：
-#   platex memo.tex
-#   pbibtex memo
-#   platex memo.tex
-#   platex memo.tex
-#   dvipdfmx memo.dvi
-#
+\documentclass[conference,15pt]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage[dvipdfmx]{graphicx}
+\DeclareGraphicsExtensions{.eps,.pdf,.png}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{revhistory}
+\usepackage{enumitem}
+\setlist{itemsep=2pt, parsep=2pt, topsep=2pt}
+\newenvironment{raddblock}{\color{red}}{}
+\newenvironment{rdelblock}{\color{gray}}{}
+\begin{document}
 
-#+LATEX_CLASS: IEEEtran
-#+LATEX_CLASS_OPTIONS: [conference]
-#+LATEX_COMPILER: platex
-#+BIND: org-latex-pdf-process ("platex -interaction=nonstopmode -output-directory=%o %f" "pbibtex %b" "platex -interaction=nonstopmode -output-directory=%o %f" "platex -interaction=nonstopmode -output-directory=%o %f" "dvipdfmx %b.dvi")
-#+LATEX_HEADER: \IEEEoverridecommandlockouts
-#+LATEX_HEADER: \usepackage{cite}
-#+LATEX_HEADER: \usepackage{amsmath,amssymb,amsfonts}
-#+LATEX_HEADER: \usepackage{algorithmic}
-#+LATEX_HEADER: \usepackage[dvipdfmx]{graphicx}
-#+LATEX_HEADER: \DeclareGraphicsExtensions{.eps,.pdf,.png}
-#+LATEX_HEADER: \usepackage{textcomp}
-#+LATEX_HEADER: \usepackage{xcolor}
-#+LATEX_HEADER: \usepackage{url}
-#+LATEX_HEADER: \usepackage{hyperref}
-#+LATEX_HEADER: \usepackage{revhistory}
-#+LATEX_HEADER: \usepackage{enumitem}
-#+LATEX_HEADER: \setlist{itemsep=2pt, parsep=2pt, topsep=2pt}
-#+LATEX_HEADER: \newenvironment{raddblock}{\color{red}}{}
-#+LATEX_HEADER: \newenvironment{rdelblock}{\color{gray}}{}
-#+LATEX_CLASS_OPTIONS: [conference,15pt]
-
-
-#+OPTIONS: toc:nil author:nil date:nil title:nil tex:t timestamp:nil
-
-#+BEGIN_EXPORT latex
 \title{COMPSAC査読分析}
 
 \author{\IEEEauthorblockN{Shun Yamachika}
@@ -45,14 +25,15 @@ Sanda, Hyogo, Japan \\
 shun@lsnl.jp}}
 
 \maketitle
-
-#+END_EXPORT
-
+\large
 
 
 
-* COMPSAC査読結果
-** Review1
+
+\section*{COMPSAC査読結果}
+\label{sec:orgc31eb25}
+\subsection*{Review1}
+\label{sec:org391eecb}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -65,7 +46,8 @@ SCORE: 2 (Accept)
 SCORE: 2 (Accept)
 
 
-*** Strong Aspects
+\subsubsection*{Strong Aspects}
+\label{sec:org3766a9b}
 The paper presents a well-structured approach to improving software
 system reliability using an automated framework that combines recent
 machine learning techniques with system-level monitoring and analysis.
@@ -83,14 +65,13 @@ Overall, the paper tackles an important issue in modern software
 systems and proposes a workable solution that may be implemented in
 real-world scenarios.
 
-*** Weak Aspects
+\subsubsection*{Weak Aspects}
+\label{sec:org274661e}
 The evaluation is performed on a limited number of scenarios and system configurations.
 
 While the results show that the proposed method is effective, more
 experiments with larger datasets and more different system contexts
 would help to evaluate the framework's robustness and wide applicability.
-# これは、実験の目的について明確に言及していないため、実験でどのような
-# ことを実証したいか伝わっていないことが原因であると分析した
 
 現在の実験の目的
 提案手法であるDaTopLinksの有効性を検証するため。
@@ -100,12 +81,14 @@ would help to evaluate the framework's robustness and wide applicability.
 
 修正版 実験の目的
 
-- 早期確定機能により不要な測定を削減できること
+\begin{itemize}
+\item 早期確定機能により不要な測定を削減できること
 
-- 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
+\item 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
 
-- 代表的な量子ノイズ環境において、規定の信頼性レベルを達成できることは
-  できるか
+\item 代表的な量子ノイズ環境において、規定の信頼性レベルを達成できることは
+できるか
+\end{itemize}
 
 を検証するために実験した
 
@@ -113,23 +96,31 @@ would help to evaluate the framework's robustness and wide applicability.
 
 これは、研究の問いの
 
-- 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
-  行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
+\begin{itemize}
+\item 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
 
-- 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+\item 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+\end{itemize}
 
 に対応している。
 
 現在の実験では、
-- 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
+\begin{itemize}
+\item 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
+\end{itemize}
 という問いに対する回答が分からない。
 
 比較対象の手法が、
 
-- DaTopLinks-NEC
+\begin{itemize}
+\item DaTopLinks-NEC
+\end{itemize}
 早期確定をしない手法
 
-- Fidelity-K
+\begin{itemize}
+\item Fidelity-K
+\end{itemize}
 重要度、多宛先を考慮しない手法
 
 であり、多宛先のみを考慮しない手法が含まれていないからである。
@@ -141,7 +132,8 @@ Fidelity-Kに関しては、多宛先を考慮しないし、重要度も考慮�
 実装中です
 
 
-*** Recommended Changes
+\subsubsection*{Recommended Changes}
+\label{sec:orge049b8c}
 The paper could be improved by extending the evaluation to cover more
 datasets and system configurations.
 
@@ -149,21 +141,12 @@ Further comparisons with other current approaches to automated system
 monitoring and analysis would help to highlight the suggested method's
 advantages.
 
-# 言ってることが正しいか？ → 既存の関連手法とあるが、存在するのか？今
-# 回始めてこの問題設定を提唱したことが貢献の1つであるため、同じ問題設
-# 定でこの問題を解いている手法は存在しない。また、新 実験の目的で既存
-# の関連手法に比べて優位性を示すという目的が含まれていないので無理矢理
-# 実装する必要性も無い。
-
-# could be , would help なので致命的なミスを指摘されている訳ではないと分
-# 析した。よって優先度は低い。
-
 Additional discussion on scalability and deployment considerations in
 large-scale environments will greatly improve the contribution.
-# 今後の展望で書けそうなら書く。
 
 
-* Review2
+\section*{Review2}
+\label{sec:org7b61cfe}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -175,7 +158,8 @@ SCORE: 2 (Accept)
 ----------- Overall Recommendation -----------
 SCORE: 2 (Accept)
 
-** Strong Aspects
+\subsection*{Strong Aspects}
+\label{sec:orgea2e7cc}
 The paper addresses a relevant problem in quantum networks by
 incorporating destination importance into high-fidelity link
 selection.
@@ -183,40 +167,29 @@ selection.
 It also presents a clear algorithmic design with theoretical analysis
 and simulation results across multiple noise models.
 
-** Weak Aspects
+\subsection*{Weak Aspects}
+\label{sec:orge7b565d}
 The novelty is moderate, as the work mainly extends existing
 link-selection and bandit-based approaches to a demand-aware Top-K
 setting.
-# 今後の課題。言っていることは正しいので逆に誤った新規性の解釈をされて
-# いないと捉えた。
 
 The evaluation is limited to simulations, and performance under
 amplitude damping shows reduced robustness due to model mismatch.
 
-# 言っていることは正しいか？ ただしい。
 
-# →NBのモデル自体が正規分布のノイズを仮定しており、それが根本的な原因
-# であるため、この手法の弱点としてどうがんばっても非パウリノイズには対
-# 応できないことを分かりやすく書く。(NBをサブルーチンとしているため)
-# その上でNBをサブルーチンとして使わない手法を考える的なことを今後の展
-# 望で書く。
-
-
-** Recommended Changes
+\subsection*{Recommended Changes}
+\label{sec:orgcd2edba}
 The paper would benefit from a clearer explanation of its novelty
 relative to prior methods such as LinkSelFiE and related Top-K
 selection work.
 
-# Reviewer1に対する比較手法を追加する対応で解決可能
-
 
 It would also be helpful to expand the discussion of robustness under
 non-Pauli noise and practical deployment considerations.
-# 問題: 非パウリノイズ下でのロバスト性を考慮した設計を検討するべき
-# → 今後の課題でかく
 
 
-* Review3
+\section*{Review3}
+\label{sec:org4536760}
 ----------- Originality -----------
 SCORE: 1 (Weak Accept)
 ----------- Quality -----------
@@ -228,7 +201,8 @@ SCORE: 1 (Weak Accept)
 ----------- Overall Recommendation -----------
 SCORE: 1 (Weak Accept)
 
-** Strong Aspects
+\subsection*{Strong Aspects}
+\label{sec:org3305bfc}
 The paper addresses an important problem in quantum networks by
 incorporating demand-aware link selection under limited resources.
 
@@ -239,38 +213,32 @@ The inclusion of theoretical guarantees and evaluation across multiple
 noise models strengthens the contribution.
 
 
-** Weak Aspects
+\subsection*{Weak Aspects}
+\label{sec:orgbc3761a}
 The novelty is somewhat incremental, as it builds on existing
 bandit-based link selection methods.
-
-# 間違っていない。ので言いたい主張が伝わっている証拠だと捉えた。
 
 The evaluation relies only on simulations, limiting practical
 validation.
 
 Additionally, the method depends on specific noise assumptions, and
 some sections are dense.
-# ノイズに関する内容はReviewr2と同じ方法で解決可能。可読性の低さは致命
-# 的なミスではないので優先度は低い。
 
-** Recommended Changes
+\subsection*{Recommended Changes}
+\label{sec:org564d149}
 The authors should improve clarity by simplifying the algorithm
 description and adding intuitive explanations.
-# 主観的な評価なので後回し
 
 
 Expanding evaluation to more realistic scenarios or noise models would
 strengthen the work.
-# 実験の目的が伝わっていない
 
 A clearer discussion of limitations and broader comparisons would also
 help.
 
-# would なので優先度は低い。broader comparisonsについては、比較手法を
-# 増やす方向性で良さそう
 
-
-* Review4
+\section*{Review4}
+\label{sec:org644367b}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -283,23 +251,23 @@ SCORE: 2 (Accept)
 SCORE: 2 (Accept)
 
 
-** Strong Aspects
+\subsection*{Strong Aspects}
+\label{sec:orgb276fd5}
 The authors address a realistic gap—existing work ignores
 heterogeneous demand across destinations in quantum networks.
 
 This work extends best-arm identification to a demand-aware Top-K
 selection problem, which is both meaningful and non-trivial.
 
-** Weak Aspects
+\subsection*{Weak Aspects}
+\label{sec:org6f0a8d4}
 The approach relies on simplified assumptions (e.g., fixed importance,
 star topology, and idealized conditions), which may limit its
 applicability to real-world, dynamic quantum networks.
 
-# 実験の目的が伝わっていない
-# real-worldでの実験は今後の展望で書けたらかく
 
-
-** Recommended Changes
+\subsection*{Recommended Changes}
+\label{sec:org3252b08}
 Incorporate more realistic network conditions—such as dynamic traffic
 patterns, multi-hop topologies, and uncertain or time-varying
 destination importance—to improve practical applicability.
@@ -307,19 +275,4 @@ destination importance—to improve practical applicability.
 Need to extend the utility function and validate the approach through
 real-world experiments or testbed deployments to demonstrate
 robustness beyond simulation.
-
-# 今後の展望でかく
-
-
-
-
-
-
-
-
-
-
-
-
-# mode: org
-# End:
+\end{document}

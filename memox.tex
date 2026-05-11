@@ -1,17 +1,22 @@
-\documentclass[conference]{IEEEtran}
+\documentclass[conference,15pt]{IEEEtran}
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
-\usepackage{graphicx}
+\usepackage[dvipdfmx]{graphicx}
 \DeclareGraphicsExtensions{.eps,.pdf,.png}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{revhistory}
+\usepackage{enumitem}
+\setlist{itemsep=2pt, parsep=2pt, topsep=2pt}
+\newenvironment{raddblock}{\color{red}}{}
+\newenvironment{rdelblock}{\color{gray}}{}
 \begin{document}
 
-\title{Research Meeting}
+\title{COMPSAC査読分析}
 
 \author{\IEEEauthorblockN{Shun Yamachika}
 \IEEEauthorblockA{\textit{Department of Informatics, School of Science and Technology} \\
@@ -22,287 +27,251 @@ shun@lsnl.jp}}
 \maketitle
 
 
-\section*{今週やったこと}
-\label{sec:org33a6320}
-
-\subsection*{エンタングルメント生成にかかる費用を計算する}
-\label{sec:orgc5fb99f}
-
-結論 距離によって変化するが、ほぼ0円
-
-Q. エンタングルメント生成機器の値段を考慮しない場合、100km離れたノード
-A,B間で1エンタングルメント生成するのにかかるコストは何円くらいですか？
 
 
-\begin{itemize}
-\item chatGPT 十円〜数百円/回
-\item gemini 1ペアあたり約 0.00001円 〜 0.001円程度
-\item claude 約1〜10円/ペア
-\item grok  約0.03円
-\end{itemize}
+\section*{COMPSAC査読結果}
+\label{sec:org6f4fca6}
+\subsection*{Review1}
+\label{sec:orgf5974de}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 3 (Strong Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
 
 
-エンタングルメント成功確率は距離によって指数関数的に減衰するため、1エ
-ンタングルメント生成コストは距離に応じて指数関数的に高くなる。
-(生成試行回数が増えるから)
+\subsubsection*{Strong Aspects}
+\label{sec:orge2fc8ce}
+The paper presents a well-structured approach to improving software
+system reliability using an automated framework that combines recent
+machine learning techniques with system-level monitoring and analysis.
 
+The suggested methodology is a practical pipeline that
+collects runtime data, analyzes system behavior, and employs
+data-driven techniques to discover performance and reliability
+issues.
 
+The experimental evaluation indicates measurable advances in
+system behavior analysis, as well as the suggested framework's
+usefulness across sample scenarios.
 
+Overall, the paper tackles an important issue in modern software
+systems and proposes a workable solution that may be implemented in
+real-world scenarios.
 
-\subsection*{じゃあなぜエンタングルメントは高コストと言われているのか？}
-\label{sec:org804d4d6}
+\subsubsection*{Weak Aspects}
+\label{sec:orgc1dcd98}
+The evaluation is performed on a limited number of scenarios and system configurations.
 
-エンタングルメントの生成成功率が極めて低く、品質維持も困難だから。
+While the results show that the proposed method is effective, more
+experiments with larger datasets and more different system contexts
+would help to evaluate the framework's robustness and wide applicability.
 
+現在の実験の目的
+提案手法であるDaTopLinksの有効性を検証するため。
 
+これは、何の有効性か分からないのがよくない。実環境での有効性と捉えられ
+てもおかしくない。
 
-量子通信はエンタングルメントを消費して通信をする。現在の技術では、ノイ
-ズの影響やハードウェアの未熟さにより、エンタングルメントを高速かつ大量
-に生成することが極めて困難である。通信距離が伸びるほど、指数関数的にエ
-ンタングルメント生成成功率が低下するため、一つ一つのエンタングルメント
-が貴重な資産となる。さらにエンタングルメントが生成された直後から量子状
-態の崩壊(デコヒーレンス)が始まるため、貯蓄することも難しいから。
-
-
-実際に生成されているエンタングルメントがどの程度理想状態を保っているか
-（忠実度）を把握するには、生成されたエンタングルメントの一部をサンプル
-として測定し、統計的に推定する必要がある。忠実度の推定精度を上げるには
-サンプル数を増やす必要があるため、品質推定に回す分だけデータ送信に利用
-できるエンタングルメントが減るというトレードオフが生じる。
-
-
-例) ノードA,B間でエンタングルメント生成をするとき
-
-エンタングルメント生成試行(1秒間に1000回試行)
-↓
-エンタングルメント成功(100回に1回成功するとしたら1秒間に10個エンタング
-ルメントが生成される)
-↓
-エンタングルメントが理想状態にどれくらい近いか(忠実度)を把握する必要が
-ある。1秒間に2個のエンタングルメントを消費し、忠実度を監視する
-↓
-通信で使用できるエンタングルメントは1秒間に8個
-
-
-(量子メモリの保持時間は現状ミリ秒〜秒オーダーが限界のため、使用しなかっ
-たエンタングルメントは消失する)
-
-厳密にはエンタングルメントの生成速度や距離の減衰は量子ビットのプラット
-フォームに大きく依存する。
-
-
-
-\subsection*{40バウンスが高コストなのかどうか}
-\label{sec:org400a5c7}
-エンタングルメント生成にかかるコストは上述した通り、コストに比例して指
-数関数的に増えていくので距離によるが、非常に高コストであると言える。
-
-以下、claude Opus4.5で調査した結果
-
-
-\begin{center}
-\begin{tabular}{lll}
-距離 & 主な制約 & 現実的なレート\\
-1 km未満 & 光子損失小、高レート可能 & 10-1000 Hz\\
-1-50 km & ファイバー損失（0.2dB/km） & 0.1-10 Hz\\
-50-100 km & 量子メモリ必須 & mHz-Hz\\
-100 km以上 & 量子リピータ/衛星必須 & 実験段階\\
-\end{tabular}
-\end{center}
-
-
-
-
-現状は距離が離れていると実用的な通信はできない。40バウンスも80エンタン
-グルメント(40 x 2(往復する) = 80)を使用するので当然高価である。
-
-
-しかし、現在の量子ネットワークを想定するのなら、
-
-\begin{center}
-\begin{tabular}{l}
-高効率化、高精度化がなぜ必要なのか? 工学的に本当に必要なのか? -ohsaki\\
-例\\
-一食 12.7 円のカレーライスを 11.4 円にしてもほぼ実用上は意味がない (最初からタダ同然だから)\\
-一食 12.7 万円のカレーライスを 11.4 万円にしてもほぼ実用上は意味がない (もともと高すぎて食べられないから)\\
-一食 1200 円のカレーライスを 600 円にしたなら意味がある (1200 円なら無理でも、600 円なら出せる (人であれば))\\
-\end{tabular}
-\end{center}
-
-この例でいうと、一食 12.7 万円のカレーライスを 11.4 万円にする研究になっ
-ている。しかし、数年後にはもっと安くなるし、近い距離の通信を想定すれば
-安くなる。
-
-
-\subsubsection*{補足}
-\label{sec:org62552e7}
-linkselfie、NBは抽象的なネットワークモデルに基づいており、以下の3つの
-機能を持つノードであれば、基礎となるハードウェアに関わらず適用できると
-されている。
+修正版 実験の目的
 
 \begin{itemize}
-\item 量子メモリ: 量子状態を保存する能力（例：初期化や読み出しが可能であること）。
+\item 早期確定機能により不要な測定を削減できること
 
-\item 量子操作: 保存された量子状態に対して量子ゲート操作を行う能力（ユニタリ2-デザインなどの特定のゲートセットが必要）。
+\item 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
 
-\item 量子状態の転送: ノード間で量子状態を送信する能力（例：もつれを用いたテレポーテーションなど）。
+\item 代表的な量子ノイズ環境において、規定の信頼性レベルを達成できることは
+できるか
 \end{itemize}
 
-なので、将来的に新たなハードウェアが台頭してきても適用できる可能性が高
-い。(NBより優秀な手法が考案される可能性はある)
+を検証するために実験した
+
+と書き替える。
+
+これは、研究の問いの
+
+\begin{itemize}
+\item 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
+行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
+
+\item 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+\end{itemize}
+
+に対応している。
+
+現在の実験では、
+\begin{itemize}
+\item 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
+\end{itemize}
+という問いに対する回答が分からない。
+
+比較対象の手法が、
+
+\begin{itemize}
+\item DaTopLinks-NEC
+\end{itemize}
+早期確定をしない手法
+
+\begin{itemize}
+\item Fidelity-K
+\end{itemize}
+重要度、多宛先を考慮しない手法
+
+であり、多宛先のみを考慮しない手法が含まれていないからである。
+Fidelity-Kに関しては、多宛先を考慮しないし、重要度も考慮しないため、測
+定コストが増える原因が、多宛先を考慮しないことが原因なのか、重要度も考
+慮しないことが原因なのか結果からは分析できない。よって多宛先のみを考慮
+しない手法(linkselfieを各宛先ごとに実行し、全ての宛先で1つのリンクを決
+定した後topK選択を行なう手法)を比較手法で追加するべきだと考えた。←現在
+実装中です
 
 
-\section*{研究の話}
-\label{sec:org63bc204}
+\subsubsection*{Recommended Changes}
+\label{sec:org41a562e}
+The paper could be improved by extending the evaluation to cover more
+datasets and system configurations.
 
-\subsection*{ストーリーの骨格}
-\label{sec:org71aa9f7}
-背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
-動機 LinkSelFiE は通信需要を考慮していないが、現実には通信需要が高くかつ忠実度の高いリンクの判定が望まれる
-目的 少ない計測 (バウンス) により利用率 x 忠実度が高いリンクの判定を可能とする
+Further comparisons with other current approaches to automated system
+monitoring and analysis would help to highlight the suggested method's
+advantages.
 
-\subsection*{現在の問題設定}
-\label{sec:org2b86fda}
-ノードs〜ノードd 間のリンク集合 Ｌ だけでなく、
-ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
-ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
-総バウンスコスト C が入力として与えられる。
-この時、ノードS〜ノードD\_n のノードペアの中で、
-K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における
-忠実度が最大のリンクをそれぞれ発見する。
-ただし、発見するリンクのノードペア数 K は、
-重要度と忠実度の積の総和、つまり
-I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
-が最大となるように定める。
-ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
+Additional discussion on scalability and deployment considerations in
+large-scale environments will greatly improve the contribution.
 
 
+\section*{Review2}
+\label{sec:orgf392e16}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
 
-\subsubsection*{問題設定における提案}
-\label{sec:org2fe9aea}
-変更前
+\subsection*{Strong Aspects}
+\label{sec:orgcca58b2}
+The paper addresses a relevant problem in quantum networks by
+incorporating destination importance into high-fidelity link
+selection.
 
-重要度と忠実度の積の総和、つまり
-I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
-が最大となるように定める。
+It also presents a clear algorithmic design with theoretical analysis
+and simulation results across multiple noise models.
 
+\subsection*{Weak Aspects}
+\label{sec:orgae0700b}
+The novelty is moderate, as the work mainly extends existing
+link-selection and bandit-based approaches to a demand-aware Top-K
+setting.
 
-変更後（修正案）：
-物理的な通信可能性を考慮した有効効用（Effective Utility）の総和、つまり
-\[
-U_{\text{total}}
-= \sum_{k \in S} I_k \times \max\bigl(0,\; F_k - F_{\text{th}}\bigr)
-\]
-が最大となるように定める。
-（ここで \(F_{\text{th}}\) は通信に必要な最低忠実度である。）
-
-\subsubsection*{物理的な動機}
-\label{sec:orgab259ef}
-
-量子通信には『使えない領域』と『使える領域』の明確な境界がある
-
-単純な線形モデル（I×F）では、忠実度 0.5（完全なノイズ）であっても、
-重要度 I が高ければ正の価値を持ってしまう。
-
-しかし実際の量子ネットワーク（QKDやエンタングルメント蒸留）では、
-忠実度がしきい値 F\_th​ を下回ると、生成レートや蒸留収率は厳密にゼロ
-になる。
-
-したがって、物理的な実態を反映するには、しきい値以下を無価値（ゼロ）
-とするモデルが不可欠である。
+The evaluation is limited to simulations, and performance under
+amplitude damping shows reduced robustness due to model mismatch.
 
 
-例
-
-リンクA（ゴミ）: 重要度 I=1.0 (Max)、忠実度 F=0.5 (通信不可)
-リンクB（優良）: 重要度 I=0.4 (低め)、忠実度 F=0.99 (超高品質)
-
-例え重要度が高くても使えないリンクのほうが価値が高くなってしまうのはお
-かしい。
+\subsection*{Recommended Changes}
+\label{sec:org05445b9}
+The paper would benefit from a clearer explanation of its novelty
+relative to prior methods such as LinkSelFiE and related Top-K
+selection work.
 
 
-\subsubsection*{アルゴリズム的な動機}
-\label{sec:orgdb8768d}
-忠実度 0.91 と 0.92 の差は、絶対値で見ればわずか約 1\% である。単純な掛
-け算（I×F）では、この差が重要度 I の大小に埋もれてしまう。
-
-しかし、しきい値が 0.90 の場合、この差は「マージン（有効品質）」の観点
-では 0.01 対 0.02 となり、2倍（100\%）の性能差に相当する。
-
-この「有効な差」を強調（コントラスト増幅）することで、探索アルゴリズム
-（Bandit）が低コストで正解を見つけやすくなる。
+It would also be helpful to expand the discussion of robustness under
+non-Pauli noise and practical deployment considerations.
 
 
-複雑な物理式を避けつつ、上記の特性（しきい値以下カット、および有効成分
-の強調）を満たす最もシンプルな形として、以下を定義する。
+\section*{Review3}
+\label{sec:orgcfe6816}
+----------- Originality -----------
+SCORE: 1 (Weak Accept)
+----------- Quality -----------
+SCORE: 1 (Weak Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 1 (Weak Accept)
+----------- Overall Recommendation -----------
+SCORE: 1 (Weak Accept)
 
-U=I×max(0,F−Fth​)
+\subsection*{Strong Aspects}
+\label{sec:org90ce94b}
+The paper addresses an important problem in quantum networks by
+incorporating demand-aware link selection under limited resources.
 
+The proposed DaTopLinks algorithm effectively combines intra- and
+inter-destination optimization with a clear design.
 
-\subsubsection*{用語の説明}
-\label{sec:org6cb8f2d}
-蒸留とは、複数の低品質なエンタングルメント対を消費して、高品質なペアを
-抽出（純粋化）するプロトコルである。このプロセスにおいて、初期忠実度
-が特定のしきい値 Fth​（例: 0.5やそれ以上の特定値）を下回っている場合、
-どんなに多くのペアを消費しても忠実度を向上させることは不可能（蒸留不能）
-となる。
-
-QKDにおいては、量子ビット誤り率（QBER）が保安限界（例: BB84プロトコル
-における約11\%）を超過すると、盗聴者による情報漏洩の可能性を排除できな
-くなる。忠実度 F は誤り率と相関するため、これは F がある閾値を下回ると
-秘密鍵生成レートがゼロになることを意味する 。
-
-
-
-\subsubsection*{論文での説明のイメージ}
-\label{sec:orgeac7e1c}
-効用関数の定義について 量子通信において、忠実度 F がしきい値 Fth​ をわ
-ずかに超えた程度では、蒸留効率（Distillation Yield）は極めて低く、実効
-的な通信レートはゼロに近い。 そのため、リンクの効用は単純な F ではなく、
-しきい値を超過した「有効マージン (Effective Margin)」に比例すると
-みなすのが物理的に妥当である。 よって、本研究では効用関数として
-U=I×max(0,F−Fth​) を採用する。これは蒸留可能エンタングルメント量
-（Distillable Entanglement）や秘密鍵レートの一次近似に相当する。
+The inclusion of theoretical guarantees and evaluation across multiple
+noise models strengthens the contribution.
 
 
+\subsection*{Weak Aspects}
+\label{sec:org78e07a1}
+The novelty is somewhat incremental, as it builds on existing
+bandit-based link selection methods.
 
-\subsection*{複数の宛先をどのように解釈するか}
-\label{sec:orgadb6385}
+The evaluation relies only on simulations, limiting practical
+validation.
 
-\begin{center}
-\includegraphics[width=.9\linewidth]{/home/shun/quantum/meeting/figure/toporogi.eps}
-\end{center}
+Additionally, the method depends on specific noise assumptions, and
+some sections are dense.
 
-
-円はノード、楕円は中継ノード(量子リピータ)、実線はリンクを表わす。
-
-このとき、linkselfieでは
-
-(S → D\_1 → D) x 2本
-(S → D\_2 → D) x 3本
-(S → D\_3 → D) x 2本
-
-のリンクをそれぞれ別々のエンタングルメントリンクとして扱っていた。(量子リピータ
-などの中継ノードは抽象化されているため)
-
-本研究では複数の宛先を考慮するが、必ずしも通信先の最終到達地点が違うと
-は限らない。
+\subsection*{Recommended Changes}
+\label{sec:org391b95f}
+The authors should improve clarity by simplifying the algorithm
+description and adding intuitive explanations.
 
 
-\subsection*{この研究の分野}
-\label{sec:orgfaaad45}
-関連研究を調べたところ、全く同じ研究は存在しなかった。
+Expanding evaluation to more realistic scenarios or noise models would
+strengthen the work.
 
-似ている研究
-\begin{description}
-\item[{量子ネットワーク効用最大化 (QNUM)}] 忠実度が既知である前提で、各ユーザーペアの効用 \(U\) をレート \(R\) と忠実度 \(F\) の関数（例: \(U = w \log(R \cdot f(F))\)）として定義し、その総和を最大化する。
-\item[{Quantum Algorithms for Bandits with Knapsacks}] 予算制約付きバンディット問題について触れている。一般的な数理モデルとしての「量子アルゴリズム」に焦点を当てており、量子ネットワークの物理層（忠実度推定の回帰モデルや物理的バウンスコスト）への具体的な適用については言及していない。
-\end{description}
-
-一般的な数理モデルとしての「量子アルゴリズム」に焦点を当てており、量子
-ネットワークの物理層（忠実度推定の回帰モデルや物理的バウンスコスト）へ
-の具体的な適用については言及していない。
+A clearer discussion of limitations and broader comparisons would also
+help.
 
 
-量子ネットワークで予算制約下でのバンディット問題 x 効用最大化を扱っている研究がない
+\section*{Review4}
+\label{sec:org52a2b95}
+----------- Originality -----------
+SCORE: 2 (Accept)
+----------- Quality -----------
+SCORE: 2 (Accept)
+----------- Relevance -----------
+SCORE: 2 (Accept)
+----------- Presentation -----------
+SCORE: 2 (Accept)
+----------- Overall Recommendation -----------
+SCORE: 2 (Accept)
+
+
+\subsection*{Strong Aspects}
+\label{sec:org9f672ad}
+The authors address a realistic gap—existing work ignores
+heterogeneous demand across destinations in quantum networks.
+
+This work extends best-arm identification to a demand-aware Top-K
+selection problem, which is both meaningful and non-trivial.
+
+\subsection*{Weak Aspects}
+\label{sec:org640d1a8}
+The approach relies on simplified assumptions (e.g., fixed importance,
+star topology, and idealized conditions), which may limit its
+applicability to real-world, dynamic quantum networks.
+
+
+\subsection*{Recommended Changes}
+\label{sec:orgc00ac21}
+Incorporate more realistic network conditions—such as dynamic traffic
+patterns, multi-hop topologies, and uncertain or time-varying
+destination importance—to improve practical applicability.
+
+Need to extend the utility function and validate the approach through
+real-world experiments or testbed deployments to demonstrate
+robustness beyond simulation.
 \end{document}
