@@ -27,11 +27,315 @@ shun@lsnl.jp}}
 \maketitle
 
 
+
+
+
+\section*{memo}
+\label{sec:org70de167}
+
+\begin{itemize}
+\item バリエーションにみえる。かっちり解くのならあり。
+\item レイヤーが低い。量子のレイヤー3、4あたりの研究はないの？
+\end{itemize}
+
+バリエーションになっているのかなっていないのか明確にして。
+
+
+
+
+
+
+\section*{ストーリー案}
+\label{sec:org792dbd4}
+非定常量子ネットワークにおける潜在共有構造のオンライン学習にもとづく高忠実度経路追跡
+
+
+\section*{要約}
+\label{sec:org8e6df7c}
+非定常な量子ネットワークで、経路単位の benchmarking 観測だけから、経路間に隠れた共有劣化構造を逐次的に学習し、測定資源を節約しながら高忠実度経路を追跡する研究。
+
+
+\section*{背景}
+\label{sec:org128e6ac}
+
+量子ネットワークでは、量子チャネルの雑音、損失、メモリ劣化、エンタング
+ルメント生成の不安定性により、送信元と宛先間の通信品質が時間とともに変
+化する。そのため、複数の候補経路が存在する場合には、各経路の品質を継続
+的に測定し、その時点で高い忠実度を期待できる経路を選択することが重要で
+ある。
+
+Network benchmarking は、量子経路の通信品質を推定する有効な手段である。
+しかし、忠実度を高い信頼度で推定するには、量子状態の生成、操作、測定を
+多数回繰り返す必要がある。そのため、候補経路数が増加すると、各経路を独
+立に十分な回数測定する方法では、必要な benchmarking 資源が大きく増加す
+る。
+
+この問題に対し、BeQuP、QBGP、LinkSelFiE などの既存研究では、
+networkbenchmarking により量子リンクまたは量子経路の品質を逐次推定し、
+高忠実度なリンク・経路を選択する問題が扱われている。これらの研究は、測
+定資源を削減しながら best path または best link を識別する点で重要であ
+る。一方で、BeQuP、QBGP、LinkSelFiEでは、測定期間中の経路品質を固定的
+または準静的なものとして扱っており、測定中にも忠実度が変化する非定常環
+境で、時変best path を継続的に追跡する問題は中心的には扱われていない。
+
+
+\section*{動機}
+\label{sec:org0b3f2a6}
+
+しかし、将来の大規模な自律分散型量子ネットワークでは、ネットワークが複
+数の管理ドメインに分割され、送信元ノードが他ドメイン内部のリンク列や中
+継ノード列を直接観測できない状況が想定される。さらに、量子チャネルの雑
+音、損失、メモリ劣化により、候補経路の忠実度やエンタングルメント生成速
+度は、測定期間中にも変化しうる。このような環境では、単に各経路の平均品
+質をオンラインに推定するだけでは不十分であり、どの経路間で測定情報を再
+利用できるかという潜在共有構造と、時変する best path を同時に学習する
+必要がある。
+
+このとき、詳細な内部トポロジを復元することは困難であり、また経路選択の
+ために必ずしも必要ではない。重要なのは、真のリンク列を正確に推定するこ
+とではなく、測定情報をどの経路間で再利用できるかを判断するための低解像
+度な共有構造を得ることである。
+
+例えば、複数の経路が同じリンク群、中継点、管理ドメイン、またはボトルネッ
+クを共有している場合、それらの経路の忠実度やエンタングルメント生成速度
+には共通した時間変動が現れる可能性がある。このような共通変動を逐次的に
+観測できれば、送信元は真の内部トポロジを知らなくても、経路品質の推定に
+有用な潜在的共有構造を学習できる可能性がある。
+
+特に、忠実度が時間変化する環境では、各時刻で全候補経路を独立に測定し続
+ける方法は非効率である。初期段階では探索的に複数経路を測定し、得られた
+path-level 観測から経路間の潜在的な共有構造を学習する。その後、学習し
+た構造を用いて測定対象を絞り込むことができれば、時間が進むにつれて
+benchmarking 資源の配分を効率化できる。
+
+したがって、忠実度が時間変化する未知内部トポロジ下で、 path-level 観測
+から低解像度の経路共有構造をオンラインに学習し、その構造を best path
+識別に利用することは、マルチドメイン量子ネットワークにおける効率的な経
+路選択のための重要な課題である。
+
+
+
+\section*{手法}
+\label{sec:orgbc257c5}
+
+本研究では、各候補経路の path-level benchmarking から得られる忠実度お
+よびエンタングルメント生成速度の時系列を用い、時変する経路品質と経路間
+の潜在共有構造を同時にオンライン学習する。特に、量子経路の忠実度が、リ
+ンク品質、エンタングルメント生成、中継処理、メモリ劣化などの影響の積構
+造として近似できることに着目する。このとき、各経路の対数忠実度は、共有
+リンク、共有中継点、共有ドメイン、共通ボトルネックに由来する少数の時変
+潜在劣化成分の和として表せる可能性がある。本研究では、この log
+fidelity の加法構造を利用し、類似した時間変動を示す経路群を、真の内部
+トポロジではなく、測定情報を再利用可能な粗視化共有構造として逐次推定す
+る。生成速度については、共通ボトルネックやエンタングルメント生成不安定
+性を反映する補助観測として扱い、忠実度変動との相関を用いて潜在成分推定
+を補強する。各時刻では、推定された潜在構造、品質予測値、不確実性をもと
+に、best path 候補と識別に有効な経路を優先的に測定する。これにより、全
+経路を独立に継続測定するのではなく、共有変動を利用して benchmarking 資
+源を集中配分し、測定中にも変化する高忠実度経路を継続的に追跡する。
+
+
+
+
+
+タイトル: 非定常量子ネットワークにおける潜在共有構造のオンライン学習にもとづく高忠実度経路追跡
+
+研究の問い (50 文字以上、100 文字を目安に 3〜4 個)
+
+○○
+○○
+○○
+主要な貢献 (50 文字以上、100 文字を目安に 3〜4 個)
+
+○○
+○○
+○○
+背景: (100 文字以上、150 文字を目安に)
+\subsection*{背景の骨格}
+\label{sec:org8d328f1}
+
+量子ネットワークでは、各経路の品質を継続的に測定し、高忠実度な経路を選
+択することが重要である。NBは、量子経路の通信品質を推定する有効な手段で
+あるが、候補経路数が増加すると貴重なエンタングルメントを大量に消費して
+しまう。そこで、既存研究はトポロジ構造を用いて効率的な測定を行う手法を
+考案した。
+
+
+動機: (100 文字以上、150 文字を目安に)
+\subsection*{動機の骨格}
+\label{sec:orgae49cd0}
+
+しかし、将来の大規模な自律分散型量子ネットワークでは、内部のトポロジを
+取得できない可能性がある。また、継続的な量子通信では、初期に選択した経
+路の忠実度が時間とともに低下する可能性があるため、通信に用いていない候
+補経路についても継続的に品質を追跡し、代替経路候補を維持することが重要
+となる。
+
+目的: (100 文字以上、150 文字を目安に)
+\subsection*{目的の骨格}
+\label{sec:orgcab923b}
+
+本研究の目的は、非定常の量子ネットワークにおいて、各経路のホップ数とNB
+観測から得られる情報のみを用いて、その時点で高忠実度が期待できる経路を
+効率的に継続的に追跡し続けることである。既存手法を適用し続ける場合と比
+較し、同程度の精度を維持しつつ、必要な総測定資源を削減することを目標と
+する。
+
+手法: (100 文字以上、150 文字を目安に)
+\subsection*{手法の骨格}
+\label{sec:org134d17e}
+各経路のホップ数とNB観測から得られる観測値の時系列データを用い、トポロ
+ジの共有構造を推測し、推測したトポロジ構造を利用することで高忠実度経路
+を継続的に追跡する。各経路を対数忠実度に分解し、同じ劣化成分を持つ経路
+を特定することで共有構造を推定する。
+
+
+\subsection*{結果: (100 文字以上、150 文字を目安に)}
+\label{sec:org452c428}
+
+時間が経つにつれ、提案手法がトポロジを把握していき、それに伴って効率的
+な測定ができるようになる。既存手法は非定常な環境を考慮していないため、
+時間が経っても経路探索に使う測定資源横這いのまま。判定の精度は順位が入
+れ替わる瞬間は精度が落ちるが全手法影響をうける。
+
+
+
+\subsection*{結果のグラフ (論文の「結果」を説明するメインのグラフ)}
+\label{sec:org8749a55}
+
+\subsubsection*{図 1: 時間を変化させた時の総測定資源}
+\label{sec:org93b9e72}
+
+横軸 時間
+縦軸 総測定資源
+
+経路 i の忠実度はF\_i(t)で表され、連続的に時間変化するものとする。各手法は
+時刻が T になるまで最大忠実度の経路を求め続け、それを求めるのに消費した
+測定資源を総測定資源に追加していく。
+
+
+\subsubsection*{図 2: 時間を変化させた時の高忠実度な経路の出力精度}
+\label{sec:orgea0c595}
+
+横軸 時刻
+縦軸 精度
+
+経路 i の忠実度はF\_i(t)で表され、連続的に時間変化するものとする。各手
+法は時刻が T になるまで最大忠実度の経路を求め続け、真の忠実度が最も高
+い経路を出力できれば1、できなければ0を返す。
+
+\subsubsection*{共通事項}
+\label{sec:org650fc19}
+各経路の真の忠実度は1測定をする間の平均忠実度とする。
+1測定あたり10秒かかり、経路Aの忠実度がその間に9.0\textasciitilde{}9.2に変化した場合、
+経路Aの真の忠実度は9.1とする。
+
+時刻を0→ T 秒まで変化させたときの各実験を独立に10回行ない、95\%信頼区間
+をplotする。
+
+
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figure/kekka.pdf}
+\end{figure}
+
+
+
+\section*{どんな問題を解く?}
+\label{sec:org66ce721}
+内部トポロジやリンク品質を直接観測できない状況で、時間変化する best path を path-level 観測だけで継続的に選ぶ問題。
+
+\subsection*{BeQuP}
+\label{sec:org1c92a8a}
+トポロジの構造を使って測定資源を削減しながら、best pathを効率的に探索
+する研究。
+
+\subsection*{今回の案}
+\label{sec:orgb59c4ce}
+トポロジ未知の状態から、トポロジの構造を推定しながらbest pathを効率的
+に探索し続ける研究。
+→ トポロジ未知、忠実度が変化し続ける点がおおきく違う。
+
+\section*{なぜそれが重要?}
+\label{sec:orga0a55a3}
+量子ネットワークでは fidelity 推定に繰り返し測定が必要であり、候補経路
+数が増えると benchmarking 資源が大きくなるため測定資源を節約する必要が
+ある。
+
+特に忠実度が時間変化する環境では、一度推定した経路品質を長期間使い回せ
+ないため、複数回の経路選択において benchmarking 資源を継続的に消費する。
+したがって、非定常環境下で高忠実度経路を選び続けながら benchmarking 資
+源を削減することは重要である。
+
+
+忠実度が非定常かつ、内部トポロジやリンク品質を直接観測できない状況で継
+続的に高忠実度の経路を探し続けるようなシナリオはあるの？
+(LinkSelFiEみたいに必要な時に、各経路に対して測定をすればいいのでは？)
+
+→ 通信や継続的な entanglement distribution のように、通信中にも経路品
+質が変化しうる状況を対象とする。このような状況では、初期に選択した経路
+の忠実度が時間とともに低下する可能性があるため、通信に用いていない候補
+経路についても、限られた benchmarking 資源の範囲で継続的に品質を追跡し、
+代替経路候補を維持することが重要となる。
+
+
+\section*{すでに解かれていない?}
+\label{sec:orgf5f3c0d}
+
+完全には解かれていない可能性がある。 BeQuP は link-level/path-level
+feedback による best path 識別を扱い、QBGP や LinkSelFiE も network
+benchmarking による経路・リンク選択を扱っているが、提示案の中心である
+「非定常環境での時変 best path tracking」と「潜在共有構造の同時学習」
+は、少なくともこれらの中心課題ではないように見える。
+
+\section*{どうやって解く?}
+\label{sec:org2e31de2}
+経路の log fidelity を、少数の時変潜在劣化成分の和としてモデル化し、経路間の共通変動を使って測定情報を再利用する。
+誰が、いつ、どこで、何の情報を使う?
+送信元ノードが、経路選択時または定期的な benchmarking 時に、候補経路ごとの path-level fidelity と entanglement generation rate の時系列を使う。ただし、観測主体・測定頻度・測定コスト・選択周期はまだ曖昧。
+
+\section*{どこが新しい?}
+\label{sec:org122b99f}
+真の内部トポロジ復元ではなく、測定情報再利用のための低解像度な共有構造をオンラインに推定する点は、ネットワークアーキテクチャ研究として面白い。
+
+\begin{enumerate}
+\item 忠実度が時間変化するモデルを想定している。
+QBGP,BeQuP,LinkSelFiEなどは忠実度が時間変化するため、経路を測定し、
+高忠実度なリンク選択をするべきと主張しているが、実際の検証では経路
+ごとの忠実度は時間変化しないモデルで実験をしている。今回我々が
+提案する手法は測定中も忠実度が時間変化する。
+
+\item オンライン学習の内容が違う。
+我々の手法は逐次的に潜在共有構造と品質の高い経路をオンライン学習す
+るのに対し、QBGP,BeQuP,LinkSelFiEなどは品質の高い経路をオンライン学
+習し、次に測定する経路の意思決定をしている。
+\end{enumerate}
+
+
+\section*{既存研究を不当に悪く言ってない?}
+\label{sec:orgfb51fe2}
+現状の書き方なら大きな不当批判ではない。ただし、「BeQuP/QBGP/LinkSelFiE は非定常性を扱えない」と強く書くと危険。正しくは、それらの主目的が非定常 best path tracking ではないという表現に留めるべき。
+
+\section*{他の技術でできるのでは?}
+\label{sec:org7a7efd3}
+できる可能性がある。非定常 multi-armed bandit、linear bandit、latent factor model、Gaussian process bandit、change-point detection、Kalman filter などの自然な適用で済むなら、新規性は弱い。
+
+\section*{その成果のどこがうれしい?}
+\label{sec:org4cd2ba7}
+経路数が多い量子ネットワークで、全候補経路を測り続けずに、共有変動を利用して高 fidelity 経路を追跡できる可能性がある。
+
+
+
+
+
+
 \section*{量子アルゴリズムの検討}
-\label{sec:org7362f4d}
+\label{sec:orgf734b8c}
 
 \subsection*{量子アルゴリズムを使う動機}
-\label{sec:orgb3b7394}
+\label{sec:org51e99bb}
 X 量子ネットワークの問題だから量子計算で解く 
 
 O たくさんの制約があり、古典的な最短経路問題に還元できないような量子計
@@ -74,7 +378,7 @@ A. 全単純経路を明示的に列挙すれば、経路数はノード数に�
 
 
 \subsection*{解きたい問題}
-\label{sec:orgb6ed504}
+\label{sec:org2da4c89}
 
 Link Configuration for Fidelity-Constrained Entanglement Routing in
 Quantum Networks(INFOCOM 2025)を読んで以下のように考えた。
@@ -94,19 +398,52 @@ purification を決めるルーティングをしている。
 というところに目をつけた。
 
 上記の研究では忠実度、生成速度が既知の状態でのルーティングをしていたが、
-ルーティングの候補経路は忠実度、生成速度が未知の状態から探す必要がある。
+将来の大規模な量子ネットワークでは中央集権的なネットワークではなく、非
+局所的なネットワークになるため、生成速度、忠実度が未知の状態での経路選
+択をできるようにしたい。
 
 既存のlinkselfieのような忠実度が未知の経路集合から最適な経路を探す研究
 は忠実度が高い経路を最適なリンクとして扱ってきた。しかし、実際には忠実
-度、生成速度が高いリンクがルーティングで求められる。
+度は閾値以上のものを探せばよくて、その中で生成速度が高いリンクを探すほ
+うがネットワーク全体の通信効率は向上する
+
+
+\subsection*{疑問}
+\label{sec:org78e3289}
+上記のような問題が現状あると思ってます。これを扱うストーリー案を考えた
+いのですが、以下のような懸念点があります。
+
+\begin{itemize}
+\item 忠実度といっているが、スカラーにしたら普通の問題にならない？
+\end{itemize}
+→ 量子ネットワークの問題を解いていると言っているが、解いている問題自体
+は今までよく考えられてきたような問題では？
+
+\begin{itemize}
+\item 既存の研究に次々と条件を継ぎ足していっているようにみえる
+\begin{itemize}
+\item 最大忠実度を求める→生成速度も重視する になってるからじゃあそれがお
+わったら次また別の指標を考慮して\ldots{}となっていっておもしろくない
+\end{itemize}
+\end{itemize}
+
+
+そこで、今後の方針としてどうしていくか考えた。
+\begin{itemize}
+\item 解いている問題自体は今までよく考えられてきたような問題というのを逆に
+活かして、Linkselfieとは違う(多腕バンティッドではない)アプローチを探
+してみる。このとき、問題設定は、Linkselfieと同じではなく、生成速度も
+重視した問題にする。つまり、新な問題設定かつ、新しい視点の解決策を探
+す。
+\end{itemize}
 
 
 \section*{Resource-Consuming Certification for Demand-Satisfying Entanglement Link Selection in Quantum Networks}
-\label{sec:org88a72ce}
+\label{sec:org2aebf44}
 
 
 \subsection*{背景}
-\label{sec:org74425ef}
+\label{sec:orgd9e2204}
 
 量子ネットワークでは、遠隔ノード間で量子情報を高信頼に伝送するために、
 エンドツーエンドのエンタングルメントリンクを確立する必要がある。このと
@@ -126,7 +463,7 @@ identification）として定式化し、限られた測定資源の下で最も
 リンクを高確率に同定する枠組みを与えている。
 
 \subsection*{動機}
-\label{sec:org79fbf6e}
+\label{sec:orge190178}
 
 既存研究では、測定回数やバウンス数を削減しながら、高忠実度なリンクを選
 択することが主な目的とされてきた。しかし、実運用上の量子ネットワークで
@@ -158,7 +495,7 @@ identification）として定式化し、限られた測定資源の下で最も
 
 
 \subsection*{目的}
-\label{sec:org3d6840c}
+\label{sec:org09441e3}
 
 本研究の目的は，エンタングルメント生成速度が異なる複数のエンドツーエン
 ドリンクから，測定によるエンタングルメント生成容量の消費を抑えつつ，ア
@@ -199,13 +536,13 @@ identification）として定式化し、限られた測定資源の下で最も
 アルゴリズムを設計する．
 
 \section*{新テーマold}
-\label{sec:org1bbf98c}
+\label{sec:orgb279b3a}
 \begin{itemize}
 \item 大規模量子ネットワークにおける局所リンク測定に基づく高忠実度経路選択アルゴリズムの提案
 \end{itemize}
 
 \subsection*{背景}
-\label{sec:org7baa58d}
+\label{sec:org7b52419}
 
 既存の量子ネットワークルーティングに関する研究の多くは、すべてのノード
 が単一の管理組織に属し、ネットワーク全体のトポロジ情報を利用できる中央
@@ -220,7 +557,7 @@ identification）として定式化し、限られた測定資源の下で最も
 
 
 \subsection*{動機}
-\label{sec:orgcb759c5}
+\label{sec:orgdfb3cb9}
 
 これらの既存手法では、中継ノードや途中のリンクを抽象化し、各エンドツー
 エンド経路を独立した候補として扱うことで、ネットワーク全体の詳細なトポ
@@ -235,7 +572,7 @@ identification）として定式化し、限られた測定資源の下で最も
 方式を大規模量子ネットワークで運用することは現実的ではない。
 
 \subsection*{目的}
-\label{sec:org70bf003}
+\label{sec:org5d0a15a}
 
 本研究の目的は、エンドツーエンド経路集合の事前列挙が不可能な規模の量子
 ネットワークにおいても、高忠実度な送受信経路を選択可能にすることである。
@@ -275,7 +612,7 @@ identification）として定式化し、限られた測定資源の下で最も
 
 
 \subsection*{手法}
-\label{sec:org59c504e}
+\label{sec:orgf0e1473}
 
 本研究では、エンドツーエンド経路をあらかじめ列挙して比較するのではなく、
 各中継ノードにおいて利用可能な隣接リンクの品質を測定し、有望な次ホップ
@@ -294,7 +631,7 @@ identification）として定式化し、限られた測定資源の下で最も
 
 
 \section*{新テーマv2(76点)}
-\label{sec:orge8dcc7b}
+\label{sec:org5ca8bee}
 
 \begin{itemize}
 \item 全経路列挙を用いない量子ネットワークルーティングの近似可能性と測定複
@@ -302,7 +639,7 @@ identification）として定式化し、限られた測定資源の下で最も
 \end{itemize}
 
 \subsection*{背景}
-\label{sec:org12654c7}
+\label{sec:org569ce12}
 量子ネットワークでは、送信者と受信者の間に高忠実度のエンタングルメント
 を確立するため、複数の中継ノードを経由した経路選択が必要となる。既存の
 量子ルーティング研究の多くは、ネットワーク全体のトポロジ情報やリンク品
@@ -314,7 +651,7 @@ identification）として定式化し、限られた測定資源の下で最も
 ティング原理が必要となる。
 
 \subsection*{動機}
-\label{sec:org0679e2e}
+\label{sec:orgef14db9}
 近年、LinkSelFiE や QBGP のように、中央集権的な全体制御に依存せず、高
 忠実度な経路選択を実現しようとする研究が提案されている。これらは大規模
 量子ネットワークに向けた重要な方向性を示しているが、候補となるエンドツー
@@ -327,7 +664,7 @@ identification）として定式化し、限られた測定資源の下で最も
 ある。
 
 \subsection*{目的}
-\label{sec:orgfadb703}
+\label{sec:orgbb4bdb8}
 本研究の目的は，大規模量子ネットワークにおいて，全経路列挙や
 全体トポロジ情報を用いず，局所的に観測可能な情報のみから，
 最適忠実度経路に対してどの程度近い経路選択が可能であるかを
@@ -352,9 +689,9 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 
 
 \section*{COMPSAC査読分析}
-\label{sec:org3c801d0}
+\label{sec:orgbb4dc2a}
 \subsection*{研究の問い}
-\label{sec:org3aea6c5}
+\label{sec:org7dbfb0a}
 
 \begin{itemize}
 \item 宛先の重要度とリンクの忠実度（フィデリティ）を組み合わせた「重要度重
@@ -373,7 +710,7 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 
 
 \subsection*{主要な貢献}
-\label{sec:org8d36435}
+\label{sec:org110d98c}
 
 \begin{itemize}
 \item 単一の宛先に対する最適リンク特定問題を、宛先ごとに異なる需要を反映し
@@ -398,7 +735,7 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 
 
 \subsection*{実験の目的}
-\label{sec:org013b272}
+\label{sec:org9f6b463}
 VI. 実験のセットアップ 本節では、提案手法であるDaTopLinksの有効性を検
 証するためのシミュレーション環境と評価条件について詳しく説明します 。
 
@@ -406,7 +743,7 @@ VI. 実験のセットアップ 本節では、提案手法であるDaTopLinks�
 
 
 \subsection*{新規性の主張}
-\label{sec:org6ac3e88}
+\label{sec:orga3630c6}
 \begin{itemize}
 \item 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
 外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
@@ -440,9 +777,9 @@ VI. 実験のセットアップ 本節では、提案手法であるDaTopLinks�
 
 
 \section*{COMPSAC査読結果}
-\label{sec:org4754e4d}
+\label{sec:org4dbde39}
 \subsection*{Review1}
-\label{sec:org1d5fa50}
+\label{sec:org2058e44}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -456,7 +793,7 @@ SCORE: 2 (Accept)
 
 
 \subsubsection*{Strong Aspects}
-\label{sec:orgcb1a630}
+\label{sec:org230d63a}
 The paper presents a well-structured approach to improving software
 system reliability using an automated framework that combines recent
 machine learning techniques with system-level monitoring and analysis.
@@ -475,7 +812,7 @@ systems and proposes a workable solution that may be implemented in
 real-world scenarios.
 
 \subsubsection*{Weak Aspects}
-\label{sec:org3ccd6cc}
+\label{sec:orgfee37ab}
 The evaluation is performed on a limited number of scenarios and system configurations.
 
 While the results show that the proposed method is effective, more
@@ -542,7 +879,7 @@ Fidelity-Kに関しては、多宛先を考慮しないし、重要度も考慮�
 
 
 \subsubsection*{Recommended Changes}
-\label{sec:org590ba5b}
+\label{sec:org7a2f50e}
 The paper could be improved by extending the evaluation to cover more
 datasets and system configurations.
 
@@ -555,7 +892,7 @@ large-scale environments will greatly improve the contribution.
 
 
 \section*{Review2}
-\label{sec:orge330013}
+\label{sec:orgee2a0f5}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -568,7 +905,7 @@ SCORE: 2 (Accept)
 SCORE: 2 (Accept)
 
 \subsection*{Strong Aspects}
-\label{sec:org4af2e4f}
+\label{sec:org664ccf3}
 The paper addresses a relevant problem in quantum networks by
 incorporating destination importance into high-fidelity link
 selection.
@@ -577,7 +914,7 @@ It also presents a clear algorithmic design with theoretical analysis
 and simulation results across multiple noise models.
 
 \subsection*{Weak Aspects}
-\label{sec:org266a894}
+\label{sec:org3b284db}
 The novelty is moderate, as the work mainly extends existing
 link-selection and bandit-based approaches to a demand-aware Top-K
 setting.
@@ -587,7 +924,7 @@ amplitude damping shows reduced robustness due to model mismatch.
 
 
 \subsection*{Recommended Changes}
-\label{sec:orgf23c7e2}
+\label{sec:org533b142}
 The paper would benefit from a clearer explanation of its novelty
 relative to prior methods such as LinkSelFiE and related Top-K
 selection work.
@@ -598,7 +935,7 @@ non-Pauli noise and practical deployment considerations.
 
 
 \section*{Review3}
-\label{sec:orgf3b7903}
+\label{sec:org9667799}
 ----------- Originality -----------
 SCORE: 1 (Weak Accept)
 ----------- Quality -----------
@@ -611,7 +948,7 @@ SCORE: 1 (Weak Accept)
 SCORE: 1 (Weak Accept)
 
 \subsection*{Strong Aspects}
-\label{sec:org90c27d0}
+\label{sec:org88be312}
 The paper addresses an important problem in quantum networks by
 incorporating demand-aware link selection under limited resources.
 
@@ -623,7 +960,7 @@ noise models strengthens the contribution.
 
 
 \subsection*{Weak Aspects}
-\label{sec:orgbec89ba}
+\label{sec:orgab677c9}
 The novelty is somewhat incremental, as it builds on existing
 bandit-based link selection methods.
 
@@ -634,7 +971,7 @@ Additionally, the method depends on specific noise assumptions, and
 some sections are dense.
 
 \subsection*{Recommended Changes}
-\label{sec:org6467be7}
+\label{sec:org574a672}
 The authors should improve clarity by simplifying the algorithm
 description and adding intuitive explanations.
 
@@ -647,7 +984,7 @@ help.
 
 
 \section*{Review4}
-\label{sec:org16543c3}
+\label{sec:org1fa7c5a}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -661,7 +998,7 @@ SCORE: 2 (Accept)
 
 
 \subsection*{Strong Aspects}
-\label{sec:org8ff3266}
+\label{sec:org6bd655f}
 The authors address a realistic gap—existing work ignores
 heterogeneous demand across destinations in quantum networks.
 
@@ -669,14 +1006,14 @@ This work extends best-arm identification to a demand-aware Top-K
 selection problem, which is both meaningful and non-trivial.
 
 \subsection*{Weak Aspects}
-\label{sec:org02e55a0}
+\label{sec:orge409440}
 The approach relies on simplified assumptions (e.g., fixed importance,
 star topology, and idealized conditions), which may limit its
 applicability to real-world, dynamic quantum networks.
 
 
 \subsection*{Recommended Changes}
-\label{sec:org43b720c}
+\label{sec:orgbf3ce41}
 Incorporate more realistic network conditions—such as dynamic traffic
 patterns, multi-hop topologies, and uncertain or time-varying
 destination importance—to improve practical applicability.
@@ -686,7 +1023,7 @@ real-world experiments or testbed deployments to demonstrate
 robustness beyond simulation.
 
 \section*{現在の問題設定(先生の対話から抜粋)}
-\label{sec:org97b6295}
+\label{sec:org293d41b}
 
 --- 
 Q. LinkSelfie の論文の問題を拡張したい。
@@ -722,7 +1059,7 @@ Q. LinkSelfie の論文の問題を拡張したい。
 
 
 \section*{なぜ変更したか}
-\label{sec:org42f6238}
+\label{sec:org60f039c}
 
 
 \begin{raddblock}
@@ -768,7 +1105,7 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 
 \section*{現在のテーマの問題点}
-\label{sec:orgbd0c738}
+\label{sec:org396dfd0}
 \begin{itemize}
 \item 固定予算ではなく固定信頼度が制約条件になっているため、最適なリンクを
 選べた or 選べていないで評価しなければいけない点
@@ -791,7 +1128,7 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 いけないところが問題である。
 
 \subsection*{解決策}
-\label{sec:orgb3d2a5e}
+\label{sec:orgada2d18}
 \begin{itemize}
 \item 固定信頼度をやめ、固定予算方式にする。
 \item 固定信頼度をそのまま使うが、条件を緩和する。(仮に K+1位のリンクを選
@@ -808,7 +1145,7 @@ Learning Best Paths in Quantum Networks
 
 
 \section*{現在のストーリー案の骨格}
-\label{sec:orgee1ab44}
+\label{sec:org84c0184}
 
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
@@ -818,7 +1155,7 @@ Learning Best Paths in Quantum Networks
 
 
 \section*{研究の問い}
-\label{sec:org366ddb0}
+\label{sec:org34c61b9}
 
 本研究では、以下の問いに対して理論的および実践的な洞察を提供することを目指します 。
 
@@ -838,7 +1175,7 @@ Learning Best Paths in Quantum Networks
 
 
 \section*{別の案}
-\label{sec:orgde0823f}
+\label{sec:org46f3fb9}
 分散が大きい（ノイズのばらつきが激しい）量子リンクに対して一律の予算配
 分を行うと、そのリンクの忠実度が過大評価または過小評価され、真に有望な
 リンクを誤って排除してしまうリスクが高まる。
