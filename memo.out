@@ -1,0 +1,63 @@
+\BOOKMARK [1][-]{section.1}{やったこと}{}% 1
+\BOOKMARK [1][-]{section.2}{memo}{}% 2
+\BOOKMARK [2][-]{subsubsection.2.0.1}{newストーリー案}{section.2}% 3
+\BOOKMARK [3][-]{subsubsection.2.0.2}{Purification scheduling control for throughput maximization in quantum networks}{subsubsection.2.0.1}% 4
+\BOOKMARK [1][-]{section.3}{問題設定}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{新規性として主張できる可能性がある点}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{非定常量子ネットワークにおける潜在共有構造のオンライン学習にもとづく高忠実度経路追跡}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{どんな問題を解く?}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{BeQuP}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{今回の案}{section.4}% 10
+\BOOKMARK [1][-]{section.5}{なぜそれが重要?}{}% 11
+\BOOKMARK [1][-]{section.6}{すでに解かれていない?}{}% 12
+\BOOKMARK [1][-]{section.7}{どうやって解く?}{}% 13
+\BOOKMARK [1][-]{section.8}{どこが新しい?}{}% 14
+\BOOKMARK [1][-]{section.9}{既存研究を不当に悪く言ってない?}{}% 15
+\BOOKMARK [1][-]{section.10}{他の技術でできるのでは?}{}% 16
+\BOOKMARK [1][-]{section.11}{その成果のどこがうれしい?}{}% 17
+\BOOKMARK [1][-]{section.12}{量子アルゴリズムの検討}{}% 18
+\BOOKMARK [2][-]{subsection.12.1}{量子アルゴリズムを使う動機}{section.12}% 19
+\BOOKMARK [2][-]{subsection.12.2}{解きたい問題}{section.12}% 20
+\BOOKMARK [2][-]{subsection.12.3}{疑問}{section.12}% 21
+\BOOKMARK [1][-]{section.13}{Resource-Consuming Certification for Demand-Satisfying Entanglement Link Selection in Quantum Networks}{}% 22
+\BOOKMARK [2][-]{subsection.13.1}{背景}{section.13}% 23
+\BOOKMARK [2][-]{subsection.13.2}{動機}{section.13}% 24
+\BOOKMARK [2][-]{subsection.13.3}{目的}{section.13}% 25
+\BOOKMARK [1][-]{section.14}{新テーマold}{}% 26
+\BOOKMARK [2][-]{subsection.14.1}{背景}{section.14}% 27
+\BOOKMARK [2][-]{subsection.14.2}{動機}{section.14}% 28
+\BOOKMARK [2][-]{subsection.14.3}{目的}{section.14}% 29
+\BOOKMARK [2][-]{subsection.14.4}{手法}{section.14}% 30
+\BOOKMARK [1][-]{section.15}{新テーマv2\(76点\)}{}% 31
+\BOOKMARK [2][-]{subsection.15.1}{背景}{section.15}% 32
+\BOOKMARK [2][-]{subsection.15.2}{動機}{section.15}% 33
+\BOOKMARK [2][-]{subsection.15.3}{目的}{section.15}% 34
+\BOOKMARK [1][-]{section.16}{COMPSAC査読分析}{}% 35
+\BOOKMARK [2][-]{subsection.16.1}{研究の問い}{section.16}% 36
+\BOOKMARK [2][-]{subsection.16.2}{主要な貢献}{section.16}% 37
+\BOOKMARK [2][-]{subsection.16.3}{実験の目的}{section.16}% 38
+\BOOKMARK [2][-]{subsection.16.4}{新規性の主張}{section.16}% 39
+\BOOKMARK [1][-]{section.17}{COMPSAC査読結果}{}% 40
+\BOOKMARK [2][-]{subsection.17.1}{Review1}{section.17}% 41
+\BOOKMARK [3][-]{subsubsection.17.1.1}{Strong Aspects}{subsection.17.1}% 42
+\BOOKMARK [3][-]{subsubsection.17.1.2}{Weak Aspects}{subsection.17.1}% 43
+\BOOKMARK [3][-]{subsubsection.17.1.3}{Recommended Changes}{subsection.17.1}% 44
+\BOOKMARK [1][-]{section.18}{Review2}{}% 45
+\BOOKMARK [2][-]{subsection.18.1}{Strong Aspects}{section.18}% 46
+\BOOKMARK [2][-]{subsection.18.2}{Weak Aspects}{section.18}% 47
+\BOOKMARK [2][-]{subsection.18.3}{Recommended Changes}{section.18}% 48
+\BOOKMARK [1][-]{section.19}{Review3}{}% 49
+\BOOKMARK [2][-]{subsection.19.1}{Strong Aspects}{section.19}% 50
+\BOOKMARK [2][-]{subsection.19.2}{Weak Aspects}{section.19}% 51
+\BOOKMARK [2][-]{subsection.19.3}{Recommended Changes}{section.19}% 52
+\BOOKMARK [1][-]{section.20}{Review4}{}% 53
+\BOOKMARK [2][-]{subsection.20.1}{Strong Aspects}{section.20}% 54
+\BOOKMARK [2][-]{subsection.20.2}{Weak Aspects}{section.20}% 55
+\BOOKMARK [2][-]{subsection.20.3}{Recommended Changes}{section.20}% 56
+\BOOKMARK [1][-]{section.21}{現在の問題設定\(先生の対話から抜粋\)}{}% 57
+\BOOKMARK [1][-]{section.22}{なぜ変更したか}{}% 58
+\BOOKMARK [1][-]{section.23}{現在のテーマの問題点}{}% 59
+\BOOKMARK [2][-]{subsection.23.1}{解決策}{section.23}% 60
+\BOOKMARK [1][-]{section.24}{現在のストーリー案の骨格}{}% 61
+\BOOKMARK [1][-]{section.25}{研究の問い}{}% 62
+\BOOKMARK [1][-]{section.26}{別の案}{}% 63

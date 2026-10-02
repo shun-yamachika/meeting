@@ -36,7 +36,7 @@
 #+OPTIONS: toc:nil author:nil date:nil title:nil tex:t timestamp:nil
 
 #+BEGIN_EXPORT latex
-\title{COMPSAC査読分析}
+\title{EY施策立案}
 
 \author{\IEEEauthorblockN{Shun Yamachika}
 \IEEEauthorblockA{\textit{Department of Informatics, School of Science and Technology} \\
@@ -49,271 +49,106 @@ shun@lsnl.jp}}
 #+END_EXPORT
 
 
+* 国内留学推進に関する一検討
 
+targetは？
 
-* COMPSAC査読結果
-** Review1
------------ Originality -----------
-SCORE: 2 (Accept)
------------ Quality -----------
-SCORE: 2 (Accept)
------------ Relevance -----------
-SCORE: 3 (Strong Accept)
------------ Presentation -----------
-SCORE: 2 (Accept)
------------ Overall Recommendation -----------
-SCORE: 2 (Accept)
+小学生？中学生？高校生？
 
+** 前提
+そもそも
+国際留学と国内留学の違いは？ 
 
-*** Strong Aspects
-The paper presents a well-structured approach to improving software
-system reliability using an automated framework that combines recent
-machine learning techniques with system-level monitoring and analysis.
+- 費用面
+- 言語の壁がない
+- 価値観を広げたいとすら思わなかった
 
-The suggested methodology is a practical pipeline that
-collects runtime data, analyzes system behavior, and employs
-data-driven techniques to discover performance and reliability
-issues.
 
-The experimental evaluation indicates measurable advances in
-system behavior analysis, as well as the suggested framework's
-usefulness across sample scenarios.
+国際留学と国内留学の違いは？ 
+そもそも目的が違う
 
-Overall, the paper tackles an important issue in modern software
-systems and proposes a workable solution that may be implemented in
-real-world scenarios.
+国際留学 → 英語が話せるようになりたいから、ガクチカ
 
-*** Weak Aspects
-The evaluation is performed on a limited number of scenarios and system configurations.
 
-While the results show that the proposed method is effective, more
-experiments with larger datasets and more different system contexts
-would help to evaluate the framework's robustness and wide applicability.
-# これは、実験の目的について明確に言及していないため、実験でどのような
-# ことを実証したいか伝わっていないことが原因であると分析した
 
-現在の実験の目的
-提案手法であるDaTopLinksの有効性を検証するため。
+留学勢にインタビュー
 
-これは、何の有効性か分からないのがよくない。実環境での有効性と捉えられ
-てもおかしくない。
+遊びたかったから。違う世界をみたい。
+→ 日本ではだめ？
+もっと違うところがいい。スペイン
 
-修正版 実験の目的
+なぜスペイン語を勉強したい
+色々な国で話されているから
 
-- 早期確定機能により不要な測定を削減できること
 
-- 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
+なぜ違う世界をみたいか？
 
-- 代表的な量子ノイズ環境において、規定の信頼性レベルを達成できることは
-  できるか
 
-を検証するために実験した
 
-と書き替える。
 
-これは、研究の問いの
+修学旅行がコロナでいけなくなったため
+フィンランドに行きたくなった
+自分のやりたい事ができる
+中学校から海外指向があったのか？
+幸福度が高い国→フィンランドに行きたい(幸せな国に行きたかった)日本の働き方が
+違う気がした。海外は距離が近くて働き方が自分に合っている。
 
-- 各宛先内での最適リンクの特定と、宛先間のTop-K選択を同時に（結合して）
-  行うことで、不要な測定を削減する適応型アルゴリズムを設計できるか？
 
-- 提案手法は、代表的な量子ノイズ環境において、規定の信頼性レベルを達成できるか？
+まずは日本をなぜ試さないのか？
+→ やりたい事やりたい。
 
-に対応している。
+なぜ日本は選択肢を狭めるか分かった？
+→ やりたい事が明確な人はそもそも調べつくしている。
+→ 日本では明らかに実現不可能
 
-現在の実験では、
-- 多宛先のリンクを同時に考慮することでどの程度測定コスト削減できるか
-という問いに対する回答が分からない。
 
-比較対象の手法が、
+** 背景
+日本には経験的教育格差がある
 
-- DaTopLinks-NEC
-早期確定をしない手法
 
-- Fidelity-K
-重要度、多宛先を考慮しない手法
+→ 慶應に行って、ボンボンと触れあうことで格差を感じた
 
-であり、多宛先のみを考慮しない手法が含まれていないからである。
-Fidelity-Kに関しては、多宛先を考慮しないし、重要度も考慮しないため、測
-定コストが増える原因が、多宛先を考慮しないことが原因なのか、重要度も考
-慮しないことが原因なのか結果からは分析できない。よって多宛先のみを考慮
-しない手法(linkselfieを各宛先ごとに実行し、全ての宛先で1つのリンクを決
-定した後topK選択を行なう手法)を比較手法で追加するべきだと考えた。←現在
-実装中です
+何も経験していないことを感じた？
+経験していることが少ない(博物館や美術館)
 
+その一方でボンボンは田舎の遊び、暮らしを知らないということも感じた
 
-*** Recommended Changes
-The paper could be improved by extending the evaluation to cover more
-datasets and system configurations.
+社会階層の区別ができあがっている
 
-Further comparisons with other current approaches to automated system
-monitoring and analysis would help to highlight the suggested method's
-advantages.
 
-# 言ってることが正しいか？ → 既存の関連手法とあるが、存在するのか？今
-# 回始めてこの問題設定を提唱したことが貢献の1つであるため、同じ問題設
-# 定でこの問題を解いている手法は存在しない。また、新 実験の目的で既存
-# の関連手法に比べて優位性を示すという目的が含まれていないので無理矢理
-# 実装する必要性も無い。
-
-# could be , would help なので致命的なミスを指摘されている訳ではないと分
-# 析した。よって優先度は低い。
-
-Additional discussion on scalability and deployment considerations in
-large-scale environments will greatly improve the contribution.
-# 今後の展望で書けそうなら書く。
+** 動機
+文化的再生産
+↓
+教育格差につながる
+↓
+金持ちの子供は金持ちになりやすい
 
-
-* Review2
------------ Originality -----------
-SCORE: 2 (Accept)
------------ Quality -----------
-SCORE: 2 (Accept)
------------ Relevance -----------
-SCORE: 2 (Accept)
------------ Presentation -----------
-SCORE: 2 (Accept)
------------ Overall Recommendation -----------
-SCORE: 2 (Accept)
 
-** Strong Aspects
-The paper addresses a relevant problem in quantum networks by
-incorporating destination importance into high-fidelity link
-selection.
-
-It also presents a clear algorithmic design with theoretical analysis
-and simulation results across multiple noise models.
-
-** Weak Aspects
-The novelty is moderate, as the work mainly extends existing
-link-selection and bandit-based approaches to a demand-aware Top-K
-setting.
-# 今後の課題。言っていることは正しいので逆に誤った新規性の解釈をされて
-# いないと捉えた。
+お金が無い人が教育を受けられないのが問題。
+偏差値で大学をみる風潮がある
 
-The evaluation is limited to simulations, and performance under
-amplitude damping shows reduced robustness due to model mismatch.
+選択肢が少ないのが問題
 
-# 言っていることは正しいか？ ただしい。
-
-# →NBのモデル自体が正規分布のノイズを仮定しており、それが根本的な原因
-# であるため、この手法の弱点としてどうがんばっても非パウリノイズには対
-# 応できないことを分かりやすく書く。(NBをサブルーチンとしているため)
-# その上でNBをサブルーチンとして使わない手法を考える的なことを今後の展
-# 望で書く。
+頭が良い人は将来的な安定択
 
 
-** Recommended Changes
-The paper would benefit from a clearer explanation of its novelty
-relative to prior methods such as LinkSelFiE and related Top-K
-selection work.
+** 目的
 
-# Reviewer1に対する比較手法を追加する対応で解決可能
+自分のやりたいことを見つけ出せるような環境作りをする
+→ その一例として国内留学
 
+若者が幅広い選択肢を持てる社会を作ること
+→ 若い頃の選択がその後の人生に響くから
 
-It would also be helpful to expand the discussion of robustness under
-non-Pauli noise and practical deployment considerations.
-# 問題: 非パウリノイズ下でのロバスト性を考慮した設計を検討するべき
-# → 今後の課題でかく
+小学生、中学生、高校生どれ？
 
 
-* Review3
------------ Originality -----------
-SCORE: 1 (Weak Accept)
------------ Quality -----------
-SCORE: 1 (Weak Accept)
------------ Relevance -----------
-SCORE: 2 (Accept)
------------ Presentation -----------
-SCORE: 1 (Weak Accept)
------------ Overall Recommendation -----------
-SCORE: 1 (Weak Accept)
+高校生。社会の裏側を知る。
+社会問題を知ったうえで留学すると得られるものが多い。
 
-** Strong Aspects
-The paper addresses an important problem in quantum networks by
-incorporating demand-aware link selection under limited resources.
 
-The proposed DaTopLinks algorithm effectively combines intra- and
-inter-destination optimization with a clear design.
 
-The inclusion of theoretical guarantees and evaluation across multiple
-noise models strengthens the contribution.
-
-
-** Weak Aspects
-The novelty is somewhat incremental, as it builds on existing
-bandit-based link selection methods.
-
-# 間違っていない。ので言いたい主張が伝わっている証拠だと捉えた。
-
-The evaluation relies only on simulations, limiting practical
-validation.
-
-Additionally, the method depends on specific noise assumptions, and
-some sections are dense.
-# ノイズに関する内容はReviewr2と同じ方法で解決可能。可読性の低さは致命
-# 的なミスではないので優先度は低い。
-
-** Recommended Changes
-The authors should improve clarity by simplifying the algorithm
-description and adding intuitive explanations.
-# 主観的な評価なので後回し
-
-
-Expanding evaluation to more realistic scenarios or noise models would
-strengthen the work.
-# 実験の目的が伝わっていない
-
-A clearer discussion of limitations and broader comparisons would also
-help.
-
-# would なので優先度は低い。broader comparisonsについては、比較手法を
-# 増やす方向性で良さそう
-
-
-* Review4
------------ Originality -----------
-SCORE: 2 (Accept)
------------ Quality -----------
-SCORE: 2 (Accept)
------------ Relevance -----------
-SCORE: 2 (Accept)
------------ Presentation -----------
-SCORE: 2 (Accept)
------------ Overall Recommendation -----------
-SCORE: 2 (Accept)
-
-
-** Strong Aspects
-The authors address a realistic gap—existing work ignores
-heterogeneous demand across destinations in quantum networks.
-
-This work extends best-arm identification to a demand-aware Top-K
-selection problem, which is both meaningful and non-trivial.
-
-** Weak Aspects
-The approach relies on simplified assumptions (e.g., fixed importance,
-star topology, and idealized conditions), which may limit its
-applicability to real-world, dynamic quantum networks.
-
-# 実験の目的が伝わっていない
-# real-worldでの実験は今後の展望で書けたらかく
-
-
-** Recommended Changes
-Incorporate more realistic network conditions—such as dynamic traffic
-patterns, multi-hop topologies, and uncertain or time-varying
-destination importance—to improve practical applicability.
-
-Need to extend the utility function and validate the approach through
-real-world experiments or testbed deployments to demonstrate
-robustness beyond simulation.
-
-# 今後の展望でかく
-
-
-
-
-
+** 手法
 
 
 

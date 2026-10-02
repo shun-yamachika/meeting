@@ -1,4 +1,15 @@
 \documentclass[conference]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage[dvipdfmx]{hyperref}
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -6,14 +17,23 @@
 \usepackage[dvipdfmx]{graphicx}
 \DeclareGraphicsExtensions{.eps,.pdf,.png}
 \usepackage{textcomp}
-\usepackage{xcolor}
+\usepackage[dvipdfmx]{xcolor}
 \usepackage{url}
-\usepackage{hyperref}
+\usepackage[dvipdfmx]{hyperref}
 \usepackage{revhistory}
 \usepackage{enumitem}
 \setlist{itemsep=0pt, parsep=0pt, topsep=2pt}
 \newenvironment{raddblock}{\color{red}}{}
 \newenvironment{rdelblock}{\color{gray}}{}
+\date{}
+\title{}
+\hypersetup{
+ pdfauthor={shun},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.5.5)}, 
+ pdflang={English}}
 \begin{document}
 
 \title{Research Meeting}
@@ -28,10 +48,125 @@ shun@lsnl.jp}}
 
 
 
+\clearpage
+
+j
+\section{やったこと}
+\label{sec:orgd88ef10}
+
+\begin{itemize}
+\item 第一に、制御を固定した上で目標占有率 B を掃引し、J(B)の形状が解析ど
+おり U字型となるか、および実験での最小点が解析で求めた解と一致するか
+を検証する（仮説 1 の検証）を検証した（仮説 1 の検証）。
+\end{itemize}
+
+重負荷拡散近似の下で、平均在庫 \(B\) を維持する片側反射ブラウン運動とし
+てバッファ占有過程をモデル化すると、ストール確率は占有水準に関して指数
+的に減衰する。
+
+$$ P_s(B) \approx \exp(-\theta B), \qquad \theta = \frac{2(\lambda -
+\mu)}{\lambda C_a^2 + \mu C_s^2} $$
+
+廃棄確率は、期限までの余裕 \(\mu T_c - B\) に関して指数的に増大する形で
+近似できる。
+
+$$ P_d(B) \approx \exp\!\bigl(-\kappa\,(\mu T_c - B)\bigr), \qquad 0
+\le B < \mu T_c $$
+
+第一はアンダーフロー、すなわちアプリケーションが消費を要求した時点でバッ
+ファが空であるために生じる消費ストールであり、その定常確率を \(P_s\) と
+する。第二は期限切れ廃棄であり、到着したもつれ単位が消費されずに失効す
+る定常確率を \(P_d\) とする。トランスポート層の目的は、目標バッファ占有
+率 \(B\)（制御則がレート調整によって維持しようとする平均在庫水準）を設計
+変数として、重み付きコスト
+
+$$
+J(B) = \alpha \, P_s(B) + \beta \, P_d(B)
+$$
+
+を最小化することである。ここで はストール 1 回あたりのペナルティ、 は
+廃棄 1 単位あたりのペナルティであり、アプリケーション要件に応じて与え
+られる。
+
+→ 上記の仮定が正しいか、つまり、J(B)は下に凸のU字型の関数になるかを調
+べた。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figure/phase1_mean_inventory_cost.png}
+\caption{Mean inventory cost as a function of the target buffer occupancy.}
+\end{figure}
+
+J(B)がどのくらいきれいなU字になるかは、アプリケーションの要件(ストール
+1 回あたりのペナルティ、廃棄 1 単位あたりのペナルティ)をどう設定するか
+によるが、P\textsubscript{s}(B)が右肩下がり、P\textsubscript{d}(B)が右肩上がりになるのは観測できたので、
+J(B)の形状が解析どおりU字型になることが検証できた。
 
 
-\section*{memo}
-\label{sec:orge352e36}
+しかし、解析で求めた最適なB(縦線)と実験でのJ(B)を最小化するBは少しズレ
+た結果となった。
+
+解析 B	11.4438
+実験最小点の B\textsubscript{design} 10.0000
+実験最小点の実現平均占有率 mean\textsubscript{occupancy} 9.6636
+
+
+15\%くらいズレている。
+
+考えられる原因
+
+\begin{itemize}
+\item P\textsubscript{dとP}\textsubscript{sの近似}
+\item 解析モデルの前提が一部整合していない
+\end{itemize}
+解析では到着レートλ(もつれがバッファに入ってくる平均レート)、消費率
+μ(アプリケーションがもつれを使う平均レート)を固定しているが、実験の制
+御では、Bによってこれらの値が変動している。
+
+
+
+この対応をどうするべきか？
+
+
+第二に、基準パラメータの下で四方式の \(P_s\)、\(P_d\)、\(\bar{F}\)、\(J\) を比
+較し、年齢考慮の寄与を OCC との差分として定量化する（仮説 2 の検証）。
+
+現状は、\(P_s\)、\(P_d\)、\$J\$での結果をとった。なお、Bを決めるパラメータは
+複数あり、同じBでも結果が変わる。コヒーレンス期限T\textsubscript{cを変化させて実験を}
+したときに良い結果が出ていたので、それを採用した。
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figure/phase3_Tc_J_seeds30.png}
+\caption{Weighted cost under different coherence deadlines.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figure/phase3_Tc_Pd_seeds30.png}
+\caption{Discard probability under different coherence deadlines.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figure/phase3_Tc_Ps_seeds30.png}
+\caption{Stall probability under different coherence deadlines.}
+\end{figure}
+
+
+
+
+\section{memo}
+\label{sec:org92b07ec}
+
+\begin{itemize}
+\item 自律分散が厳しい。end-endで忠実度を把握する必要はあるの？
+\begin{itemize}
+\item 問題を難しくしているだけにみえる
+\end{itemize}
+\end{itemize}
+
 
 \begin{itemize}
 \item バリエーションにみえる。量子ネットワーク固有の問題にみえない。古典的
@@ -40,10 +175,258 @@ shun@lsnl.jp}}
 \item 量子ネットワークのレイヤー3、4あたりの案を考えてみたらどうですか？
 \end{itemize}
 
+Succinct and Deterministic Quantum Algorithm for the Welded Tree Problem
 
 
-\section*{問題設定}
-\label{sec:org72459dc}
+
+\subsubsection{newストーリー案}
+\label{sec:org5fb0337}
+
+複数同時要求下における、スワッピング順序を考慮した純化スケジューリングに関する一提案
+
+
+背景
+
+量子ネットワーク上で長距離通信をするために、純化やスワッピングは
+必要不可欠な技術であるが、追加のエンタングルメント対を必要とする。
+単位時間あたりにリンクで生成できるエンタングルメント対には限りが
+あるため、異なるS-D間の要求が同じリンクを共有する場合、共有リンク
+上の資源消費量がスループットを制限する可能性が高い。したがって、
+複数同時要求が存在する状況下において、共有リンクでの追加の資源消
+費を抑え、スループットを維持する必要がある。
+
+動機
+
+そこで、既存研究では複数同時要求が存在する状況下において、純化を
+適切なリンクで行なうことで、共有リンクでの資源消費を抑える手法を
+考案した。しかし、実際にはスワッピングの順序によってもリンクごと
+の資源消費量は大きく変動する。また、スワッピングの成功率は忠実度
+と関係するので、純化場所とスワッピングの順序を同時に考慮することが重要
+であると考えられる。
+
+目的
+
+複数同時要求が存在する状況下において、競合リンク上の期待消費量を
+抑える純化配置とスワッピング木を同時に最適化することで、忠実度制
+約を満たす E2E 接続数、すなわちネットワークスループットの向上を目
+指す。
+
+
+手法
+
+各要求に対し、純化位置とスワッピング木からなる複数の候補プランを
+生成し、忠実度とリンク別期待消費量を評価する。その後、リンク容量
+制約の下で、どの候補プランを何本採用するかを整数計画または緩和線
+形計画として解く。
+
+
+結果
+
+横軸 S-D間の要求数
+縦軸 スループット(忠実度制約を満たす E2E 接続数)
+
+右肩上がりになる。重複するリンクが増えるにつれて提案手法が有利になって
+いく。
+
+
+横軸 S-D間の要求数
+縦軸 忠実度制約を満たす E2E 接続を 1 本あたりの平均的な追加資源消費量
+
+リクエスト数が増えるとより多くのリンクで純化が必要になるため、全ての手
+法において右肩上がりになる。しかし、提案手法は適切な純化、スワッピング
+を行うため、その変動幅が最も小さい。
+
+研究の問い
+
+主要な貢献
+
+\begin{itemize}
+\item 純化位置はリンク忠実度と追加資源消費を変化させ、スワッピング順序は失
+敗時に再生成が必要となるリンク範囲を変化させる。本研究では、両者が競
+合リンク上の期待消費量を通じてスループットに影響する構造を明確化する。
+
+\item 
+\end{itemize}
+
+
+
+\subsubsection{Purification scheduling control for throughput maximization in quantum networks}
+\label{sec:org282792c}
+
+
+Communication physicsというnature系列のジャーナル(2024)
+h5-index 72
+
+
+
+量子ネットワークにおける公平性を考慮した純化スケジューリング手法に関する一提案
+
+
+\begin{itemize}
+\item 背景
+\end{itemize}
+
+量子鍵配送や分散量子計算を行なうためには、忠実度が一定の閾値以上のE2E
+エンタングルメント接続が求められる。純化をすれば、E2Eエンタングルメン
+ト接続の忠実度を上げることができるが、スループットが低下してしまうため、
+E2Eエンタングルメント接続を構成するリンクのうち、適切なリンクで純化を
+する必要がある。
+
+\begin{itemize}
+\item 動機
+\end{itemize}
+
+既存研究では、複数の通信要求が同時に存在する量子ネットワークにおいて忠
+実度要求を満たす E2E エンタングルメント接続を、できるだけ多く確立する
+ための純化スケジューリング手法を考案していたが、各通信要求への公平性に
+ついては考慮しておらず、研究の余地がある。
+
+\begin{itemize}
+\item 目的
+\end{itemize}
+
+本研究の目的は、複数の通信要求が同時に存在する量子ネットワークにおいて、
+各通信要求間の公平性も考慮しながら、忠実度要求を満たす E2E エンタング
+ルメント接続の総数を最大化することである。具体的には、E2E エンタングル
+メント接続の総数と、各通信要求間の公平性を同時に考慮する目的関数を最大
+化する。
+
+
+\begin{itemize}
+\item 手法
+\end{itemize}
+
+既存手法と同様に、各通信要求に対して実行可能な純化スケジュール候補を生
+成する。各候補について、忠実度要求を満たす E2E エンタングルメント接続
+数に加え、通信要求間の接続数の偏りも評価する。そして、接続数が多く、か
+つ特定の要求に偏りにくい候補を選択する。
+
+
+\begin{itemize}
+\item 結果
+\end{itemize}
+
+![](shun-quantum.png)
+
+
+\begin{enumerate}
+\item 目的関数 vs S-Dpairs(通信要求数)
+\end{enumerate}
+
+既存手法に比べて提案手法が目的関数を上回る結果となった。提案手法は通信要求
+数が増えても公平性を重視するのに対し、既存手法は要求数が増えるにつれ競
+合するリンクが増え、特定の要求を優先しやすくなるため。
+
+\begin{enumerate}
+\item 公平性指標 vs S-Dpairs(通信要求数)
+\end{enumerate}
+
+提案手法が要求数が増えても通信要求間の偏りを抑えることができていること
+を示す。最初は競合しないため、全手法同程度だが次第に差が開いていく。
+なお、公平性指標に関しては Jain index のような指標を考えている。
+
+
+\begin{itemize}
+\item 研究の問い
+
+\item 複数の通信要求が同時に存在する量子ネットワークにおいて、
+\end{itemize}
+各通信要求間の公平性も考慮しながら、忠実度要求を満たす E2E エンタング
+ルメント接続の総数を最大化することはできるか？
+
+\begin{enumerate}
+\item 複数の通信要求が同時に存在する量子ネットワークにおいて、
+\end{enumerate}
+どのように純化スケジューリングを設計すると各通信要求間の公平性も考慮し
+ながら、忠実度要求を満たす E2E エンタングルメント接続の総数を最大化す
+ることができるのか？
+
+
+\begin{itemize}
+\item 主要な貢献
+
+\item 初めて複数の通信要求が同時に存在する量子ネットワークにおいて、
+\end{itemize}
+各通信要求間の公平性も考慮しながら、忠実度要求を満たす E2E エンタング
+ルメント接続の総数を最大化する純化スケジューリング問題を定式化した。
+
+\begin{enumerate}
+\item 複数の通信要求が同時に存在する量子ネットワークにおいて、
+\end{enumerate}
+各通信要求間の公平性も考慮しながら、忠実度要求を満たす E2E エンタング
+ルメント接続の総数を最大化する手法を考案し、シミュレーションによってそ
+の有効性を証明した。
+
+
+\begin{itemize}
+\item ThemeReview GPT に指摘される深刻な問題
+\item 問題設定が自明な公平性目的関数の追加に見える (深刻度: 5)
+\end{itemize}
+量子ネットワーク固有の難しさが、既存の公平資源配分では扱えないことを示
+せた時に初めて成立する。
+
+→ E2E エンタングルメント接続は確率的に生成されるものなので、同じ資源の
+数を割りあてたとしても、E2Eエンタングルメント接続の忠実度に依存して接
+続数は変化する。という接続数公平性と資源公平性が一致しない点が量子固有
+の問題として主張できると考えています。
+
+\begin{enumerate}
+\item 「初めて」の新規性主張が危険 (深刻度: 4)
+\end{enumerate}
+
+→ 確かに公平性を考慮した問題はたくさんあるが、自分で調べた中では、純化
+ネットワークレベルで、複数の同時要求を考慮しながら、純化と資源割当を同
+時に最適化する研究は見当たらなかった。(近いルーティングとかの研究はあ
+りました)
+
+\begin{enumerate}
+\item 制御主体・観測可能情報・制約条件が曖昧 (深刻度: 4)
+\end{enumerate}
+このテーマ案では、誰がスケジューリングを行うのかが明確でない。
+
+→ 参考にした、Purification scheduling control for throughput
+maximization in quantum networksの論文と制御主体・観測可能情報・制約条
+件については同じものを想定している。中央制御器が量子ネットワーク全体を
+管理していることを想定しています。
+
+
+
+
+\begin{itemize}
+\item 参考文献
+\end{itemize}
+\url{https://www.nature.com/articles/s42005-024-01796-2.pdf}
+
+
+
+Purification scheduling control for throughput maximization in quantum
+networks
+
+量子ネットワークで、忠実度要求を満たす E2E エンタングルメント接続を、
+限られた資源でできるだけ多く確立するための純化スケジューリング手法を提
+案している。しかし、
+
+
+
+
+実際には複数の候補経路から1本の経路を選ぶ必要があり、スループットを向
+上させるうえでは、忠実度が高い経路を選び、複数の要求に対してできるだけ
+重複しない経路を選ぶことが重要である。
+
+本研究では、複数の通信要求が同時に存在する量子ネットワークにおいて、各
+要求に対応する適切な経路選択、リンクの純化スケジューリング、資源を割り
+当てを決める問題を考える。
+
+
+
+
+
+
+
+
+
+\section{問題設定}
+\label{sec:orgcd935a2}
 未知の量子ネットワーク \(G=(V,E)\) 上に，候補経路集合
 \(\mathcal{P}=\{P_1,\ldots,P_K\}\) が与えられている．
 各経路 \(P_i\) のホップ数 \(h_i\) は既知であるが，
@@ -72,8 +455,8 @@ F_i(t)=\prod_{e\in P_i} f_e(t)
 
 
 
-\subsection*{新規性として主張できる可能性がある点}
-\label{sec:org0579887}
+\subsection{新規性として主張できる可能性がある点}
+\label{sec:org0177078}
 \begin{itemize}
 \item 完全なトポロジ復元を目的とせず、経路選択の測定効率化のための潜在構造
 推定をする点。また、測定資源削減に十分な範囲でそれを行う点。トポロジ
@@ -127,8 +510,8 @@ BeQuP-Path が既に path-level 観測から link-level parameter を推定し�
 以下、Wikiの内容と同じストーリー案
 
 
-\subsection*{非定常量子ネットワークにおける潜在共有構造のオンライン学習にもとづく高忠実度経路追跡}
-\label{sec:org25893cb}
+\subsection{非定常量子ネットワークにおける潜在共有構造のオンライン学習にもとづく高忠実度経路追跡}
+\label{sec:orga803e72}
 
 \begin{itemize}
 \item 研究の問い
@@ -195,7 +578,7 @@ BeQuP-Path が既に path-level 観測から link-level parameter を推定し�
 横軸 時間
 縦軸 総測定資源
 
-経路 i の忠実度はF\_i(t)で表され、連続的に時間変化するものとする。各手法は時刻が T になるまで最大忠実度の経路を求め続け、それを求めるのに消費した測定資源を総測定資源に追加していく。
+経路 i の忠実度はF\textsubscript{i}(t)で表され、連続的に時間変化するものとする。各手法は時刻が T になるまで最大忠実度の経路を求め続け、それを求めるのに消費した測定資源を総測定資源に追加していく。
 
 
 
@@ -208,7 +591,7 @@ BeQuP-Path が既に path-level 観測から link-level parameter を推定し�
 横軸 時刻
 縦軸 精度
 
-経路 i の忠実度はF\_i(t)で表され、連続的に時間変化するものとする。各手法は時刻が T になるまで最大忠実度の経路を求め続け、真の忠実度が最も高い経路を出力できれば1、できなければ0を返す。
+経路 i の忠実度はF\textsubscript{i}(t)で表され、連続的に時間変化するものとする。各手法は時刻が T になるまで最大忠実度の経路を求め続け、真の忠実度が最も高い経路を出力できれば1、できなければ0を返す。
 
 
 各経路の真の忠実度は1測定をする間の平均忠実度とする。
@@ -229,23 +612,23 @@ LinkSELFIE: Link Selection and Fidelity Estimation in Quantum Networks(INFOCOM 2
 
 
 
-\section*{どんな問題を解く?}
-\label{sec:org15a4656}
+\section{どんな問題を解く?}
+\label{sec:org6e664c5}
 内部トポロジやリンク品質を直接観測できない状況で、時間変化する best path を path-level 観測だけで継続的に選ぶ問題。
 
-\subsection*{BeQuP}
-\label{sec:org9ccad84}
+\subsection{BeQuP}
+\label{sec:orge160048}
 トポロジの構造を使って測定資源を削減しながら、best pathを効率的に探索
 する研究。
 
-\subsection*{今回の案}
-\label{sec:org3b11c1d}
+\subsection{今回の案}
+\label{sec:org0fbaef4}
 トポロジ未知の状態から、トポロジの構造を推定しながらbest pathを効率的
 に探索し続ける研究。
 → トポロジ未知、忠実度が変化し続ける点がおおきく違う。
 
-\section*{なぜそれが重要?}
-\label{sec:org23307f5}
+\section{なぜそれが重要?}
+\label{sec:org66232e4}
 量子ネットワークでは fidelity 推定に繰り返し測定が必要であり、候補経路
 数が増えると benchmarking 資源が大きくなるため測定資源を節約する必要が
 ある。
@@ -267,8 +650,8 @@ LinkSELFIE: Link Selection and Fidelity Estimation in Quantum Networks(INFOCOM 2
 代替経路候補を維持することが重要となる。
 
 
-\section*{すでに解かれていない?}
-\label{sec:org19f96b1}
+\section{すでに解かれていない?}
+\label{sec:org1ed9edb}
 
 完全には解かれていない可能性がある。 BeQuP は link-level/path-level
 feedback による best path 識別を扱い、QBGP や LinkSelFiE も network
@@ -276,14 +659,14 @@ benchmarking による経路・リンク選択を扱っているが、提示案�
 「非定常環境での時変 best path tracking」と「潜在共有構造の同時学習」
 は、少なくともこれらの中心課題ではないように見える。
 
-\section*{どうやって解く?}
-\label{sec:org6875a9c}
+\section{どうやって解く?}
+\label{sec:org710eb86}
 経路の log fidelity を、少数の時変潜在劣化成分の和としてモデル化し、経路間の共通変動を使って測定情報を再利用する。
 誰が、いつ、どこで、何の情報を使う?
 送信元ノードが、経路選択時または定期的な benchmarking 時に、候補経路ごとの path-level fidelity と entanglement generation rate の時系列を使う。ただし、観測主体・測定頻度・測定コスト・選択周期はまだ曖昧。
 
-\section*{どこが新しい?}
-\label{sec:org1b26460}
+\section{どこが新しい?}
+\label{sec:orgd23c462}
 真の内部トポロジ復元ではなく、測定情報再利用のための低解像度な共有構造をオンラインに推定する点は、ネットワークアーキテクチャ研究として面白い。
 
 \begin{enumerate}
@@ -300,16 +683,16 @@ QBGP,BeQuP,LinkSelFiEなどは忠実度が時間変化するため、経路を�
 \end{enumerate}
 
 
-\section*{既存研究を不当に悪く言ってない?}
-\label{sec:orge794aae}
+\section{既存研究を不当に悪く言ってない?}
+\label{sec:org2f9b791}
 現状の書き方なら大きな不当批判ではない。ただし、「BeQuP/QBGP/LinkSelFiE は非定常性を扱えない」と強く書くと危険。正しくは、それらの主目的が非定常 best path tracking ではないという表現に留めるべき。
 
-\section*{他の技術でできるのでは?}
-\label{sec:org0734c45}
+\section{他の技術でできるのでは?}
+\label{sec:org7d1d038}
 できる可能性がある。非定常 multi-armed bandit、linear bandit、latent factor model、Gaussian process bandit、change-point detection、Kalman filter などの自然な適用で済むなら、新規性は弱い。
 
-\section*{その成果のどこがうれしい?}
-\label{sec:org6fab075}
+\section{その成果のどこがうれしい?}
+\label{sec:org56d93f5}
 経路数が多い量子ネットワークで、全候補経路を測り続けずに、共有変動を利用して高 fidelity 経路を追跡できる可能性がある。
 
 
@@ -317,11 +700,11 @@ QBGP,BeQuP,LinkSelFiEなどは忠実度が時間変化するため、経路を�
 
 
 
-\section*{量子アルゴリズムの検討}
-\label{sec:orga1274fd}
+\section{量子アルゴリズムの検討}
+\label{sec:org3f7bf72}
 
-\subsection*{量子アルゴリズムを使う動機}
-\label{sec:orgba952ab}
+\subsection{量子アルゴリズムを使う動機}
+\label{sec:orgc019b55}
 X 量子ネットワークの問題だから量子計算で解く 
 
 O たくさんの制約があり、古典的な最短経路問題に還元できないような量子計
@@ -363,8 +746,8 @@ A. 全単純経路を明示的に列挙すれば、経路数はノード数に�
 
 
 
-\subsection*{解きたい問題}
-\label{sec:orgb603859}
+\subsection{解きたい問題}
+\label{sec:orgc67e61d}
 
 Link Configuration for Fidelity-Constrained Entanglement Routing in
 Quantum Networks(INFOCOM 2025)を読んで以下のように考えた。
@@ -394,8 +777,8 @@ purification を決めるルーティングをしている。
 うがネットワーク全体の通信効率は向上する
 
 
-\subsection*{疑問}
-\label{sec:org81bf610}
+\subsection{疑問}
+\label{sec:orgda0031e}
 上記のような問題が現状あると思ってます。これを扱うストーリー案を考えた
 いのですが、以下のような懸念点があります。
 
@@ -424,12 +807,12 @@ purification を決めるルーティングをしている。
 \end{itemize}
 
 
-\section*{Resource-Consuming Certification for Demand-Satisfying Entanglement Link Selection in Quantum Networks}
-\label{sec:org4fdb9f4}
+\section{Resource-Consuming Certification for Demand-Satisfying Entanglement Link Selection in Quantum Networks}
+\label{sec:org5d5d0ef}
 
 
-\subsection*{背景}
-\label{sec:org2196718}
+\subsection{背景}
+\label{sec:org37739d2}
 
 量子ネットワークでは、遠隔ノード間で量子情報を高信頼に伝送するために、
 エンドツーエンドのエンタングルメントリンクを確立する必要がある。このと
@@ -448,8 +831,8 @@ Benchmarking などの測定手法を用いて、候補リンクの忠実度を�
 identification）として定式化し、限られた測定資源の下で最も忠実度の高い
 リンクを高確率に同定する枠組みを与えている。
 
-\subsection*{動機}
-\label{sec:org3811720}
+\subsection{動機}
+\label{sec:orgf974fa5}
 
 既存研究では、測定回数やバウンス数を削減しながら、高忠実度なリンクを選
 択することが主な目的とされてきた。しかし、実運用上の量子ネットワークで
@@ -480,8 +863,8 @@ identification）として定式化し、限られた測定資源の下で最も
 出する問題として再定式化する必要がある。
 
 
-\subsection*{目的}
-\label{sec:org76eafbf}
+\subsection{目的}
+\label{sec:org2ca255e}
 
 本研究の目的は，エンタングルメント生成速度が異なる複数のエンドツーエン
 ドリンクから，測定によるエンタングルメント生成容量の消費を抑えつつ，ア
@@ -521,14 +904,14 @@ identification）として定式化し、限られた測定資源の下で最も
 できるだけ小さいエンタングルメント生成容量消費コストで選出する
 アルゴリズムを設計する．
 
-\section*{新テーマold}
-\label{sec:org3c50cfe}
+\section{新テーマold}
+\label{sec:org5340c86}
 \begin{itemize}
 \item 大規模量子ネットワークにおける局所リンク測定に基づく高忠実度経路選択アルゴリズムの提案
 \end{itemize}
 
-\subsection*{背景}
-\label{sec:orgc792250}
+\subsection{背景}
+\label{sec:orgd6b5b54}
 
 既存の量子ネットワークルーティングに関する研究の多くは、すべてのノード
 が単一の管理組織に属し、ネットワーク全体のトポロジ情報を利用できる中央
@@ -542,8 +925,8 @@ identification）として定式化し、限られた測定資源の下で最も
 として、LinkSelFiE や QBGP がある。
 
 
-\subsection*{動機}
-\label{sec:org718a321}
+\subsection{動機}
+\label{sec:org03a6144}
 
 これらの既存手法では、中継ノードや途中のリンクを抽象化し、各エンドツー
 エンド経路を独立した候補として扱うことで、ネットワーク全体の詳細なトポ
@@ -557,8 +940,8 @@ identification）として定式化し、限られた測定資源の下で最も
 よってエンドツーエンド経路集合を事前に列挙し、それらを網羅的に評価する
 方式を大規模量子ネットワークで運用することは現実的ではない。
 
-\subsection*{目的}
-\label{sec:org5170a5d}
+\subsection{目的}
+\label{sec:org1b1fc42}
 
 本研究の目的は、エンドツーエンド経路集合の事前列挙が不可能な規模の量子
 ネットワークにおいても、高忠実度な送受信経路を選択可能にすることである。
@@ -597,8 +980,8 @@ identification）として定式化し、限られた測定資源の下で最も
 
 
 
-\subsection*{手法}
-\label{sec:orgdd2125d}
+\subsection{手法}
+\label{sec:orgd24cc3a}
 
 本研究では、エンドツーエンド経路をあらかじめ列挙して比較するのではなく、
 各中継ノードにおいて利用可能な隣接リンクの品質を測定し、有望な次ホップ
@@ -616,16 +999,16 @@ identification）として定式化し、限られた測定資源の下で最も
 価する。
 
 
-\section*{新テーマv2(76点)}
-\label{sec:org2a3c8f4}
+\section{新テーマv2(76点)}
+\label{sec:org0a30a63}
 
 \begin{itemize}
 \item 全経路列挙を用いない量子ネットワークルーティングの近似可能性と測定複
 雑度
 \end{itemize}
 
-\subsection*{背景}
-\label{sec:org7f566ef}
+\subsection{背景}
+\label{sec:orgd58f5d3}
 量子ネットワークでは、送信者と受信者の間に高忠実度のエンタングルメント
 を確立するため、複数の中継ノードを経由した経路選択が必要となる。既存の
 量子ルーティング研究の多くは、ネットワーク全体のトポロジ情報やリンク品
@@ -636,8 +1019,8 @@ identification）として定式化し、限られた測定資源の下で最も
 がって、大規模量子ネットワークでは、全体情報や全経路列挙に依存しないルー
 ティング原理が必要となる。
 
-\subsection*{動機}
-\label{sec:org1eec8c1}
+\subsection{動機}
+\label{sec:org5394c58}
 近年、LinkSelFiE や QBGP のように、中央集権的な全体制御に依存せず、高
 忠実度な経路選択を実現しようとする研究が提案されている。これらは大規模
 量子ネットワークに向けた重要な方向性を示しているが、候補となるエンドツー
@@ -649,8 +1032,8 @@ identification）として定式化し、限られた測定資源の下で最も
 したがって、局所観測のみで何が可能で、何が不可能かを明らかにする必要が
 ある。
 
-\subsection*{目的}
-\label{sec:org9843b6b}
+\subsection{目的}
+\label{sec:orgc82b2af}
 本研究の目的は，大規模量子ネットワークにおいて，全経路列挙や
 全体トポロジ情報を用いず，局所的に観測可能な情報のみから，
 最適忠実度経路に対してどの程度近い経路選択が可能であるかを
@@ -674,10 +1057,10 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 
 
 
-\section*{COMPSAC査読分析}
-\label{sec:org42bc173}
-\subsection*{研究の問い}
-\label{sec:org44c5527}
+\section{COMPSAC査読分析}
+\label{sec:org9d2673d}
+\subsection{研究の問い}
+\label{sec:orgc15a0c6}
 
 \begin{itemize}
 \item 宛先の重要度とリンクの忠実度（フィデリティ）を組み合わせた「重要度重
@@ -695,8 +1078,8 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 \end{itemize}
 
 
-\subsection*{主要な貢献}
-\label{sec:org8f3b5af}
+\subsection{主要な貢献}
+\label{sec:org5cada62}
 
 \begin{itemize}
 \item 単一の宛先に対する最適リンク特定問題を、宛先ごとに異なる需要を反映し
@@ -708,7 +1091,7 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 さらに早期確定（Early Confirmation）メカニズムを組み込んだ適応型アル
 ゴリズム「DaTopLinks」を開発した 。
 
-\item 宛先とリンクの有効ギャップ（ Δn,leff​ ）に基づくサンプル複雑性の上限
+\item 宛先とリンクの有効ギャップ（ Δn,leff ）に基づくサンプル複雑性の上限
 を導出した 。さらに、早期確定機能によって、Top-K宛先の最適リンク特定
 にかかる測定コストが「宛先間ギャップ」と「宛先内ギャップ」のボトルネッ
 クによって支配されることを理論的に示した 。
@@ -720,16 +1103,16 @@ F^\ast = \max_{p \in \mathcal{P}} F(p)
 
 
 
-\subsection*{実験の目的}
-\label{sec:org0ccbd31}
+\subsection{実験の目的}
+\label{sec:org4632eaf}
 VI. 実験のセットアップ 本節では、提案手法であるDaTopLinksの有効性を検
 証するためのシミュレーション環境と評価条件について詳しく説明します 。
 
 → 実環境が\ldots{}と言われる原因はここかもしれない？
 
 
-\subsection*{新規性の主張}
-\label{sec:org53cfe0e}
+\subsection{新規性の主張}
+\label{sec:orgc86e64f}
 \begin{itemize}
 \item 宛先内のリンク除外（Intra-destination link elimination）と、Top-K圏
 外の宛先除外（out-of-Top-K destination elimination）を並行して実行し、
@@ -762,10 +1145,10 @@ VI. 実験のセットアップ 本節では、提案手法であるDaTopLinks�
 
 
 
-\section*{COMPSAC査読結果}
-\label{sec:orgbd1deca}
-\subsection*{Review1}
-\label{sec:org0355d89}
+\section{COMPSAC査読結果}
+\label{sec:org7acd881}
+\subsection{Review1}
+\label{sec:org3dc74f2}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -778,8 +1161,8 @@ SCORE: 2 (Accept)
 SCORE: 2 (Accept)
 
 
-\subsubsection*{Strong Aspects}
-\label{sec:org857ad6f}
+\subsubsection{Strong Aspects}
+\label{sec:org4a75cd1}
 The paper presents a well-structured approach to improving software
 system reliability using an automated framework that combines recent
 machine learning techniques with system-level monitoring and analysis.
@@ -797,8 +1180,8 @@ Overall, the paper tackles an important issue in modern software
 systems and proposes a workable solution that may be implemented in
 real-world scenarios.
 
-\subsubsection*{Weak Aspects}
-\label{sec:org367eb95}
+\subsubsection{Weak Aspects}
+\label{sec:org3b0c595}
 The evaluation is performed on a limited number of scenarios and system configurations.
 
 While the results show that the proposed method is effective, more
@@ -864,8 +1247,8 @@ Fidelity-Kに関しては、多宛先を考慮しないし、重要度も考慮�
 実装中です
 
 
-\subsubsection*{Recommended Changes}
-\label{sec:org683686f}
+\subsubsection{Recommended Changes}
+\label{sec:orgb945add}
 The paper could be improved by extending the evaluation to cover more
 datasets and system configurations.
 
@@ -877,8 +1260,8 @@ Additional discussion on scalability and deployment considerations in
 large-scale environments will greatly improve the contribution.
 
 
-\section*{Review2}
-\label{sec:orga6bfa77}
+\section{Review2}
+\label{sec:org89bae97}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -890,8 +1273,8 @@ SCORE: 2 (Accept)
 ----------- Overall Recommendation -----------
 SCORE: 2 (Accept)
 
-\subsection*{Strong Aspects}
-\label{sec:org979f10b}
+\subsection{Strong Aspects}
+\label{sec:org6d3d609}
 The paper addresses a relevant problem in quantum networks by
 incorporating destination importance into high-fidelity link
 selection.
@@ -899,8 +1282,8 @@ selection.
 It also presents a clear algorithmic design with theoretical analysis
 and simulation results across multiple noise models.
 
-\subsection*{Weak Aspects}
-\label{sec:org76fadab}
+\subsection{Weak Aspects}
+\label{sec:orgb52d8d1}
 The novelty is moderate, as the work mainly extends existing
 link-selection and bandit-based approaches to a demand-aware Top-K
 setting.
@@ -909,8 +1292,8 @@ The evaluation is limited to simulations, and performance under
 amplitude damping shows reduced robustness due to model mismatch.
 
 
-\subsection*{Recommended Changes}
-\label{sec:org4e590ea}
+\subsection{Recommended Changes}
+\label{sec:orgb3cc78e}
 The paper would benefit from a clearer explanation of its novelty
 relative to prior methods such as LinkSelFiE and related Top-K
 selection work.
@@ -920,8 +1303,8 @@ It would also be helpful to expand the discussion of robustness under
 non-Pauli noise and practical deployment considerations.
 
 
-\section*{Review3}
-\label{sec:org4538586}
+\section{Review3}
+\label{sec:org14d139b}
 ----------- Originality -----------
 SCORE: 1 (Weak Accept)
 ----------- Quality -----------
@@ -933,8 +1316,8 @@ SCORE: 1 (Weak Accept)
 ----------- Overall Recommendation -----------
 SCORE: 1 (Weak Accept)
 
-\subsection*{Strong Aspects}
-\label{sec:org6da3a85}
+\subsection{Strong Aspects}
+\label{sec:orgd2deab5}
 The paper addresses an important problem in quantum networks by
 incorporating demand-aware link selection under limited resources.
 
@@ -945,8 +1328,8 @@ The inclusion of theoretical guarantees and evaluation across multiple
 noise models strengthens the contribution.
 
 
-\subsection*{Weak Aspects}
-\label{sec:org67ddf20}
+\subsection{Weak Aspects}
+\label{sec:orgdde434c}
 The novelty is somewhat incremental, as it builds on existing
 bandit-based link selection methods.
 
@@ -956,8 +1339,8 @@ validation.
 Additionally, the method depends on specific noise assumptions, and
 some sections are dense.
 
-\subsection*{Recommended Changes}
-\label{sec:org797988f}
+\subsection{Recommended Changes}
+\label{sec:orgf69b65e}
 The authors should improve clarity by simplifying the algorithm
 description and adding intuitive explanations.
 
@@ -969,8 +1352,8 @@ A clearer discussion of limitations and broader comparisons would also
 help.
 
 
-\section*{Review4}
-\label{sec:org2d9bba5}
+\section{Review4}
+\label{sec:org7e735ce}
 ----------- Originality -----------
 SCORE: 2 (Accept)
 ----------- Quality -----------
@@ -983,23 +1366,23 @@ SCORE: 2 (Accept)
 SCORE: 2 (Accept)
 
 
-\subsection*{Strong Aspects}
-\label{sec:org5bfd557}
+\subsection{Strong Aspects}
+\label{sec:org1929e5b}
 The authors address a realistic gap—existing work ignores
 heterogeneous demand across destinations in quantum networks.
 
 This work extends best-arm identification to a demand-aware Top-K
 selection problem, which is both meaningful and non-trivial.
 
-\subsection*{Weak Aspects}
-\label{sec:org19ca443}
+\subsection{Weak Aspects}
+\label{sec:org295f27b}
 The approach relies on simplified assumptions (e.g., fixed importance,
 star topology, and idealized conditions), which may limit its
 applicability to real-world, dynamic quantum networks.
 
 
-\subsection*{Recommended Changes}
-\label{sec:org1478c43}
+\subsection{Recommended Changes}
+\label{sec:orga03bdd8}
 Incorporate more realistic network conditions—such as dynamic traffic
 patterns, multi-hop topologies, and uncertain or time-varying
 destination importance—to improve practical applicability.
@@ -1008,17 +1391,17 @@ Need to extend the utility function and validate the approach through
 real-world experiments or testbed deployments to demonstrate
 robustness beyond simulation.
 
-\section*{現在の問題設定(先生の対話から抜粋)}
-\label{sec:orgf2ec445}
+\section{現在の問題設定(先生の対話から抜粋)}
+\label{sec:org6e56282}
 
 --- 
 Q. LinkSelfie の論文の問題を拡張したい。
 
 
 \begin{itemize}
-\item ノードS〜ノードD 間のリンク集合 Ｌ だけでなく、ノードS〜ノードD\_n間のリンク集合 L\_n (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
+\item ノードS〜ノードD 間のリンク集合 Ｌ だけでなく、ノードS〜ノードD\textsubscript{n間のリンク集合} L\textsubscript{n} (1 <= n <= N, N はノードSの隣接ノード数)がそれぞれ入力される。
 
-\item ノードS〜ノードD\_n間の重要度 I\_n (0〜1 の値) が入力として与えられる。
+\item ノードS〜ノードD\textsubscript{n間の重要度} I\textsubscript{n} (0〜1 の値) が入力として与えられる。
 \end{itemize}
 
 
@@ -1030,7 +1413,7 @@ Q. LinkSelfie の論文の問題を拡張したい。
 \end{raddblock}
 
 \begin{itemize}
-\item この時、ノードS〜ノードD\_n のノードペアの中で、K 個のノードペア (S, D\_s\_1), (S, D\_s\_2), \ldots{} (S, D\_s\_K) における忠実度が最大のリンクをそれぞれ発見する。
+\item この時、ノードS〜ノードD\textsubscript{n} のノードペアの中で、K 個のノードペア (S, D\textsubscript{s}\textsubscript{1}), (S, D\textsubscript{s}\textsubscript{2}), \ldots{} (S, D\textsubscript{s}\textsubscript{K}) における忠実度が最大のリンクをそれぞれ発見する。
 \end{itemize}
 
 \begin{raddblock}
@@ -1040,12 +1423,12 @@ Q. LinkSelfie の論文の問題を拡張したい。
 \end{raddblock}
 
 \begin{itemize}
-\item ここで F\_n は (S, D\_n) 間において忠実度の最大のリンクの忠実度である。
+\item ここで F\textsubscript{n} は (S, D\textsubscript{n}) 間において忠実度の最大のリンクの忠実度である。
 \end{itemize}
 
 
-\section*{なぜ変更したか}
-\label{sec:org80af28e}
+\section{なぜ変更したか}
+\label{sec:orgd7a0111}
 
 
 \begin{raddblock}
@@ -1073,7 +1456,7 @@ Q. LinkSelfie の論文の問題を拡張したい。
 
 重要度と忠実度の積の総和、つまり
 
-I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k 
+I = \(\sum\)\textsubscript{k = 1}\textsuperscript{K} I\textsubscript{s}\textsubscript{k} * F\textsubscript{s}\textsubscript{k} 
 
 が最大となるように定める。
 \end{rdelblock}
@@ -1090,8 +1473,8 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 
 
 
-\section*{現在のテーマの問題点}
-\label{sec:orgbc7748a}
+\section{現在のテーマの問題点}
+\label{sec:orgdf7aedc}
 \begin{itemize}
 \item 固定予算ではなく固定信頼度が制約条件になっているため、最適なリンクを
 選べた or 選べていないで評価しなければいけない点
@@ -1113,8 +1496,8 @@ I = \(\sum\)\_\{k = 1\}\^{}K I\_s\_k * F\_s\_k
 が、今の問題設定だと K位 のリンクと K+1 位のリンクは必ず区別しなければ
 いけないところが問題である。
 
-\subsection*{解決策}
-\label{sec:orgad5013c}
+\subsection{解決策}
+\label{sec:org719fb60}
 \begin{itemize}
 \item 固定信頼度をやめ、固定予算方式にする。
 \item 固定信頼度をそのまま使うが、条件を緩和する。(仮に K+1位のリンクを選
@@ -1130,8 +1513,8 @@ Learning Best Paths in Quantum Networks
 
 
 
-\section*{現在のストーリー案の骨格}
-\label{sec:org36efff1}
+\section{現在のストーリー案の骨格}
+\label{sec:org3ebdcf5}
 
 \begin{itemize}
 \item 背景 量子ネットワークにおいて忠実度を高いリンクを効率的に判定する手法 LinkSelFiE が提案されている
@@ -1140,8 +1523,8 @@ Learning Best Paths in Quantum Networks
 \end{itemize}
 
 
-\section*{研究の問い}
-\label{sec:org5d60dc8}
+\section{研究の問い}
+\label{sec:org9d54ac7}
 
 本研究では、以下の問いに対して理論的および実践的な洞察を提供することを目指します 。
 
@@ -1160,8 +1543,8 @@ Learning Best Paths in Quantum Networks
 \end{itemize}
 
 
-\section*{別の案}
-\label{sec:org4f92104}
+\section{別の案}
+\label{sec:org06a7025}
 分散が大きい（ノイズのばらつきが激しい）量子リンクに対して一律の予算配
 分を行うと、そのリンクの忠実度が過大評価または過小評価され、真に有望な
 リンクを誤って排除してしまうリスクが高まる。
