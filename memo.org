@@ -56,7 +56,7 @@ shun@lsnl.jp}}
   # | 段落・複数行を灰色に  |    #+BEGIN_rdelblock ...#+END_rdelblock|
 
   
-* 現状
+* 現状の目的の整理
 既存の量子ネットワーク研究の多くは、エンタングルメント生成レートの最大
 化、エンド・ツー・エンド忠実度の改善、あるいは静的条件下でのルーティン
 グや純粋化 (purification) のスケジューリングに焦点を当てており、**アプ
@@ -78,7 +78,7 @@ shun@lsnl.jp}}
 
 
 
-具体的には...
+研究の貢献(paper-min)
 
 - 受信側量子バッファへのエンタングルメント到着・消費・期限超過を記述す
   る、誕生死滅過程に基づく最小限の解析モデルを構築する。
@@ -100,10 +100,116 @@ shun@lsnl.jp}}
 
 
 
+今後の研究でやりたい事
+
+- 最適なバッファサイズではなく、最適なバッファ占有量を調べる
+- バッファ内での量子状態のデコヒーレンスを連続的なものとしてモデル化したい
+
+
+1. 最適なバッファサイズではなく、最適なバッファ占有量を調べる
+
+以下topicの抜粋
+
+We derive the optimal entanglement buffer size that minimizes a
+weighted cost of consumption stalls and discarded entanglement. The
+resulting optimum is a finite operating point determined by the
+application consumption rate, generation variability, coherence
+lifetime, and discard cost, rather than the maximum available quantum
+memory.
+
+optimal entanglement buffer size と operating pointは違う。
+
+現在(ソサイエティ)の研究では、最適バッファサイズというより、固定生成レー
+ト \(\lambda\) のもとで、許容する最大占有数をどこに制限するとよいかを
+調べている。
 
 
 
-** topicに足す
+paper-min では実質的に次の3つが混在しています。
+\[
+\boxed{B_{\mathrm{phys}}}
+\]
+は、実装されている量子メモリの物理的最大容量です。
+\[
+\boxed{N(t)}
+\]
+は、その時点で実際に保存されている EPR ペア数、すなわち瞬時バッファ占有数です。
+そして
+\[
+\boxed{n^\dagger}
+\]
+は、制御器が \(N(t)\) をその周辺に維持しようとする目標占有量、setpoint / operating pointです。
+
+paper-min の解析モデルでは、\(N(t)\in\{0,\ldots,B\}\) として固定到着レー
+ト \(\lambda\) を与え、\(B\) を変化させています。
+
+
+実際にやりたいことは、
+
+量子転送の設計目標を「生の到着率の安定化」から「利用可能なエンタングルメント消費の安定化」へ再定義する転送抽象を提示する。
+
+The resulting optimum is a finite operating point determined by the
+application consumption rate, generation variability, coherence
+lifetime, and discard cost, rather than the maximum available quantum
+memory.
+↑ のようなoperating pointを見つけ、それを使って制御すること。
+
+なので
+最適なバッファサイズではなく、最適なバッファ占有量を調べることが重要だと考えている。
+
+
+例えば
+\[
+\lambda(N)=
+\begin{cases}
+\lambda_{\rm hi},&N<h,\\
+\lambda_{\rm lo},&N\geq h
+\end{cases}
+\]
+としたときの、
+\[
+\boxed{h^*}
+\]
+
+を求めるような、
+どの占有状態で生成レートを切り替えるかが重要だと考えています。
+
+
+
+2. バッファ内での量子状態のデコヒーレンスを連続的なものとしてモデル化したい
+
+paper-minは各ペアを指数率 \(\gamma\) でexpireさせる memoryless model
+にしている。
+
+
+
+
+これだと、
+バッファ内のage growthが分からない。その場合、次の例のような場合を見分
+けられない
+
+バッファ1
+エンタングルメント1 あと0.1秒で崩壊
+エンタングルメント2 あと0.1秒で崩壊
+エンタングルメント3 あと0.1秒で崩壊
+
+バッファ2
+エンタングルメント1 あと1秒で崩壊
+エンタングルメント2 あと1秒で崩壊
+エンタングルメント3 あと1秒で崩壊
+
+
+バッファ1の場合は、3つのエンタングルメントがバッファ内にあるが、すぐに
+空になる危険性がある。この場合は、underflowしないように生成速度を上げ
+るべき。
+また、量子ネットワークではエンタングルメントの生成が確率的なので、上記
+のような問題(ageにバラつきが出やすい)が起こりやすいと考えている。
+
+
+そういった問題を取り扱えるようにするためには、今のモデル化の仕方ではなくて、
+バッファ内のエンタングルメントが連続的に劣化していく(各エンタングルメントのage growthが分かる)ようなモデル化が必要だと思っている。
+
+
 
 
 
@@ -111,6 +217,7 @@ shun@lsnl.jp}}
 
 
   
+* 
 * 現状
 
 1枚論文は完成したが、paper-min-old,paper-minとは構成が一部変わっている
